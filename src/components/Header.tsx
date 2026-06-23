@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { Sun, Moon, Crosshair, LineChart } from "lucide-react";
+import { Sun, Moon, LayoutGrid, Presentation } from "lucide-react";
 import logoImg from "../../Clean_Chinook_Logo.png";
 
 export default function Header() {
-  const { viewMode, setViewMode } = useBriefingStore();
+  const { mode, setMode } = useBriefingStore();
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -48,33 +48,33 @@ export default function Header() {
 
       {/* Controls */}
       <div className="flex items-center gap-3">
-        {/* Dual-Lens Segmented Control */}
+        {/* Plan / Brief mode — build the model, or present it to leadership */}
         <div className="inline-flex items-center gap-0.5 p-0.5 rounded-md bg-[var(--bg-raised)] border border-[var(--border-default)]">
           <button
-            onClick={() => setViewMode("tactical")}
-            aria-pressed={viewMode === "tactical"}
-            title="Tactical — technical indicators (CVEs / IPs)"
+            onClick={() => setMode("plan")}
+            aria-pressed={mode === "plan"}
+            title="Plan — build and edit the OAKOC model"
             className={`flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold transition-colors ${
-              viewMode === "tactical"
+              mode === "plan"
                 ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-subtle"
                 : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             }`}
           >
-            <Crosshair className="h-3.5 w-3.5" />
-            Tactical
+            <LayoutGrid className="h-3.5 w-3.5" />
+            Plan
           </button>
           <button
-            onClick={() => setViewMode("strategic")}
-            aria-pressed={viewMode === "strategic"}
-            title="Strategic — risk & financial exposure"
+            onClick={() => setMode("brief")}
+            aria-pressed={mode === "brief"}
+            title="Brief — present the model to leadership"
             className={`flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold transition-colors ${
-              viewMode === "strategic"
+              mode === "brief"
                 ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-subtle"
                 : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             }`}
           >
-            <LineChart className="h-3.5 w-3.5" />
-            Strategic
+            <Presentation className="h-3.5 w-3.5" />
+            Brief
           </button>
         </div>
 

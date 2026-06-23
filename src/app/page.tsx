@@ -2,27 +2,14 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
+import { TIER_ORDER, TIER_META } from "@/lib/oakoc";
 import Header from "@/components/Header";
 import BriefingLayout from "@/components/BriefingLayout";
-import { RefreshCw } from "lucide-react";
-
-const TIER_TALLY = [
-  { tier: "observation", label: "Obs", color: "var(--color-observation)" },
-  { tier: "avenue-of-approach", label: "Avenue", color: "var(--color-avenue)" },
-  { tier: "obstacle", label: "Obstacle", color: "var(--color-obstacle)" },
-  { tier: "key-terrain", label: "Key", color: "var(--color-key-terrain)" },
-  { tier: "cover-concealment", label: "Cover", color: "var(--color-cover)" },
-] as const;
-
-function formatExposure(value: number): string {
-  if (value >= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
-  if (value >= 1e3) return `$${Math.round(value / 1e3)}k`;
-  return `$${value}`;
-}
+import { RefreshCw, ShieldAlert } from "lucide-react";
 
 export default function Home() {
   const [hydrated, setHydrated] = useState(false);
-  const { nodes, viewMode } = useBriefingStore();
+  const { elements } = useBriefingStore();
 
   useEffect(() => {
     useBriefingStore.persist.rehydrate();
@@ -30,37 +17,18 @@ export default function Home() {
   }, []);
 
   const stats = useMemo(() => {
-    const uniqueCves = new Set<string>();
-    const uniqueKevs = new Set<string>();
-    const tierCounts: Record<string, number> = {
-      observation: 0,
-      "avenue-of-approach": 0,
-      obstacle: 0,
-      "key-terrain": 0,
-      "cover-concealment": 0,
-    };
-    let exposure = 0;
-
-    for (const node of nodes) {
-      tierCounts[node.data.tier] = (tierCounts[node.data.tier] ?? 0) + 1;
-      exposure += node.data.financialRisk ?? 0;
-      if (node.data.cves) {
-        node.data.cves.forEach((cve: string) => {
-          uniqueCves.add(cve);
-          if (node.data.metrics && node.data.metrics[cve] && node.data.metrics[cve].isExploited) {
-            uniqueKevs.add(cve);
-          }
-        });
+    const cves = new Set<string>();
+    const kevs = new Set<string>();
+    const tierCounts: Record<string, number> = {};
+    for (const el of elements) {
+      tierCounts[el.tier] = (tierCounts[el.tier] ?? 0) + 1;
+      for (const cve of el.cves) {
+        cves.add(cve);
+        if (el.metrics?.[cve]?.isExploited) kevs.add(cve);
       }
     }
-
-    return {
-      tierCounts,
-      cveCount: uniqueCves.size,
-      kevCount: uniqueKevs.size,
-      exposure,
-    };
-  }, [nodes]);
+    return { tierCounts, cveCount: cves.size, kevCount: kevs.size, total: elements.length };
+  }, [elements]);
 
   if (!hydrated) {
     return (
@@ -74,74 +42,52 @@ export default function Home() {
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)] font-sans">
       <Header />
 
+      {/* Summary strip — the at-a-glance terrain tally (no cost/exposure) */}
+      <div className="shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 py-2.5 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          {TIER_ORDER.map((tier) => {
+            const meta = TIER_META[tier];
+            return (
+              <div key={tier} className="flex items-center gap-1.5" title={meta.name}>
+                <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: meta.color }} />
+                <span className="text-[11px] text-[var(--text-secondary)]">{meta.short}</span>
+                <span className="text-[12px] font-bold tabular-nums text-[var(--text-primary)]">
+                  {stats.tierCounts[tier] ?? 0}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-1.5">
+            <span className="data-label">Elements</span>
+            <span className="text-[13px] font-bold tabular-nums text-[var(--text-primary)]">
+              {stats.total}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5" title="Assigned CVEs that are actively exploited (CISA KEV)">
+            <ShieldAlert
+              className="h-3.5 w-3.5"
+              style={{ color: stats.kevCount > 0 ? "#ef4444" : "var(--text-muted)" }}
+            />
+            <span className="data-label">Exploited</span>
+            <span className="flex items-baseline gap-1">
+              <span
+                className="text-[13px] font-bold tabular-nums"
+                style={{ color: stats.kevCount > 0 ? "#ef4444" : "var(--text-primary)" }}
+              >
+                {stats.kevCount}
+              </span>
+              <span className="text-[10px] text-[var(--text-muted)]">/ {stats.cveCount} CVE</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
       <main className="flex-1 overflow-y-auto min-h-0 min-w-0">
-        <div className="w-full h-full p-4 md:p-6 flex flex-col">
-          {/* Terrain Summary Strip */}
-          <div className="bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg shadow-card px-5 py-4 mb-4 shrink-0 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <span className="data-label">Operations Briefing</span>
-              <h1 className="text-xl font-bold tracking-tight text-[var(--text-primary)]">OAKOC Terrain Model</h1>
-              <p className="text-[12px] text-[var(--text-secondary)]">
-                Defense-in-depth cross-section — map terrain, track exposure, brief the threat.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-5 flex-wrap">
-              {/* Tier tally chips */}
-              <div className="flex items-center gap-3">
-                {TIER_TALLY.map(({ tier, label, color }) => (
-                  <div key={tier} className="flex items-center gap-1.5">
-                    <span
-                      className="h-2 w-2 rounded-[2px]"
-                      style={{ background: color }}
-                    />
-                    <span className="text-[10px] text-[var(--text-secondary)]">{label}</span>
-                    <span className="text-[12px] font-bold tabular-nums text-[var(--text-primary)]">
-                      {stats.tierCounts[tier] ?? 0}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="w-px h-8 bg-[var(--border-default)]" />
-
-              {/* Readouts */}
-              <div className="flex items-center gap-5">
-                <div className="flex flex-col">
-                  <span className="data-label">Exposure</span>
-                  <span
-                    className={`text-lg font-bold tabular-nums ${
-                      viewMode === "strategic"
-                        ? "text-[var(--accent-primary)]"
-                        : "text-[var(--text-primary)]"
-                    }`}
-                  >
-                    {formatExposure(stats.exposure)}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="data-label">Active KEV</span>
-                  <span className="flex items-baseline gap-1">
-                    <span
-                      className={`text-lg font-bold tabular-nums ${
-                        viewMode === "tactical"
-                          ? "text-[var(--accent-primary)]"
-                          : "text-[var(--text-primary)]"
-                      }`}
-                    >
-                      {stats.kevCount}
-                    </span>
-                    <span className="text-[10px] text-[var(--text-muted)]">/ {stats.cveCount} CVE</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Scrollytelling & Visual Scaffolding Grid */}
-          <div className="flex-1 flex flex-col min-h-[600px] pb-4">
-            <BriefingLayout />
-          </div>
+        <div className="px-4 md:px-6 py-6">
+          <BriefingLayout />
         </div>
       </main>
     </div>

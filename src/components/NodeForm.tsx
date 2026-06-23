@@ -1,20 +1,13 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { TIER_LABELS } from "@/lib/api";
-import { ThreatTier, CustomNode } from "@/types";
-import { X, Save, Trash2, Plus, Terminal, RefreshCw, AlertTriangle, Search, CheckCircle } from "lucide-react";
+import { searchCves } from "@/lib/api";
+import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
+import { PlanElement, ThreatTier, CveSuggestion } from "@/types";
+import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle } from "lucide-react";
 
 const DANGER = "#ef4444";
-
-const TIER_COLORS: Record<string, string> = {
-  observation: "var(--color-observation)",
-  "avenue-of-approach": "var(--color-avenue)",
-  obstacle: "var(--color-obstacle)",
-  "key-terrain": "var(--color-key-terrain)",
-  "cover-concealment": "var(--color-cover)",
-};
 
 const dangerStyle = {
   color: DANGER,
@@ -24,233 +17,253 @@ const dangerStyle = {
 
 const INPUT_CLASS =
   "w-full px-3 py-2 text-[13px] border border-[var(--border-default)] bg-[var(--bg-surface)] rounded-md text-[var(--text-primary)] transition-colors focus:outline-none";
-const INPUT_MONO_CLASS =
-  "w-full px-3 py-2 text-[13px] mono border border-[var(--border-default)] bg-[var(--bg-surface)] rounded-md text-[var(--text-primary)] transition-colors focus:outline-none";
+const INPUT_MONO_CLASS = `${INPUT_CLASS} mono`;
+
+const CVE_RE = /^CVE-\d{4}-\d{4,}$/i;
+
+const sanitizeId = (raw: string) => raw.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "");
 
 interface NodeFormProps {
   onClose?: () => void;
+  /** Pre-selected OAKOC layer when adding from a specific layer's "+ Add". */
+  defaultTier?: ThreatTier;
 }
 
-export default function NodeForm({ onClose }: NodeFormProps) {
+export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const {
-    nodes,
-    selectedNodeId,
-    setSelectedNodeId,
-    addNode,
-    updateNode,
-    deleteNode,
-    fetchApiDataForNode,
+    elements,
+    selectedId,
+    setSelectedId,
+    addElement,
+    updateElement,
+    deleteElement,
+    enrichElement,
   } = useBriefingStore();
 
-  const isEditMode = selectedNodeId !== null;
-  const selectedNode = isEditMode ? nodes.find((n) => n.id === selectedNodeId) : null;
+  const isEditMode = selectedId !== null;
+  const selectedElement = isEditMode ? elements.find((el) => el.id === selectedId) : null;
 
-  // Local Form states
-  const [nodeId, setNodeId] = useState("");
+  // Local form state
+  const [elementId, setElementId] = useState("");
   const [name, setName] = useState("");
-  const [threatActor, setThreatActor] = useState("");
-  const [tier, setTier] = useState<ThreatTier>("observation");
-  const [ips, setIps] = useState("");
+  const [tier, setTier] = useState<ThreatTier>(TIER_ORDER[0]);
   const [cves, setCves] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // CVE lookup widget state
+  // CVE typeahead state
   const [cveInput, setCveInput] = useState("");
-  const [lookupResult, setLookupResult] = useState<any>(null);
-  const [isLookingUp, startLookup] = useTransition();
+  const [suggestions, setSuggestions] = useState<CveSuggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [cveHint, setCveHint] = useState<string | null>(null);
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const queryRef = useRef("");
 
   const [isPending, startTransition] = useTransition();
 
-  // Sync state with selected node
+  // Sync local form state from the selected element
   useEffect(() => {
-    if (selectedNode) {
-      setNodeId(selectedNode.id);
-      setName(selectedNode.data.name);
-      setThreatActor(selectedNode.data.threatActor || "");
-      setTier(selectedNode.data.tier);
-      setIps(selectedNode.data.ips.join(", "));
-      setCves([...(selectedNode.data.cves || [])]);
-      setDescription(selectedNode.data.description || "");
-      setError(null);
-      setLookupResult(null);
-      setCveInput("");
+    if (selectedElement) {
+      setElementId(selectedElement.id);
+      setName(selectedElement.name);
+      setTier(selectedElement.tier);
+      setCves([...selectedElement.cves]);
+      setDescription(selectedElement.description ?? "");
     } else {
-      setNodeId("");
+      setElementId("");
       setName("");
-      setThreatActor("");
-      setTier("observation");
-      setIps("");
+      setTier(defaultTier ?? TIER_ORDER[0]);
       setCves([]);
       setDescription("");
-      setError(null);
-      setLookupResult(null);
-      setCveInput("");
     }
-  }, [selectedNodeId, selectedNode]);
+    setError(null);
+    setCveInput("");
+    setSuggestions([]);
+    setOpen(false);
+    setLoading(false);
+    setCveHint(null);
+  }, [selectedId, selectedElement]);
 
-  const handleTierChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTier(e.target.value as ThreatTier);
-  };
+  // Debounced CVE search
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
 
-  const handleLookupCve = () => {
-    const cleanCve = cveInput.trim().toUpperCase();
-    if (!cleanCve.match(/^CVE-\d{4}-\d{4,}$/)) {
-      setLookupResult({ error: "Invalid CVE format. E.g., CVE-2023-3519" });
+    const q = cveInput.trim();
+    queryRef.current = q;
+
+    if (q.length < 2) {
+      setSuggestions([]);
+      setLoading(false);
+      setOpen(false);
       return;
     }
 
-    startLookup(async () => {
-      try {
-        const [kevRes, epssRes] = await Promise.all([
-          fetch(`/api/kev?cves=${cleanCve}`),
-          fetch(`/api/epss?cves=${cleanCve}`)
-        ]);
-        
-        if (!kevRes.ok || !epssRes.ok) throw new Error("API failed");
-        
-        const kevData = await kevRes.json();
-        const epssData = await epssRes.json();
-        
-        const isKev = kevData[cleanCve]?.isExploited;
-        const details = kevData[cleanCve]?.details;
-        const epssScore = epssData[cleanCve]?.epssScore || 0;
-        const epssPercentile = epssData[cleanCve]?.epssPercentile || 0;
+    setLoading(true);
+    setOpen(true);
+    debounceRef.current = setTimeout(async () => {
+      const results = await searchCves(q);
+      // Ignore stale responses if the query changed mid-flight.
+      if (queryRef.current !== q) return;
+      setSuggestions(results.slice(0, 8));
+      setLoading(false);
+    }, 200);
 
-        setLookupResult({ 
-          found: true, 
-          isKev, 
-          details, 
-          epssScore: (epssScore * 100).toFixed(2), 
-          epssPercentile: Math.round(epssPercentile * 100) 
-        });
-      } catch (e) {
-        setLookupResult({ error: "Failed to connect to vulnerability databases." });
-      }
-    });
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [cveInput]);
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+    };
+  }, []);
+
+  const addCve = (raw: string) => {
+    const normalized = raw.trim().toUpperCase();
+    setCves((prev) => (prev.includes(normalized) ? prev : [...prev, normalized]));
   };
 
-  const handleAddCve = () => {
-    const cleanCve = cveInput.trim().toUpperCase();
-    if (cleanCve && !cves.includes(cleanCve)) {
-      setCves(prev => [...prev, cleanCve]);
-    }
+  const handleSelectSuggestion = (s: CveSuggestion) => {
+    addCve(s.cveID);
     setCveInput("");
-    setLookupResult(null);
+    setSuggestions([]);
+    setOpen(false);
+    setCveHint(null);
+  };
+
+  const handleManualAdd = () => {
+    const raw = cveInput.trim();
+    if (!raw) return;
+    if (!CVE_RE.test(raw)) {
+      setCveHint("Enter a valid CVE id, e.g. CVE-2023-3519.");
+      return;
+    }
+    addCve(raw);
+    setCveInput("");
+    setSuggestions([]);
+    setOpen(false);
+    setCveHint(null);
+  };
+
+  const handleCveKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleManualAdd();
+    } else if (e.key === "Escape") {
+      setOpen(false);
+    }
+  };
+
+  const handleCveBlur = () => {
+    // Small delay so a suggestion click registers before the dropdown closes.
+    blurTimeoutRef.current = setTimeout(() => setOpen(false), 150);
   };
 
   const removeCve = (c: string) => {
-    setCves(cves.filter(item => item !== c));
+    setCves((prev) => prev.filter((item) => item !== c));
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleClose = () => {
+    setSelectedId(null);
+    if (onClose) onClose();
+  };
+
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    const cleanId = nodeId.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "");
+    const cleanId = sanitizeId(elementId);
     const cleanName = name.trim();
 
     if (!cleanId) {
-      setError("Terrain identifier key is required.");
+      setError("Element ID is required.");
       return;
     }
-
     if (!cleanName) {
       setError("Display Name is required.");
       return;
     }
-
-    if (!isEditMode && nodes.some((n) => n.id === cleanId)) {
-      setError("A terrain node with this ID already exists. ID must be unique.");
+    if (!isEditMode && elements.some((el) => el.id === cleanId)) {
+      setError("An element with this ID already exists. ID must be unique.");
       return;
     }
 
-    const ipArray = ips
-      .split(",")
-      .map((ip) => ip.trim())
-      .filter((ip) => ip.length > 0);
-
-    const nodeData = {
-      id: cleanId,
-      name: cleanName,
-      tier,
-      ips: ipArray,
-      cves: cves,
-      description: description.trim(),
-      sigmaRules: [],
-      lossMagnitude: 0,
-      financialRisk: 0,
-      threatActor,
-      metrics: isEditMode ? selectedNode?.data.metrics : undefined,
-    };
+    const targetId = isEditMode ? selectedId! : cleanId;
 
     if (isEditMode) {
-      updateNode(cleanId, nodeData);
+      updateElement(targetId, {
+        name: cleanName,
+        tier,
+        cves,
+        description: description.trim(),
+        // Preserve previously fetched metrics on edit.
+        metrics: selectedElement?.metrics,
+      });
     } else {
-      const newNode: CustomNode = {
+      const newElement: PlanElement = {
         id: cleanId,
-        type: "customThreatNode",
-        position: {
-          x: 100 + Math.random() * 200,
-          y: 100 + Math.random() * 200,
-        },
-        data: nodeData,
+        name: cleanName,
+        tier,
+        cves,
+        description: description.trim(),
       };
-      addNode(newNode);
+      addElement(newElement);
     }
 
-    startTransition(async () => {
-      if (cves.length > 0) {
-        await fetchApiDataForNode(cleanId);
-      }
-    });
+    if (cves.length > 0) {
+      startTransition(async () => {
+        await enrichElement(targetId);
+      });
+    }
 
-    if (onClose) onClose();
-    setSelectedNodeId(null);
+    handleClose();
   };
 
   const handleDelete = () => {
-    if (selectedNodeId) {
-      deleteNode(selectedNodeId);
+    if (selectedId) {
+      deleteElement(selectedId);
       if (onClose) onClose();
     }
   };
 
+  const tierMeta = TIER_META[tier];
+
   return (
     <div className="flex flex-col h-full bg-[var(--bg-surface)] border-l border-[var(--border-default)] shadow-card w-full md:max-w-md text-[var(--text-primary)]">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border-default)]">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border-default)] shrink-0">
         <div>
           <h2 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
             {isEditMode ? (
-              <>
-                <Terminal className="h-4 w-4 text-[var(--text-secondary)]" />
-                Inspect: {selectedNode?.data.name}
-              </>
+              <>Edit: {selectedElement?.name}</>
             ) : (
               <>
                 <Plus className="h-4 w-4 text-[var(--accent-primary)]" />
-                Add Tactical Element
+                Add element
               </>
             )}
           </h2>
           <p className="text-[11px] text-[var(--text-muted)] font-medium mt-1">
-            {isEditMode ? "Modify OAKOC node configs & metric indexes" : "Add an OAKOC asset layer component"}
+            {isEditMode
+              ? "Modify this OAKOC terrain element"
+              : "Place a new OAKOC terrain element"}
           </p>
         </div>
         <button
           type="button"
-          onClick={() => {
-            setSelectedNodeId(null);
-            if (onClose) onClose();
-          }}
+          onClick={handleClose}
+          aria-label="Close"
           className="p-1.5 hover:bg-[var(--bg-raised)] rounded-md transition-colors text-[var(--text-muted)] hover:text-[var(--text-primary)]"
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Form Content */}
+      {/* Body */}
       <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-5">
         {error && (
           <div className="flex gap-2 p-3 border rounded-md text-xs" style={dangerStyle}>
@@ -259,24 +272,24 @@ export default function NodeForm({ onClose }: NodeFormProps) {
           </div>
         )}
 
-        {/* Node ID */}
+        {/* Element ID */}
         <div>
-          <label htmlFor="nodeId" className="block data-label mb-2">
+          <label htmlFor="elementId" className="block data-label mb-2">
             Element ID (Unique Key)
           </label>
           <input
             type="text"
-            id="nodeId"
+            id="elementId"
             disabled={isEditMode}
-            value={nodeId}
-            onChange={(e) => setNodeId(e.target.value)}
-            placeholder="e.g. key-server-1"
+            value={elementId}
+            onChange={(e) => setElementId(e.target.value)}
+            placeholder="e.g. ad-domain-controller"
             className={`${INPUT_MONO_CLASS} disabled:opacity-60`}
             required
           />
         </div>
 
-        {/* Element Name */}
+        {/* Display Name */}
         <div>
           <label htmlFor="name" className="block data-label mb-2">
             Display Name
@@ -286,82 +299,59 @@ export default function NodeForm({ onClose }: NodeFormProps) {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Active Directory Domain Controller"
+            className={INPUT_CLASS}
             required
-            className={INPUT_CLASS}
-            placeholder="e.g. Core Domain Controller"
           />
         </div>
 
-        {/* Threat Actor */}
-        <div>
-          <label htmlFor="threatActor" className="block data-label mb-2">
-            Targeting Adversary / Threat Actor
-          </label>
-          <input
-            type="text"
-            id="threatActor"
-            value={threatActor}
-            onChange={(e) => setThreatActor(e.target.value)}
-            className={INPUT_CLASS}
-            placeholder="e.g. APT29, Scattered Spider"
-          />
-        </div>
-
-        {/* OAKOC Category Tier */}
+        {/* OAKOC Layer */}
         <div>
           <label htmlFor="tier" className="block data-label mb-2">
-            OAKOC Tactical Tier
+            OAKOC Layer
           </label>
           <div className="flex items-center gap-2">
             <span
               className="h-3 w-3 shrink-0 rounded-full border border-[var(--border-default)]"
-              style={{ background: TIER_COLORS[tier] ?? "var(--text-secondary)" }}
+              style={{ background: tierMeta.color }}
             />
             <select
               id="tier"
               value={tier}
-              onChange={handleTierChange}
+              onChange={(e) => setTier(e.target.value as ThreatTier)}
               className={INPUT_CLASS}
             >
-              {Object.entries(TIER_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
+              {TIER_ORDER.map((t) => (
+                <option key={t} value={t}>
+                  {TIER_LABELS[t]}
                 </option>
               ))}
             </select>
           </div>
+          <p className="text-[11px] text-[var(--text-muted)] mt-1.5 leading-relaxed">
+            {tierMeta.definition}
+          </p>
         </div>
 
-        {/* IP Addresses */}
+        {/* CVEs — fluid typeahead */}
         <div>
-          <label htmlFor="ips" className="block data-label mb-2">
-            Network IP Interfaces
+          <label htmlFor="cveInput" className="block data-label mb-2">
+            CVEs
           </label>
-          <input
-            type="text"
-            id="ips"
-            value={ips}
-            onChange={(e) => setIps(e.target.value)}
-            placeholder="e.g. 10.0.4.15, 10.0.4.16"
-            className={INPUT_MONO_CLASS}
-          />
-          <span className="text-[10px] text-[var(--text-muted)] block mt-1">Split multiple with commas.</span>
-        </div>
 
-        {/* CVE Lookup Widget */}
-        <div className="bg-[var(--bg-raised)] p-4 rounded-md border border-[var(--border-default)] space-y-3">
-          <label className="block data-label">
-            Assign Vulnerability (CISA KEV)
-          </label>
-          
+          {/* Selected chips */}
           {cves.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {cves.map(c => (
-                <div key={c} className="bg-[var(--bg-surface)] border border-[var(--border-default)] px-2 py-1 rounded flex items-center gap-2">
-                  <span className="mono text-[10px] text-[var(--text-primary)]">{c}</span>
+              {cves.map((c) => (
+                <div
+                  key={c}
+                  className="flex items-center gap-1.5 px-2 py-1 mono text-[11px] bg-[var(--bg-raised)] border border-[var(--border-default)] rounded text-[var(--text-primary)]"
+                >
+                  <span>{c}</span>
                   <button
                     type="button"
                     onClick={() => removeCve(c)}
+                    aria-label={`Remove ${c}`}
                     className="text-[var(--text-muted)] transition-colors"
                     onMouseEnter={(e) => (e.currentTarget.style.color = DANGER)}
                     onMouseLeave={(e) => (e.currentTarget.style.color = "")}
@@ -373,70 +363,94 @@ export default function NodeForm({ onClose }: NodeFormProps) {
             </div>
           )}
 
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-[var(--text-muted)]" />
-              <input
-                type="text"
-                value={cveInput}
-                onChange={(e) => setCveInput(e.target.value)}
-                placeholder="Lookup CVE-..."
-                className="w-full pl-8 pr-3 py-1.5 text-[13px] mono border border-[var(--border-default)] bg-[var(--bg-surface)] rounded-md text-[var(--text-primary)] transition-colors focus:outline-none"
-              />
+          <div className="relative">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
+                <input
+                  type="text"
+                  id="cveInput"
+                  value={cveInput}
+                  onChange={(e) => {
+                    setCveInput(e.target.value);
+                    setCveHint(null);
+                  }}
+                  onKeyDown={handleCveKeyDown}
+                  onFocus={() => {
+                    if (suggestions.length > 0) setOpen(true);
+                  }}
+                  onBlur={handleCveBlur}
+                  placeholder="Search KEV catalog or type CVE-…"
+                  autoComplete="off"
+                  className={`${INPUT_MONO_CLASS} pl-8`}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleManualAdd}
+                disabled={!cveInput.trim()}
+                className="flex items-center gap-1 px-3 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50 rounded-md text-[11px] font-semibold transition-opacity shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleLookupCve}
-              disabled={!cveInput || isLookingUp}
-              className="px-3 py-1.5 border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] rounded-md text-[11px] font-semibold disabled:opacity-50 transition-colors"
-            >
-              {isLookingUp ? "Checking..." : "Verify"}
-            </button>
-            <button
-              type="button"
-              onClick={handleAddCve}
-              disabled={!cveInput}
-              className="px-3 py-1.5 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50 rounded-md text-[11px] font-semibold transition-opacity"
-            >
-              Add
-            </button>
+
+            {/* Suggestions dropdown */}
+            {open && cveInput.trim().length >= 2 && (
+              <div className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+                {loading ? (
+                  <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    Searching…
+                  </div>
+                ) : suggestions.length === 0 ? (
+                  <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)]">
+                    No matches
+                  </div>
+                ) : (
+                  suggestions.map((s) => (
+                    <button
+                      key={s.cveID}
+                      type="button"
+                      // onMouseDown fires before input blur, so the click registers.
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleSelectSuggestion(s);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                    >
+                      <div className="flex items-baseline gap-2">
+                        <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
+                          {s.cveID}
+                        </span>
+                        <span className="text-[11px] text-[var(--text-muted)] truncate">
+                          {s.vulnerabilityName}
+                        </span>
+                      </div>
+                      {s.vendorProject && (
+                        <span className="text-[10px] text-[var(--text-muted)]">
+                          {s.vendorProject}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
-          {lookupResult && (
-            <div
-              className="p-3 rounded text-[11px] border"
-              style={
-                lookupResult.error || lookupResult.isKev
-                  ? dangerStyle
-                  : { backgroundColor: "var(--bg-raised)", borderColor: "var(--border-default)", color: "var(--text-primary)" }
-              }
-            >
-              {lookupResult.error && <span>{lookupResult.error}</span>}
-              {!lookupResult.error && lookupResult.isKev && (
-                <div className="flex items-start gap-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                  <div className="flex flex-col gap-1">
-                    <span><strong>CISA KEV Found:</strong> {lookupResult.details.vulnerabilityName}</span>
-                    <span className="opacity-80">EPSS Likelihood: {lookupResult.epssScore}%</span>
-                  </div>
-                </div>
-              )}
-              {!lookupResult.error && !lookupResult.isKev && (
-                <div className="flex items-start gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[var(--accent-primary)]" />
-                  <div className="flex flex-col gap-1">
-                    <span className="font-semibold">Valid CVE Format (Not in KEV)</span>
-                    {Number(lookupResult.epssScore) > 0 && (
-                      <span className="text-[var(--text-secondary)]">EPSS Likelihood: {lookupResult.epssScore}% (Top {100 - lookupResult.epssPercentile}% percentile)</span>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+          {cveHint && (
+            <p className="text-[11px] mt-1.5" style={{ color: DANGER }}>
+              {cveHint}
+            </p>
           )}
+          <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
+            Suggestions come from the CISA KEV catalog of known-exploited vulnerabilities.
+          </p>
         </div>
 
-        {/* Analyst Notes */}
+        {/* Notes / description */}
         <div>
           <label htmlFor="description" className="block data-label mb-2">
             Analyst notes
@@ -446,7 +460,7 @@ export default function NodeForm({ onClose }: NodeFormProps) {
             rows={5}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Write analyst findings regarding this defense layer..."
+            placeholder="Write analyst findings regarding this terrain element…"
             className={`${INPUT_CLASS} resize-none leading-relaxed`}
           />
         </div>
@@ -462,7 +476,7 @@ export default function NodeForm({ onClose }: NodeFormProps) {
             style={dangerStyle}
           >
             <Trash2 className="h-3.5 w-3.5" />
-            Delete Element
+            Delete
           </button>
         ) : (
           <div />
@@ -471,10 +485,7 @@ export default function NodeForm({ onClose }: NodeFormProps) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setSelectedNodeId(null);
-              if (onClose) onClose();
-            }}
+            onClick={handleClose}
             className="px-4 py-2 border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] rounded-md text-xs font-semibold transition-colors"
           >
             Cancel
@@ -483,14 +494,14 @@ export default function NodeForm({ onClose }: NodeFormProps) {
             type="submit"
             onClick={handleSave}
             disabled={isPending}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-55 rounded-md text-xs font-semibold shadow-subtle transition-opacity"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-55 rounded-md text-xs font-semibold transition-opacity"
           >
             {isPending ? (
               <RefreshCw className="h-3.5 w-3.5 animate-spin" />
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
-            Save Element
+            {isEditMode ? "Save" : "Add"}
           </button>
         </div>
       </div>
