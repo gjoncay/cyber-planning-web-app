@@ -1,4 +1,5 @@
 import { VulnerabilityMetrics, CveSuggestion } from "@/types";
+import { AttackGroup, AttackTechnique } from "@/lib/attack";
 
 /**
  * Enrich a list of CVE IDs with CISA KEV exploitation status and FIRST EPSS
@@ -54,5 +55,44 @@ export async function searchCves(query: string): Promise<CveSuggestion[]> {
     return (await res.json()) as CveSuggestion[];
   } catch {
     return [];
+  }
+}
+
+/** Fluid ATT&CK technique typeahead. */
+export async function searchTechniques(query: string): Promise<AttackTechnique[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+  try {
+    const res = await fetch(`/api/attack/techniques?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as AttackTechnique[];
+  } catch {
+    return [];
+  }
+}
+
+/** ATT&CK group typeahead (for adversary import). */
+export async function searchGroups(query: string): Promise<AttackGroup[]> {
+  const q = query.trim();
+  if (q.length < 1) return [];
+  try {
+    const res = await fetch(`/api/attack/groups?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as AttackGroup[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fetch a group's techniques for the adversary → OAKOC import. */
+export async function fetchGroupTechniques(
+  id: string,
+): Promise<{ group: AttackGroup; techniques: AttackTechnique[] } | null> {
+  try {
+    const res = await fetch(`/api/attack/group/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
   }
 }

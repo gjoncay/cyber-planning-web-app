@@ -1,36 +1,24 @@
 # Future Requirements
 
-Deferred scope, captured so it isn't lost. Not yet built.
+Deferred scope, captured so it isn't lost.
 
-## Adversary-driven TTP import (the headline next feature)
+## Done (shipped)
+- ATT&CK techniques (TTPs) as first-class data on elements, with a fluid technique typeahead.
+- **Adversary → OAKOC import**: pick a real ATT&CK group, pull its TTPs, map them into the
+  OAKOC layers by tactic (one element per tactic). Data is synced from the sibling MITRE
+  Diamond Dashboard via `npm run sync:attack` (see `scripts/sync-attack-data.mjs`).
+- Standalone HTML briefing export (logo embedded, print-to-PDF friendly).
 
-Elements now carry **ATT&CK techniques (TTPs)** entered by hand. The next step is to
-**start from an adversary and pull their TTPs automatically**, then reframe those
-techniques into the OAKOC layers:
-
-1. Pick a real **MITRE ATT&CK group** (this is the link to the sibling MITRE Diamond
-   Dashboard — don't re-type the adversary).
-2. Load that group's techniques.
-3. Help the analyst **map each technique into an OAKOC layer** (e.g. T1021.002 SMB →
-   Avenues of Approach; T1055 in-memory → Cover & Concealment), seeding elements.
-4. Build the maneuver-vs-counter story from there.
-
-### Open questions to resolve before building
-- **ATT&CK data sourcing** — bundle a trimmed ATT&CK dataset in this app (build script,
-  like the dashboard), connect to the sibling dashboard's data, or fetch STIX at runtime?
-- Technique typeahead in the form, sourced from that same dataset.
-- A suggested technique→OAKOC-layer mapping (by ATT&CK tactic) to speed up step 3.
-- Attribution granularity: per-element, per-layer, or per-model? One adversary or several?
-
-## Briefing export (parked — brainstormed)
-
-Export the Brief view as a **standalone, self-contained HTML document** (logo embedded
-as base64, inline Chinook styles) with a print stylesheet so "Save as PDF" works too.
-Open decisions: executive vs. analyst detail, classification/TLP banner, report
-title/author prompt, whole-model vs. selected layers.
-
-## Other candidates
-- Export a Brief as PDF / shareable link for leadership.
-- Map elements to ATT&CK techniques and D3FEND countermeasures (shared vocabulary
-  with the dashboard).
-- Save / load multiple named briefing scenarios.
+## Next candidates
+- **Tighter dashboard integration.** Today the two apps share *data* (synced JSON). A deeper
+  link would let an analyst jump from a dashboard actor straight into a seeded OAKOC model,
+  or open an element's technique in the dashboard. Decide on a shared deploy / linking scheme.
+- **Map defensive layers from D3FEND.** ATT&CK only populates the adversary + objective
+  layers. Use the dashboard's `d3fend.json` to suggest Observation / Obstacle countermeasures
+  for the imported techniques.
+- **Adversary attribution on the model** — record which group(s) a model represents (one or
+  several), shown in the header and the exported brief.
+- **Save / load named briefing scenarios**; export options (executive vs. analyst detail,
+  classification/TLP banner, report title/author).
+- **Suggested technique re-tiering.** The tactic→OAKOC mapping is a heuristic; let analysts
+  override per technique and remember it.

@@ -15,6 +15,7 @@ interface BriefingState {
   addElement: (element: PlanElement) => void;
   updateElement: (id: string, data: Partial<PlanElement>) => void;
   deleteElement: (id: string) => void;
+  upsertElements: (elements: PlanElement[]) => void;
   enrichElement: (id: string) => Promise<void>;
 }
 
@@ -94,6 +95,14 @@ export const useBriefingStore = create<BriefingState>()(
           elements: s.elements.filter((el) => el.id !== id),
           selectedId: s.selectedId === id ? null : s.selectedId,
         })),
+
+      // Bulk add/replace by id — used by the adversary → OAKOC import.
+      upsertElements: (incoming) =>
+        set((s) => {
+          const map = new Map(s.elements.map((el) => [el.id, el]));
+          for (const el of incoming) map.set(el.id, { ...map.get(el.id), ...el });
+          return { elements: [...map.values()] };
+        }),
 
       enrichElement: async (id) => {
         const el = get().elements.find((e) => e.id === id);

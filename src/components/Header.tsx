@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { Sun, Moon, LayoutGrid, Presentation } from "lucide-react";
-import logoImg from "../../Clean_Chinook_Logo.png";
+import { Sun, Moon, LayoutGrid, Presentation, Download } from "lucide-react";
+import { exportBriefing } from "@/lib/exportBrief";
+import logoImg from "../../chinook-logo.png";
 
 export default function Header() {
-  const { mode, setMode } = useBriefingStore();
+  const { mode, setMode, elements } = useBriefingStore();
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -80,6 +81,16 @@ export default function Header() {
             Brief
           </button>
         </div>
+
+        {/* Export — standalone HTML briefing document */}
+        <button
+          onClick={() => exportBriefing(elements)}
+          title="Export the briefing as a standalone HTML document"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold border border-[var(--border-default)] hover:bg-[var(--bg-raised)] rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Export
+        </button>
 
         {/* Theme Toggle */}
         <button

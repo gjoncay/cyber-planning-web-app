@@ -6,6 +6,7 @@ import { TIER_ORDER, TIER_META, TIER_GROUPS } from "@/lib/oakoc";
 import { ThreatTier } from "@/types";
 import { ElementCard } from "./ElementCard";
 import NodeForm from "./NodeForm";
+import ImportAdversary from "./ImportAdversary";
 import {
   DoorOpen,
   Radar,
@@ -14,6 +15,7 @@ import {
   EyeOff,
   Plus,
   ChevronDown,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 
@@ -50,6 +52,7 @@ export default function BriefingLayout() {
   const { elements, mode, setSelectedId } = useBriefingStore();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [addTier, setAddTier] = useState<ThreatTier | undefined>(undefined);
+  const [showImport, setShowImport] = useState(false);
 
   const isPlan = mode === "plan";
 
@@ -113,6 +116,24 @@ export default function BriefingLayout() {
   return (
     <div className="relative">
       <div className="w-full">
+        {/* Plan-mode toolbar — start from a real adversary's TTPs */}
+        {isPlan && (
+          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-[12px] text-[var(--text-secondary)]">
+              Build the story for how a threat operates — add elements per layer, or import an
+              adversary&apos;s TTPs from ATT&amp;CK.
+            </p>
+            <button
+              onClick={() => setShowImport(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+              style={{ borderColor: "var(--accent-primary)" }}
+            >
+              <Users className="h-3.5 w-3.5" />
+              Import from ATT&amp;CK
+            </button>
+          </div>
+        )}
+
         {/* Brief mode opens with the story framing for the room. */}
         {!isPlan && (
           <div className="mb-7 text-center">
@@ -257,6 +278,8 @@ export default function BriefingLayout() {
           <NodeForm onClose={closeDrawer} defaultTier={addTier} />
         </div>
       )}
+
+      {showImport && <ImportAdversary onClose={() => setShowImport(false)} />}
     </div>
   );
 }

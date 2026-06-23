@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { searchCves } from "@/lib/api";
+import { searchCves, searchTechniques } from "@/lib/api";
+import { AttackTechnique } from "@/lib/attack";
 import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
 import { PlanElement, ThreatTier, CveSuggestion, TechniqueRef } from "@/types";
 import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle, Crosshair } from "lucide-react";
@@ -67,6 +68,15 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const queryRef = useRef("");
 
+  // ATT&CK technique typeahead state
+  const [techSuggestions, setTechSuggestions] = useState<AttackTechnique[]>([]);
+  const [techOpen, setTechOpen] = useState(false);
+  const [techLoading, setTechLoading] = useState(false);
+
+  const techDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const techBlurRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const techQueryRef = useRef("");
+
   const [isPending, startTransition] = useTransition();
 
   // Sync local form state from the selected element
@@ -88,6 +98,9 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     }
     setTechInput("");
     setTechHint(null);
+    setTechSuggestions([]);
+    setTechOpen(false);
+    setTechLoading(false);
     setError(null);
     setCveInput("");
     setSuggestions([]);
@@ -125,9 +138,39 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     };
   }, [cveInput]);
 
+  // Debounced ATT&CK technique search
+  useEffect(() => {
+    if (techDebounceRef.current) clearTimeout(techDebounceRef.current);
+
+    const q = techInput.trim();
+    techQueryRef.current = q;
+
+    if (q.length < 2) {
+      setTechSuggestions([]);
+      setTechLoading(false);
+      setTechOpen(false);
+      return;
+    }
+
+    setTechLoading(true);
+    setTechOpen(true);
+    techDebounceRef.current = setTimeout(async () => {
+      const results = await searchTechniques(q);
+      // Ignore stale responses if the query changed mid-flight.
+      if (techQueryRef.current !== q) return;
+      setTechSuggestions(results.slice(0, 8));
+      setTechLoading(false);
+    }, 200);
+
+    return () => {
+      if (techDebounceRef.current) clearTimeout(techDebounceRef.current);
+    };
+  }, [techInput]);
+
   useEffect(() => {
     return () => {
       if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+      if (techBlurRef.current) clearTimeout(techBlurRef.current);
     };
   }, []);
 
@@ -176,6 +219,10 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     setCves((prev) => prev.filter((item) => item !== c));
   };
 
+  const addTechniqueRef = (id: string, name?: string) => {
+    setTechniques((prev) => (prev.some((t) => t.id === id) ? prev : [...prev, { id, name }]));
+  };
+
   const addTechnique = () => {
     const raw = techInput.trim();
     if (!raw) return;
@@ -186,8 +233,18 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     }
     const id = m[0].toUpperCase();
     const name = raw.replace(m[0], "").replace(/^[\s—–:.-]+/, "").trim() || undefined;
-    setTechniques((prev) => (prev.some((t) => t.id === id) ? prev : [...prev, { id, name }]));
+    addTechniqueRef(id, name);
     setTechInput("");
+    setTechSuggestions([]);
+    setTechOpen(false);
+    setTechHint(null);
+  };
+
+  const handleSelectTechnique = (s: AttackTechnique) => {
+    addTechniqueRef(s.id, s.name);
+    setTechInput("");
+    setTechSuggestions([]);
+    setTechOpen(false);
     setTechHint(null);
   };
 
@@ -195,7 +252,14 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     if (e.key === "Enter") {
       e.preventDefault();
       addTechnique();
+    } else if (e.key === "Escape") {
+      setTechOpen(false);
     }
+  };
+
+  const handleTechBlur = () => {
+    // Small delay so a suggestion click registers before the dropdown closes.
+    techBlurRef.current = setTimeout(() => setTechOpen(false), 150);
   };
 
   const removeTechnique = (id: string) => {
@@ -519,29 +583,81 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
             </div>
           )}
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              id="techInput"
-              value={techInput}
-              onChange={(e) => {
-                setTechInput(e.target.value);
-                setTechHint(null);
-              }}
-              onKeyDown={handleTechKeyDown}
-              placeholder="e.g. T1021.002 SMB / Windows Admin Shares"
-              autoComplete="off"
-              className={INPUT_CLASS}
-            />
-            <button
-              type="button"
-              onClick={addTechnique}
-              disabled={!techInput.trim()}
-              className="flex items-center gap-1 px-3 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50 rounded-md text-[11px] font-semibold transition-opacity shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add
-            </button>
+          <div className="relative">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
+                <input
+                  type="text"
+                  id="techInput"
+                  value={techInput}
+                  onChange={(e) => {
+                    setTechInput(e.target.value);
+                    setTechHint(null);
+                  }}
+                  onKeyDown={handleTechKeyDown}
+                  onFocus={() => {
+                    if (techSuggestions.length > 0) setTechOpen(true);
+                  }}
+                  onBlur={handleTechBlur}
+                  placeholder="Search ATT&CK or type T1021.002…"
+                  autoComplete="off"
+                  className={`${INPUT_CLASS} pl-8`}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={addTechnique}
+                disabled={!techInput.trim()}
+                className="flex items-center gap-1 px-3 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50 rounded-md text-[11px] font-semibold transition-opacity shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add
+              </button>
+            </div>
+
+            {/* Suggestions dropdown */}
+            {techOpen && techInput.trim().length >= 2 && (
+              <div className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+                {techLoading ? (
+                  <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    Searching…
+                  </div>
+                ) : techSuggestions.length === 0 ? (
+                  <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)]">
+                    No matches
+                  </div>
+                ) : (
+                  techSuggestions.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      // onMouseDown fires before input blur, so the click registers.
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleSelectTechnique(s);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                    >
+                      <div className="flex items-baseline gap-2">
+                        <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
+                          {s.id}
+                        </span>
+                        <span className="text-[11px] text-[var(--text-muted)] truncate">
+                          {s.name}
+                        </span>
+                      </div>
+                      {s.isSub && s.parentName && (
+                        <span className="text-[10px] text-[var(--text-muted)]">
+                          ↳ {s.parentName}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
           {techHint && (
             <p className="text-[11px] mt-1.5" style={{ color: DANGER }}>
@@ -549,7 +665,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
             </p>
           )}
           <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
-            Type a technique id and an optional name — the threat behavior this element represents.
+            Search ATT&amp;CK techniques or type an id (e.g. T1021.002).
           </p>
         </div>
 

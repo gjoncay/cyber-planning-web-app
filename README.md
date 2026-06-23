@@ -55,9 +55,19 @@ palettes so the two apps share a color *vocabulary*:
 | Key Terrain | the crown jewels | brand pine |
 | Cover & Concealment | adversary evasion | stealth-purple |
 
-## Connecting to the MITRE Diamond Dashboard
+## ATT&CK data & the MITRE Diamond Dashboard
 
-The seam is already in place: every terrain element carries an optional **`threatActor`**
-field (rendered as a linkable chip). That field is the natural join key to a dashboard
-actor — a future build can deep-link a planning element to its ATT&CK group profile, or
-seed a terrain model from a selected adversary's known techniques.
+The two apps share the same ATT&CK source data. This app derives small, queryable JSON
+(groups, techniques, group→technique map) from the dashboard's processed STIX bundle:
+
+```bash
+npm run sync:attack   # reads ../mitre-diamond-dashboard/public/data/attack.json
+                      # writes src/data/attack/*.json (committed, so the app is standalone)
+```
+
+That powers two features:
+- **Technique typeahead** in the element form.
+- **Import from ATT&CK** — pick a real threat group, pull its TTPs, and auto-map them into
+  the OAKOC layers (by ATT&CK tactic). One element per tactic; defensive layers stay yours.
+
+Deeper linking between the two apps is scoped in `FUTURE_REQUIREMENTS.md`.

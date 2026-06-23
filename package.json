@@ -6,7 +6,8 @@
     "dev": "next dev -p 8096",
     "build": "next build",
     "start": "next start -p 8096",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync:attack": "node scripts/sync-attack-data.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
