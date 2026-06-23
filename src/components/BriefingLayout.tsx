@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { TIER_ORDER, TIER_META } from "@/lib/oakoc";
+import { TIER_ORDER, TIER_META, TIER_GROUPS } from "@/lib/oakoc";
 import { ThreatTier } from "@/types";
 import { ElementCard } from "./ElementCard";
 import NodeForm from "./NodeForm";
@@ -25,6 +25,27 @@ const TIER_ICON: Record<ThreatTier, LucideIcon> = {
   "cover-concealment": EyeOff,
 };
 
+/** Comma + "and" joined list of element names, in primary ink. */
+function nameList(names: string[]): ReactNode {
+  if (names.length === 0) return null;
+  return names.map((n, i) => (
+    <span key={n}>
+      <strong className="font-semibold text-[var(--text-primary)]">{n}</strong>
+      {i < names.length - 2 ? ", " : i === names.length - 2 ? " and " : ""}
+    </span>
+  ));
+}
+
+/** Join clause fragments with commas and a trailing "and". */
+function joinClauses(clauses: ReactNode[]): ReactNode {
+  return clauses.map((c, i) => (
+    <span key={i}>
+      {i === 0 ? "" : i === clauses.length - 1 ? ", and" : ","}
+      {c}
+    </span>
+  ));
+}
+
 export default function BriefingLayout() {
   const { elements, mode, setSelectedId } = useBriefingStore();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -33,6 +54,7 @@ export default function BriefingLayout() {
   const isPlan = mode === "plan";
 
   const byTier = (tier: ThreatTier) => elements.filter((el) => el.tier === tier);
+  const namesIn = (tier: ThreatTier) => byTier(tier).map((el) => el.name);
 
   const openAdd = (tier: ThreatTier) => {
     setSelectedId(null);
@@ -50,6 +72,44 @@ export default function BriefingLayout() {
     setAddTier(undefined);
   };
 
+  // The auto-generated story, in the analyst's own narrative structure.
+  const renderStory = () => {
+    const avenue = namesIn("avenue-of-approach");
+    const cover = namesIn("cover-concealment");
+    const key = namesIn("key-terrain");
+    const obs = namesIn("observation");
+    const obstacle = namesIn("obstacle");
+
+    const adv: ReactNode[] = [];
+    if (avenue.length) adv.push(<> reaches the environment through {nameList(avenue)}</>);
+    if (cover.length) adv.push(<> stays hidden with {nameList(cover)}</>);
+    if (key.length) adv.push(<> and targets {nameList(key)}</>);
+
+    const def: ReactNode[] = [];
+    if (obs.length) def.push(<> observes with {nameList(obs)}</>);
+    if (obstacle.length) def.push(<> blocks with {nameList(obstacle)}</>);
+
+    if (adv.length === 0 && def.length === 0) return null;
+
+    return (
+      <p className="mt-4 mx-auto max-w-3xl text-[14px] leading-relaxed text-[var(--text-secondary)]">
+        {adv.length > 0 && (
+          <>
+            The adversary{joinClauses(adv)}.{" "}
+          </>
+        )}
+        {def.length > 0 && (
+          <>
+            The defender{joinClauses(def)}.
+          </>
+        )}
+      </p>
+    );
+  };
+
+  let position = 0;
+  const lastIndex = TIER_ORDER.length - 1;
+
   return (
     <div className="relative">
       <div className="w-full">
@@ -63,12 +123,9 @@ export default function BriefingLayout() {
               How the adversary moves through our{" "}
               <span style={{ color: "var(--accent-primary)" }}>terrain</span>
             </h2>
-            <p className="mt-1.5 text-[13px] text-[var(--text-secondary)] max-w-xl mx-auto">
-              OAKOC reads top to bottom — from the ways in, down to the assets that matter,
-              and the channels a threat uses to stay hidden.
-            </p>
+            {renderStory()}
             <div
-              className="mx-auto mt-4 h-px w-24 rounded-full"
+              className="mx-auto mt-5 h-px w-24 rounded-full"
               style={{
                 background:
                   "linear-gradient(90deg, transparent, var(--accent-primary), var(--accent-secondary), transparent)",
@@ -77,109 +134,126 @@ export default function BriefingLayout() {
           </div>
         )}
 
-        {TIER_ORDER.map((tier, i) => {
-          const meta = TIER_META[tier];
-          const items = byTier(tier);
-          const Icon = TIER_ICON[tier];
-
-          return (
-            <div key={tier}>
-              <section
-                className="rounded-xl border border-[var(--border-default)] overflow-hidden"
-                style={{ background: meta.tint, borderLeft: `3px solid ${meta.color}` }}
+        {TIER_GROUPS.map((group) => (
+          <div key={group.role}>
+            {/* Story act divider — adversary maneuver / objective / defensive response */}
+            <div className="flex items-center gap-3 mb-3 mt-2 first:mt-0">
+              <span
+                className="h-4 w-1 rounded-full"
+                style={{ background: group.color }}
+                aria-hidden
+              />
+              <span
+                className="text-[11px] font-bold uppercase tracking-[0.14em]"
+                style={{ color: group.color }}
               >
-                {/* Layer header — colored by tier, carries the OAKOC framing */}
-                <header className="flex items-start gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">
-                  <div
-                    className="mono text-[15px] font-bold leading-none pt-0.5 tabular-nums"
-                    style={{ color: meta.color }}
+                {group.label}
+              </span>
+              <span className="h-px flex-1 bg-[var(--border-default)]" />
+            </div>
+
+            {group.tiers.map((tier) => {
+              const meta = TIER_META[tier];
+              const items = byTier(tier);
+              const Icon = TIER_ICON[tier];
+              const showConnector = position < lastIndex;
+              position += 1;
+
+              return (
+                <div key={tier}>
+                  <section
+                    className="rounded-xl border border-[var(--border-default)] overflow-hidden"
+                    style={{ background: meta.tint, borderLeft: `3px solid ${meta.color}` }}
                   >
-                    {meta.step}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Icon className="h-4 w-4 shrink-0" style={{ color: meta.color }} />
-                      <h3 className="text-[14px] font-bold tracking-tight text-[var(--text-primary)]">
-                        {meta.name}
-                      </h3>
-                      {!isPlan && (
-                        <span
-                          className="text-[12px] font-semibold italic"
-                          style={{ color: meta.color }}
-                        >
-                          — {meta.brief}
+                    <header className="flex items-start gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">
+                      <div
+                        className="mono text-[15px] font-bold leading-none pt-0.5 tabular-nums"
+                        style={{ color: meta.color }}
+                      >
+                        {meta.step}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Icon className="h-4 w-4 shrink-0" style={{ color: meta.color }} />
+                          <h3 className="text-[14px] font-bold tracking-tight text-[var(--text-primary)]">
+                            {meta.name}
+                          </h3>
+                          {!isPlan && (
+                            <span
+                              className="text-[12px] font-semibold italic"
+                              style={{ color: meta.color }}
+                            >
+                              — {meta.brief}
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-0.5 text-[11.5px] text-[var(--text-secondary)] leading-relaxed">
+                          {meta.definition}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0 pt-0.5">
+                        <span className="text-[11px] text-[var(--text-muted)] tabular-nums whitespace-nowrap">
+                          {items.length} {items.length === 1 ? "element" : "elements"}
                         </span>
+                        {isPlan && (
+                          <button
+                            onClick={() => openAdd(tier)}
+                            className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-opacity text-[var(--text-inverse)] hover:opacity-90"
+                            style={{ background: meta.color }}
+                            title={`Add to ${meta.name}`}
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            Add
+                          </button>
+                        )}
+                      </div>
+                    </header>
+
+                    <div className="p-4">
+                      {items.length === 0 ? (
+                        <button
+                          onClick={isPlan ? () => openAdd(tier) : undefined}
+                          disabled={!isPlan}
+                          className={`w-full rounded-lg border border-dashed border-[var(--border-strong)] py-6 text-center text-[12px] text-[var(--text-muted)] transition-colors ${
+                            isPlan
+                              ? "hover:text-[var(--text-secondary)] hover:border-[var(--accent-primary)]"
+                              : "cursor-default"
+                          }`}
+                        >
+                          {isPlan ? `Add the first ${meta.short.toLowerCase()} element` : "No elements in this layer"}
+                        </button>
+                      ) : (
+                        <div
+                          className={`grid gap-3 ${
+                            isPlan
+                              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                              : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+                          }`}
+                        >
+                          {items.map((el) => (
+                            <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
+                          ))}
+                        </div>
                       )}
                     </div>
-                    <p className="mt-0.5 text-[11.5px] text-[var(--text-secondary)] leading-relaxed">
-                      {meta.definition}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0 pt-0.5">
-                    <span className="text-[11px] text-[var(--text-muted)] tabular-nums whitespace-nowrap">
-                      {items.length} {items.length === 1 ? "element" : "elements"}
-                    </span>
-                    {isPlan && (
-                      <button
-                        onClick={() => openAdd(tier)}
-                        className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors text-[var(--text-inverse)] hover:opacity-90"
-                        style={{ background: meta.color }}
-                        title={`Add to ${meta.name}`}
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        Add
-                      </button>
-                    )}
-                  </div>
-                </header>
+                  </section>
 
-                {/* Element cards — auto-laid-out, no dragging */}
-                <div className="p-4">
-                  {items.length === 0 ? (
-                    <button
-                      onClick={isPlan ? () => openAdd(tier) : undefined}
-                      disabled={!isPlan}
-                      className={`w-full rounded-lg border border-dashed border-[var(--border-strong)] py-6 text-center text-[12px] text-[var(--text-muted)] transition-colors ${
-                        isPlan ? "hover:text-[var(--text-secondary)] hover:border-[var(--accent-primary)]" : "cursor-default"
-                      }`}
-                    >
-                      {isPlan ? `Add the first ${meta.short.toLowerCase()} element` : "No elements in this layer"}
-                    </button>
-                  ) : (
-                    <div
-                      className={`grid gap-3 ${
-                        isPlan
-                          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-                          : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
-                      }`}
-                    >
-                      {items.map((el) => (
-                        <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
-                      ))}
+                  {showConnector && (
+                    <div className="flex justify-center py-2" aria-hidden>
+                      <ChevronDown className="h-5 w-5 text-[var(--border-strong)]" />
                     </div>
                   )}
                 </div>
-              </section>
-
-              {/* Descent connector — the story flows downward */}
-              {i < TIER_ORDER.length - 1 && (
-                <div className="flex justify-center py-2" aria-hidden>
-                  <ChevronDown className="h-5 w-5 text-[var(--border-strong)]" />
-                </div>
-              )}
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
       </div>
 
       {/* Add / edit drawer */}
       {isDrawerOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-[var(--bg-base)]/50 backdrop-blur-[2px]">
-          <button
-            className="flex-1 cursor-default"
-            aria-label="Close"
-            onClick={closeDrawer}
-          />
+          <button className="flex-1 cursor-default" aria-label="Close" onClick={closeDrawer} />
           <NodeForm onClose={closeDrawer} defaultTier={addTier} />
         </div>
       )}

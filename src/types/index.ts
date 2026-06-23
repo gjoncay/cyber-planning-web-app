@@ -14,16 +14,23 @@ export interface VulnerabilityMetrics {
   description?: string;
 }
 
+/** A MITRE ATT&CK technique reference — the language of how a threat operates. */
+export interface TechniqueRef {
+  id: string; // e.g. "T1021.002"
+  name?: string; // e.g. "SMB / Windows Admin Shares"
+}
+
 /** A single OAKOC terrain element placed in the briefing model. */
 export interface PlanElement {
   id: string;
   name: string;
   tier: ThreatTier;
   cves: string[];
+  techniques?: TechniqueRef[];
   description: string;
   metrics?: Record<string, VulnerabilityMetrics>;
   lastEnriched?: string;
-  // Adversary attribution is intentionally deferred — see FUTURE_REQUIREMENTS.md.
+  // Adversary attribution (pull TTPs from an ATT&CK group) — see FUTURE_REQUIREMENTS.md.
 }
 
 /** Typeahead suggestion sourced from the CISA KEV catalog. */

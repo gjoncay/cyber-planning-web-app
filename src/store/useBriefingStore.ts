@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { PlanElement, ThreatTier } from "@/types";
+import { PlanElement, ThreatTier, TechniqueRef } from "@/types";
 import { fetchThreatIntelligence } from "@/lib/api";
 
 export type BriefMode = "plan" | "brief";
@@ -24,15 +24,39 @@ const seed = (
   tier: ThreatTier,
   description: string,
   cves: string[] = [],
-): PlanElement => ({ id, name, tier, description, cves });
+  techniques: TechniqueRef[] = [],
+): PlanElement => ({ id, name, tier, description, cves, techniques });
 
 const INITIAL_ELEMENTS: PlanElement[] = [
   seed(
     "edge-vpn",
     "Edge Firewall / VPN Gateway",
     "avenue-of-approach",
-    "Public Citrix gateway. Citrix Bleed let an attacker hijack active employee sessions and gain network access.",
+    "Public Citrix gateway. Citrix Bleed let an attacker hijack active employee sessions, then move laterally over SMB.",
     ["CVE-2023-3519", "CVE-2023-4966"],
+    [
+      { id: "T1133", name: "External Remote Services" },
+      { id: "T1021.002", name: "SMB / Windows Admin Shares" },
+    ],
+  ),
+  seed(
+    "dns-tunnel",
+    "DNS Tunneling Channel",
+    "cover-concealment",
+    "Adversary runs implants in memory and encodes exfiltration inside outbound DNS queries to stay hidden.",
+    [],
+    [
+      { id: "T1071.004", name: "Application Layer Protocol: DNS" },
+      { id: "T1055", name: "Process Injection" },
+    ],
+  ),
+  seed(
+    "ad-domain-controller",
+    "Active Directory Domain Controller",
+    "key-terrain",
+    "Corporate authentication and access controller. Zerologon would hand an attacker domain-admin privileges.",
+    ["CVE-2020-1472"],
+    [{ id: "T1003.006", name: "OS Credential Dumping: DCSync" }],
   ),
   seed(
     "edr-telemetry",
@@ -45,19 +69,6 @@ const INITIAL_ELEMENTS: PlanElement[] = [
     "NGFW Segmentation Rules",
     "obstacle",
     "Next-gen firewall policy limiting traffic from the VPN subnet to directory databases — the principal defensive hurdle.",
-  ),
-  seed(
-    "ad-domain-controller",
-    "Active Directory Domain Controller",
-    "key-terrain",
-    "Corporate authentication and access controller. Zerologon would hand an attacker domain-admin privileges.",
-    ["CVE-2020-1472"],
-  ),
-  seed(
-    "dns-tunnel",
-    "DNS Tunneling Channel",
-    "cover-concealment",
-    "Adversary encodes exfiltration inside outbound DNS queries, hiding traffic behind ordinary port-53 lookups.",
   ),
 ];
 
@@ -92,7 +103,7 @@ export const useBriefingStore = create<BriefingState>()(
       },
     }),
     {
-      name: "cyber-sandbox-oakoc-v2",
+      name: "cyber-sandbox-oakoc-v3",
       skipHydration: true,
     },
   ),

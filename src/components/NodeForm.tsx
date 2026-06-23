@@ -4,8 +4,10 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
 import { searchCves } from "@/lib/api";
 import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
-import { PlanElement, ThreatTier, CveSuggestion } from "@/types";
-import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle } from "lucide-react";
+import { PlanElement, ThreatTier, CveSuggestion, TechniqueRef } from "@/types";
+import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle, Crosshair } from "lucide-react";
+
+const TECH_RE = /T\d{4}(?:\.\d{3})?/i;
 
 const DANGER = "#ef4444";
 
@@ -48,6 +50,9 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [name, setName] = useState("");
   const [tier, setTier] = useState<ThreatTier>(TIER_ORDER[0]);
   const [cves, setCves] = useState<string[]>([]);
+  const [techniques, setTechniques] = useState<TechniqueRef[]>([]);
+  const [techInput, setTechInput] = useState("");
+  const [techHint, setTechHint] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -71,14 +76,18 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       setName(selectedElement.name);
       setTier(selectedElement.tier);
       setCves([...selectedElement.cves]);
+      setTechniques([...(selectedElement.techniques ?? [])]);
       setDescription(selectedElement.description ?? "");
     } else {
       setElementId("");
       setName("");
       setTier(defaultTier ?? TIER_ORDER[0]);
       setCves([]);
+      setTechniques([]);
       setDescription("");
     }
+    setTechInput("");
+    setTechHint(null);
     setError(null);
     setCveInput("");
     setSuggestions([]);
@@ -167,6 +176,32 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     setCves((prev) => prev.filter((item) => item !== c));
   };
 
+  const addTechnique = () => {
+    const raw = techInput.trim();
+    if (!raw) return;
+    const m = raw.match(TECH_RE);
+    if (!m) {
+      setTechHint("Enter an ATT&CK technique id, e.g. T1021.002.");
+      return;
+    }
+    const id = m[0].toUpperCase();
+    const name = raw.replace(m[0], "").replace(/^[\s—–:.-]+/, "").trim() || undefined;
+    setTechniques((prev) => (prev.some((t) => t.id === id) ? prev : [...prev, { id, name }]));
+    setTechInput("");
+    setTechHint(null);
+  };
+
+  const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTechnique();
+    }
+  };
+
+  const removeTechnique = (id: string) => {
+    setTechniques((prev) => prev.filter((t) => t.id !== id));
+  };
+
   const handleClose = () => {
     setSelectedId(null);
     if (onClose) onClose();
@@ -199,6 +234,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         name: cleanName,
         tier,
         cves,
+        techniques,
         description: description.trim(),
         // Preserve previously fetched metrics on edit.
         metrics: selectedElement?.metrics,
@@ -209,6 +245,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         name: cleanName,
         tier,
         cves,
+        techniques,
         description: description.trim(),
       };
       addElement(newElement);
@@ -447,6 +484,72 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
           )}
           <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
             Suggestions come from the CISA KEV catalog of known-exploited vulnerabilities.
+          </p>
+        </div>
+
+        {/* ATT&CK techniques (TTPs) — how the threat operates */}
+        <div>
+          <label htmlFor="techInput" className="block data-label mb-2">
+            ATT&amp;CK Techniques (TTPs)
+          </label>
+
+          {techniques.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {techniques.map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] bg-[var(--bg-raised)] border border-[var(--border-default)] text-[var(--text-primary)]"
+                  title={t.name}
+                >
+                  <Crosshair className="w-3 h-3 text-[var(--accent-primary)]" />
+                  <span className="mono">{t.id}</span>
+                  {t.name && (
+                    <span className="text-[var(--text-muted)] max-w-[140px] truncate">{t.name}</span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeTechnique(t.id)}
+                    aria-label={`Remove ${t.id}`}
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              id="techInput"
+              value={techInput}
+              onChange={(e) => {
+                setTechInput(e.target.value);
+                setTechHint(null);
+              }}
+              onKeyDown={handleTechKeyDown}
+              placeholder="e.g. T1021.002 SMB / Windows Admin Shares"
+              autoComplete="off"
+              className={INPUT_CLASS}
+            />
+            <button
+              type="button"
+              onClick={addTechnique}
+              disabled={!techInput.trim()}
+              className="flex items-center gap-1 px-3 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50 rounded-md text-[11px] font-semibold transition-opacity shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add
+            </button>
+          </div>
+          {techHint && (
+            <p className="text-[11px] mt-1.5" style={{ color: DANGER }}>
+              {techHint}
+            </p>
+          )}
+          <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
+            Type a technique id and an optional name — the threat behavior this element represents.
           </p>
         </div>
 

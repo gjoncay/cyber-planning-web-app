@@ -3,7 +3,7 @@
 import { PlanElement } from "@/types";
 import { TIER_META } from "@/lib/oakoc";
 import { BriefMode } from "@/store/useBriefingStore";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Crosshair } from "lucide-react";
 
 const DANGER = "#ef4444";
 
@@ -26,6 +26,7 @@ function severity(element: PlanElement) {
 export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
   const meta = TIER_META[element.tier];
   const { kev, maxEpss, cveCount } = severity(element);
+  const techs = element.techniques ?? [];
   const isHot = kev.length > 0 || maxEpss >= 0.8;
   const isPlan = mode === "plan";
 
@@ -119,6 +120,37 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
                 </span>
               </>
             )}
+          </p>
+        )}
+
+        {/* ATT&CK techniques — the TTPs this element represents */}
+        {techs.length > 0 && isPlan && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {techs.slice(0, 3).map((t) => (
+              <span
+                key={t.id}
+                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                style={{
+                  color: "var(--accent-primary)",
+                  borderColor: "var(--border-default)",
+                  background: "var(--accent-glow)",
+                }}
+                title={t.name || t.id}
+              >
+                <Crosshair className="h-2.5 w-2.5" />
+                {t.id}
+              </span>
+            ))}
+            {techs.length > 3 && (
+              <span className="text-[10px] text-[var(--text-muted)]">+{techs.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {techs.length > 0 && !isPlan && (
+          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <Crosshair className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+            <span>{techs.map((t) => t.name || t.id).join(" · ")}</span>
           </p>
         )}
       </div>
