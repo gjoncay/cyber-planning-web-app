@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme - Chinook Cyber design system */
+  --bg-base: #f5efe6;
+  --bg-surface: #fffdf9;
+  --bg-raised: #efe7da;
+  --bg-overlay: #fffdf9;
+  --border-subtle: rgba(29, 31, 29, 0.04);
+  --border-default: #e4dbcd;
+  --border-strong: #d6cbb8;
+  --text-primary: #1d1f1d;
+  --text-secondary: #55605a;
+  --text-muted: #8c9088;
+  --text-inverse: #fffdf9;
+  --accent-primary: #58855f;
+  --accent-secondary: #e0882f;
+  --accent-glow: rgba(88, 133, 95, 0.1);
+  --shadow-card: 0 1px 2px rgba(29, 31, 29, 0.05), 0 1px 3px rgba(29, 31, 29, 0.08);
+
+  /* OAKOC tier palette — a shared color *vocabulary* with the MITRE Diamond
+     Dashboard (every hue below appears in that app's ATT&CK / D3FEND palettes),
+     so the two products read as siblings. Color encodes meaning, never decoration:
+       observation  = detect-blue   (our sensors)
+       avenue       = brand tan      (how the adversary gets in — caution)
+       obstacle     = harden-teal    (our friendly defensive barriers, NOT alarm-red)
+       key-terrain  = brand pine     (the crown jewels we defend)
+       cover        = stealth-purple (adversary concealment / evasion) */
+  --color-observation: #4f8ef7;
+  --color-avenue: #e0882f;
+  --color-obstacle: #14b8a6;
+  --color-key-terrain: #58855f;
+  --color-cover: #a855f7;
+
+  /* Faint tier tints for the defense-in-depth strata lanes on the canvas. */
+  --tint-observation: rgba(79, 142, 247, 0.07);
+  --tint-avenue: rgba(224, 136, 47, 0.07);
+  --tint-obstacle: rgba(20, 184, 166, 0.07);
+  --tint-key-terrain: rgba(88, 133, 95, 0.08);
+  --tint-cover: rgba(168, 85, 247, 0.06);
+}
+
+:root[data-theme="dark"] {
+  /* Dark theme - Chinook Cyber design system */
+  --bg-base: #1d1f1d;
+  --bg-surface: #2c2e2c;
+  --bg-raised: #343734;
+  --bg-overlay: #3a3d39;
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-default: #43463f;
+  --border-strong: #565a51;
+  --text-primary: #eef1ea;
+  --text-secondary: #9aa39a;
+  --text-muted: #6f756c;
+  --text-inverse: #1d1f1d;
+  --accent-primary: #6fa777;
+  --accent-secondary: #eaa15a;
+  --accent-glow: rgba(111, 167, 119, 0.12);
+  --shadow-card: none;
+
+  /* OAKOC palette lifted for contrast on dark surfaces (per the design system:
+     don't reuse the light hex, brighten it). */
+  --color-observation: #6fa8ff;
+  --color-avenue: #eaa15a;
+  --color-obstacle: #2dd4bf;
+  --color-key-terrain: #6fa777;
+  --color-cover: #c084fc;
+
+  --tint-observation: rgba(111, 168, 255, 0.10);
+  --tint-avenue: rgba(234, 161, 90, 0.09);
+  --tint-obstacle: rgba(45, 212, 191, 0.09);
+  --tint-key-terrain: rgba(111, 167, 119, 0.11);
+  --tint-cover: rgba(192, 132, 252, 0.09);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--accent-primary);
+    outline-offset: 1px;
+  }
+
+  /* Custom Slim Scrollbars */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border: 3px solid var(--bg-base);
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
+  }
+}
+
+@layer utilities {
+  .data-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-variant-ligatures: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Smooth camera moves for scrollytelling pan-to-node focus. */
+.react-flow__viewport {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Defense-in-depth strata: each OAKOC tier is a tinted lane the adversary
+   descends through. These background nodes live in flow-space so they pan and
+   zoom with the terrain. Non-interactive — pointer events pass through to the
+   canvas beneath. */
+.oakoc-lane {
+  pointer-events: none;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: flex-start;
+}
+
+.oakoc-lane__label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+/* The colored depth spine down the left edge of every tier lane. */
+.oakoc-lane__spine {
+  width: 3px;
+  align-self: stretch;
+  border-radius: 12px 0 0 12px;
+}
