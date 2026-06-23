@@ -37,10 +37,13 @@ export default function Header() {
         />
         <div className="flex flex-col border-l border-[var(--border-default)] pl-3">
           <span className="font-bold text-[15px] tracking-tight leading-none">
-            <span className="text-[var(--text-primary)]">Chinook</span>
+            <span className="text-[var(--text-primary)]">Chinook</span>{" "}
             <span className="text-[var(--accent-primary)]">Cyber</span>
           </span>
-          <span className="data-label text-[10px] text-[var(--text-muted)] mt-0.5">
+          <span
+            className="data-label text-[10px] mt-1"
+            style={{ color: "var(--accent-secondary)" }}
+          >
             OAKOC Planning
           </span>
         </div>

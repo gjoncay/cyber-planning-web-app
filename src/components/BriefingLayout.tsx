@@ -52,18 +52,28 @@ export default function BriefingLayout() {
 
   return (
     <div className="relative">
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         {/* Brief mode opens with the story framing for the room. */}
         {!isPlan && (
-          <div className="mb-6 text-center">
-            <span className="data-label">Threat Briefing</span>
+          <div className="mb-7 text-center">
+            <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
+              Threat Briefing
+            </span>
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-              How the adversary moves through our terrain
+              How the adversary moves through our{" "}
+              <span style={{ color: "var(--accent-primary)" }}>terrain</span>
             </h2>
             <p className="mt-1.5 text-[13px] text-[var(--text-secondary)] max-w-xl mx-auto">
               OAKOC reads top to bottom — from the ways in, down to the assets that matter,
               and the channels a threat uses to stay hidden.
             </p>
+            <div
+              className="mx-auto mt-4 h-px w-24 rounded-full"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent, var(--accent-primary), var(--accent-secondary), transparent)",
+              }}
+            />
           </div>
         )}
 
@@ -74,12 +84,12 @@ export default function BriefingLayout() {
 
           return (
             <div key={tier}>
-              <section className="rounded-xl border border-[var(--border-default)] overflow-hidden">
+              <section
+                className="rounded-xl border border-[var(--border-default)] overflow-hidden"
+                style={{ background: meta.tint, borderLeft: `3px solid ${meta.color}` }}
+              >
                 {/* Layer header — colored by tier, carries the OAKOC framing */}
-                <header
-                  className="flex items-start gap-3 px-4 py-3 border-b border-[var(--border-default)]"
-                  style={{ background: meta.tint, borderLeft: `3px solid ${meta.color}` }}
-                >
+                <header className="flex items-start gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">
                   <div
                     className="mono text-[15px] font-bold leading-none pt-0.5 tabular-nums"
                     style={{ color: meta.color }}
@@ -124,7 +134,7 @@ export default function BriefingLayout() {
                 </header>
 
                 {/* Element cards — auto-laid-out, no dragging */}
-                <div className="p-4 bg-[var(--bg-surface)]">
+                <div className="p-4">
                   {items.length === 0 ? (
                     <button
                       onClick={isPlan ? () => openAdd(tier) : undefined}
@@ -139,8 +149,8 @@ export default function BriefingLayout() {
                     <div
                       className={`grid gap-3 ${
                         isPlan
-                          ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
-                          : "grid-cols-1 sm:grid-cols-2"
+                          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                          : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
                       }`}
                     >
                       {items.map((el) => (

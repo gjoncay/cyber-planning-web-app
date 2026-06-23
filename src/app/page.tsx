@@ -61,8 +61,10 @@ export default function Home() {
 
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
-            <span className="data-label">Elements</span>
-            <span className="text-[13px] font-bold tabular-nums text-[var(--text-primary)]">
+            <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
+              Elements
+            </span>
+            <span className="text-[13px] font-bold tabular-nums text-[var(--accent-primary)]">
               {stats.total}
             </span>
           </div>

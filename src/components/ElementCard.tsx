@@ -51,8 +51,8 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
       <div className={isPlan ? "pl-4 pr-3 py-3" : "pl-5 pr-4 py-4"}>
         <div className="flex items-start justify-between gap-2">
           <h4
-            className={`font-semibold text-[var(--text-primary)] leading-snug ${
-              isPlan ? "text-[13px]" : "text-[15px]"
+            className={`font-semibold text-[var(--text-primary)] leading-snug transition-colors ${
+              isPlan ? "text-[13px] group-hover:text-[var(--accent-primary)]" : "text-[15px]"
             }`}
           >
             {element.name}
