@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { PlanElement, ThreatTier, TechniqueRef } from "@/types";
+import { PlanElement, ThreatTier, TechniqueRef, AttackChain } from "@/types";
 import { fetchThreatIntelligence } from "@/lib/api";
 
 export type BriefMode = "plan" | "brief";
 
 interface BriefingState {
   elements: PlanElement[];
+  chains: AttackChain[];
   mode: BriefMode;
   selectedId: string | null;
 
@@ -18,6 +19,13 @@ interface BriefingState {
   clearTier: (tier: ThreatTier) => void;
   clearAll: () => void;
   upsertElements: (elements: PlanElement[]) => void;
+  
+  // Chain management
+  addChain: (chain: AttackChain) => void;
+  updateChain: (id: string, data: Partial<AttackChain>) => void;
+  deleteChain: (id: string) => void;
+  toggleElementInChain: (chainId: string, elementId: string) => void;
+
   enrichElement: (id: string) => Promise<void>;
 }
 
@@ -79,6 +87,7 @@ export const useBriefingStore = create<BriefingState>()(
   persist(
     (set, get) => ({
       elements: INITIAL_ELEMENTS,
+      chains: [],
       mode: "plan",
       selectedId: null,
 
@@ -95,6 +104,7 @@ export const useBriefingStore = create<BriefingState>()(
       deleteElement: (id) =>
         set((s) => ({
           elements: s.elements.filter((el) => el.id !== id),
+          chains: s.chains.map(c => ({ ...c, elements: c.elements.filter(eid => eid !== id) })),
           selectedId: s.selectedId === id ? null : s.selectedId,
         })),
 
@@ -103,6 +113,7 @@ export const useBriefingStore = create<BriefingState>()(
           const removedIds = new Set(s.elements.filter((el) => el.tier === tier).map((el) => el.id));
           return {
             elements: s.elements.filter((el) => el.tier !== tier),
+            chains: s.chains.map(c => ({ ...c, elements: c.elements.filter(eid => !removedIds.has(eid)) })),
             selectedId: s.selectedId && removedIds.has(s.selectedId) ? null : s.selectedId,
           };
         }),
@@ -110,6 +121,7 @@ export const useBriefingStore = create<BriefingState>()(
       clearAll: () =>
         set(() => ({
           elements: [],
+          chains: [],
           selectedId: null,
         })),
 
@@ -120,6 +132,24 @@ export const useBriefingStore = create<BriefingState>()(
           for (const el of incoming) map.set(el.id, { ...map.get(el.id), ...el });
           return { elements: [...map.values()] };
         }),
+
+      addChain: (chain) => set((s) => ({ chains: [...s.chains, chain] })),
+      updateChain: (id, data) =>
+        set((s) => ({
+          chains: s.chains.map((c) => (c.id === id ? { ...c, ...data } : c)),
+        })),
+      deleteChain: (id) => set((s) => ({ chains: s.chains.filter((c) => c.id !== id) })),
+      toggleElementInChain: (chainId, elementId) =>
+        set((s) => ({
+          chains: s.chains.map((c) => {
+            if (c.id !== chainId) return c;
+            const has = c.elements.includes(elementId);
+            return {
+              ...c,
+              elements: has ? c.elements.filter(id => id !== elementId) : [...c.elements, elementId]
+            };
+          })
+        })),
 
       enrichElement: async (id) => {
         const el = get().elements.find((e) => e.id === id);

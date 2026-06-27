@@ -2,8 +2,9 @@
 
 import { PlanElement } from "@/types";
 import { TIER_META } from "@/lib/oakoc";
-import { BriefMode } from "@/store/useBriefingStore";
-import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart, Bug } from "lucide-react";
+import { BriefMode, useBriefingStore } from "@/store/useBriefingStore";
+import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart, Bug, Link2, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 const DANGER = "#ef4444";
 
@@ -34,19 +35,49 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
   const software = element.software ?? [];
   const isHot = kev.length > 0 || maxEpss >= 0.8;
   const isPlan = mode === "plan";
+  const { chains, toggleElementInChain, addChain, deleteChain } = useBriefingStore();
 
-  const Wrapper: any = isPlan ? "button" : "div";
+  const [isChainMenuOpen, setIsChainMenuOpen] = useState(false);
+
+  // Find which chains this element belongs to
+  const activeChains = chains.filter(c => c.elements.includes(element.id));
+
+  const Wrapper: any = isPlan ? "div" : "div";
+
+  const handleCreateChain = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const id = `chain-${Date.now()}`;
+    const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
+    const color = colors[chains.length % colors.length];
+    addChain({
+      id,
+      name: `Chain ${chains.length + 1}`,
+      color,
+      elements: [element.id]
+    });
+    setIsChainMenuOpen(false);
+  };
 
   return (
-    <Wrapper
-      {...(isPlan
-        ? { onClick: () => onEdit(element.id), type: "button", title: "Edit element" }
-        : {})}
-      className={`group relative text-left w-full overflow-hidden rounded-lg border bg-[var(--bg-surface)] shadow-card transition-colors ${
-        isPlan ? "hover:border-[var(--accent-primary)] cursor-pointer" : "cursor-default"
-      } border-[var(--border-default)]`}
-      style={isHot ? { borderColor: `${DANGER}55` } : undefined}
-    >
+    <div id={element.id} className="pl-8 relative w-full">
+      <Wrapper
+        {...(isPlan
+          ? { onClick: () => onEdit(element.id), type: "button", title: "Edit element" }
+          : {})}
+        className={`group relative text-left w-full overflow-hidden rounded-lg border bg-[var(--bg-surface)] shadow-card transition-colors ${
+          isPlan ? "hover:border-[var(--accent-primary)] cursor-pointer" : "cursor-default"
+        } border-[var(--border-default)]`}
+        style={isHot ? { borderColor: `${DANGER}55` } : undefined}
+      >
+        {/* active chain borders / background indicators */}
+      {activeChains.length > 0 && (
+        <div className="absolute top-0 right-0 flex p-1 gap-1">
+          {activeChains.map(c => (
+            <div key={c.id} className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.color }} title={`Part of ${c.name}`} />
+          ))}
+        </div>
+      )}
+
       {/* tier color spine */}
       <span
         className="absolute left-0 top-0 bottom-0 w-[3px]"
@@ -54,8 +85,11 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
         aria-hidden
       />
 
-      <div className={isPlan ? "pl-4 pr-3 py-3" : "pl-5 pr-4 py-4"}>
-        <div className="flex items-start justify-between gap-2">
+      <div 
+        className={isPlan ? "pl-4 pr-3 py-3 cursor-pointer" : "pl-5 pr-4 py-4"} 
+        onClick={isPlan ? () => onEdit(element.id) : undefined}
+      >
+        <div className="flex items-start justify-between gap-2 pr-4">
           <h4
             className={`font-semibold text-[var(--text-primary)] leading-snug transition-colors ${
               isPlan ? "text-[13px] group-hover:text-[var(--accent-primary)]" : "text-[15px]"
@@ -314,6 +348,72 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
           </p>
         )}
       </div>
+
+      {isPlan && (
+        <div className="absolute bottom-2 right-2">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsChainMenuOpen(!isChainMenuOpen);
+              }}
+              className="p-1.5 rounded-md hover:bg-[var(--bg-raised)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors border border-transparent hover:border-[var(--border-default)]"
+              title="Add to Attack Chain"
+            >
+              <Link2 className="w-3.5 h-3.5" />
+            </button>
+
+            {isChainMenuOpen && (
+              <div className="absolute right-0 bottom-full mb-1 z-10 w-48 bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card overflow-hidden">
+                <div className="p-2 border-b border-[var(--border-subtle)]">
+                  <span className="text-[10px] font-bold uppercase text-[var(--text-muted)]">Attack Chains</span>
+                </div>
+                <div className="max-h-40 overflow-y-auto">
+                  {chains.map(c => (
+                    <div key={c.id} className="flex items-center hover:bg-[var(--bg-raised)] group/chain">
+                      <button
+                        className="flex-1 text-left px-3 py-2 text-[12px] flex items-center justify-between"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleElementInChain(c.id, element.id);
+                          setIsChainMenuOpen(false);
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
+                          <span className="truncate" style={{ color: "var(--text-primary)" }}>{c.name}</span>
+                        </div>
+                        {c.elements.includes(element.id) && (
+                          <span className="text-[10px] text-[var(--accent-primary)]">✓</span>
+                        )}
+                      </button>
+                      <button
+                        className="px-2 py-2 text-[var(--text-muted)] hover:text-[var(--accent-negative)] opacity-0 group-hover/chain:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteChain(c.id);
+                        }}
+                        title="Delete Chain"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    className="w-full text-left px-3 py-2 text-[12px] hover:bg-[var(--bg-raised)] flex items-center gap-2 text-[var(--accent-primary)] border-t border-[var(--border-subtle)]"
+                    onClick={handleCreateChain}
+                  >
+                    <Plus className="w-3 h-3" />
+                    New Chain
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </Wrapper>
+    </div>
   );
 }

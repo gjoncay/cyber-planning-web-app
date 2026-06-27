@@ -12,6 +12,7 @@ import ImportMitigations from "./ImportMitigations";
 import ImportDataComponents from "./ImportDataComponents";
 import ImportAnalytics from "./ImportAnalytics";
 import ImportSoftware from "./ImportSoftware";
+import Xarrow, { Xwrapper } from "react-xarrows";
 import {
   DoorOpen,
   Radar,
@@ -58,7 +59,7 @@ function joinClauses(clauses: ReactNode[]): ReactNode {
 }
 
 export default function BriefingLayout() {
-  const { elements, mode, setSelectedId, clearTier, clearAll } = useBriefingStore();
+  const { elements, chains, mode, setSelectedId, clearTier, clearAll } = useBriefingStore();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [addTier, setAddTier] = useState<ThreatTier | undefined>(undefined);
   const [showImport, setShowImport] = useState(false);
@@ -128,9 +129,10 @@ export default function BriefingLayout() {
   const lastIndex = TIER_ORDER.length - 1;
 
   return (
-    <div className="relative">
-      <div className="w-full">
-        {/* Plan-mode toolbar — start from a real adversary's TTPs */}
+    <Xwrapper>
+      <div className="relative">
+        <div className="w-full">
+          {/* Plan-mode toolbar — start from a real adversary's TTPs */}
         {isPlan && (
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div className="flex flex-col gap-1.5">
@@ -221,6 +223,7 @@ export default function BriefingLayout() {
           </div>
         )}
 
+        {/* Plan Mode / Brief Mode Grid */}
         {TIER_GROUPS.map((group) => (
           <div key={group.role}>
             {/* Story act divider — adversary maneuver / objective / defensive response */}
@@ -363,6 +366,37 @@ export default function BriefingLayout() {
       {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
       {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
       {showImportSoftware && <ImportSoftware onClose={() => setShowImportSoftware(false)} />}
-    </div>
+      {/* Draw Attack Chains using Xarrow */}
+      {chains.map((chain) => {
+        const arrows = [];
+        for (let i = 0; i < chain.elements.length - 1; i++) {
+          const start = chain.elements[i];
+          const end = chain.elements[i + 1];
+          
+          // only draw if both elements exist in DOM (since they might be filtered or deleted)
+          if (elements.some(e => e.id === start) && elements.some(e => e.id === end)) {
+            arrows.push(
+              <Xarrow
+                key={`${chain.id}-${start}-${end}`}
+                start={start}
+                end={end}
+                color={chain.color}
+                strokeWidth={3}
+                path="grid"
+                startAnchor="left"
+                endAnchor="left"
+                curveness={0.8}
+                showHead={true}
+                headSize={4}
+                animateDrawing={0.5}
+                dashness={isPlan ? false : { strokeLen: 10, nonStrokeLen: 5, animation: true }}
+              />
+            );
+          }
+        }
+        return arrows;
+      })}
+      </div>
+    </Xwrapper>
   );
 }

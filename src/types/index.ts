@@ -5,6 +5,13 @@ export type ThreatTier =
   | "key-terrain"
   | "cover-concealment";
 
+export interface AttackChain {
+  id: string; // e.g. "chain-1"
+  name: string; // e.g. "Ransomware Path"
+  color: string; // e.g. "#ff0000"
+  elements: string[]; // array of PlanElement IDs
+}
+
 export interface VulnerabilityMetrics {
   cveId: string;
   isExploited: boolean;
