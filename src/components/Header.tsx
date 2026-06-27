@@ -30,7 +30,7 @@ export default function Header() {
   return (
     <header className="h-auto min-h-14 shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-4 py-3 sm:py-0 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-2">
       {/* Brand Header */}
-      <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
+      <a href="https://chinookcyber.com" className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start" title="Back to Homepage">
         <img
           src={logoImg.src}
           alt="Chinook Cyber Logo"
@@ -48,7 +48,7 @@ export default function Header() {
             OAKOC Planning
           </span>
         </div>
-      </div>
+      </a>
 
       {/* Controls */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
