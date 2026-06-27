@@ -74,6 +74,9 @@ export function OakocInfoDialog({ open, onClose }: OakocInfoDialogProps) {
         </div>
 
         <div className="px-5 py-5">
+          <p className="text-[13px] mb-3" style={{ color: "var(--text-secondary)", lineHeight: 1.5 }}>
+            OAKOC is a planning framework and tool for military intelligence professionals to understand terrain and how it impacts both friendly and adversary forces. While initially developed and primarily used for physical terrain on the battlefield, it is also applicable to the cyber domain.
+          </p>
           <p className="text-[13px] mb-5" style={{ color: "var(--text-secondary)", lineHeight: 1.5 }}>
             Analyzing terrain in cyberspace can favor either friendly or threat forces. 
             The five military aspects of terrain (OAKOC) allow commanders to understand the terrain's impact on operations.
