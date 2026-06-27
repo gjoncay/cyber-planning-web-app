@@ -1,18 +1,24 @@
 import "server-only";
-import { AttackGroup, AttackTechnique } from "@/lib/attack";
-import groupsData from "@/data/attack/groups.json";
+import { AttackAdversary, AttackTechnique, AttackSoftware } from "@/lib/attack";
+import adversariesData from "@/data/attack/adversaries.json";
 import techniquesData from "@/data/attack/techniques.json";
-import groupTechData from "@/data/attack/group-techniques.json";
+import softwareData from "@/data/attack/software.json";
+import advTechData from "@/data/attack/adversary-techniques.json";
+import advSoftData from "@/data/attack/adversary-software.json";
 
-const groups = groupsData as AttackGroup[];
+const adversaries = adversariesData as AttackAdversary[];
 const techniques = techniquesData as AttackTechnique[];
-const groupTechniques = groupTechData as Record<string, string[]>;
-const techById = new Map(techniques.map((t) => [t.id, t]));
+const software = softwareData as AttackSoftware[];
+const advTechniques = advTechData as Record<string, string[]>;
+const advSoftware = advSoftData as Record<string, string[]>;
 
-export function searchGroups(query: string, limit = 8): AttackGroup[] {
+const techById = new Map(techniques.map((t) => [t.id, t]));
+const softById = new Map(software.map((s) => [s.id, s]));
+
+export function searchGroups(query: string, limit = 8): AttackAdversary[] {
   const q = query.trim().toLowerCase();
   if (q.length < 1) return [];
-  const scored = groups
+  const scored = adversaries
     .map((g) => {
       const name = g.name.toLowerCase();
       const alias = g.aliases.find((a) => a.toLowerCase().includes(q));
@@ -52,10 +58,33 @@ export function searchTechniques(query: string, limit = 8): AttackTechnique[] {
   return scored.map((x) => x.t);
 }
 
-export function getGroup(id: string): { group: AttackGroup; techniques: AttackTechnique[] } | null {
-  const group = groups.find((g) => g.id.toLowerCase() === id.toLowerCase());
+export function searchSoftware(query: string, limit = 8): AttackSoftware[] {
+  const q = query.trim().toLowerCase();
+  if (q.length < 1) return [];
+  const scored = software
+    .map((s) => {
+      const id = s.id.toLowerCase();
+      const name = s.name.toLowerCase();
+      let score = -1;
+      if (id === q) score = 100;
+      else if (name === q) score = 90;
+      else if (name.startsWith(q)) score = 80;
+      else if (name.includes(q)) score = 60;
+      else if (id.includes(q)) score = 30;
+      return { s, score };
+    })
+    .filter((x) => x.score >= 0)
+    .sort((a, b) => b.score - a.score || a.s.id.localeCompare(b.s.id))
+    .slice(0, limit);
+  return scored.map((x) => x.s);
+}
+
+export function getGroup(id: string): { group: AttackAdversary; techniques: AttackTechnique[]; software: AttackSoftware[] } | null {
+  const group = adversaries.find((g) => g.id.toLowerCase() === id.toLowerCase());
   if (!group) return null;
-  const ids = groupTechniques[group.id] ?? [];
-  const techs = ids.map((tid) => techById.get(tid)).filter((t): t is AttackTechnique => !!t);
-  return { group, techniques: techs };
+  const tIds = advTechniques[group.id] ?? [];
+  const techs = tIds.map((tid) => techById.get(tid)).filter((t): t is AttackTechnique => !!t);
+  const sIds = advSoftware[group.id] ?? [];
+  const softs = sIds.map((sid) => softById.get(sid)).filter((s): s is AttackSoftware => !!s);
+  return { group, techniques: techs, software: softs };
 }

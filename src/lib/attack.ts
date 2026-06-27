@@ -1,10 +1,21 @@
 import { ThreatTier } from "@/types";
 
-export interface AttackGroup {
-  id: string; // Gxxxx
+export interface AttackAdversary {
+  id: string; // Gxxxx or Cxxxx
   name: string;
   aliases: string[];
+  type: "group" | "campaign";
   techniqueCount: number;
+  softwareCount: number;
+}
+
+export interface AttackSoftware {
+  id: string; // Sxxxx
+  name: string;
+  description: string;
+  platforms: string[];
+  type: string;
+  tactics?: string[];
 }
 
 export interface AttackTechnique {
@@ -66,6 +77,16 @@ export function tierForTechnique(t: AttackTechnique): ThreatTier {
     if (TACTIC_TO_TIER[phase]) return TACTIC_TO_TIER[phase];
   }
   return "avenue-of-approach";
+}
+
+/** Pick the OAKOC tier for software based on its associated tactics. */
+export function tierForSoftware(s: AttackSoftware): ThreatTier {
+  if (s.tactics && s.tactics.length > 0) {
+    for (const phase of s.tactics) {
+      if (TACTIC_TO_TIER[phase]) return TACTIC_TO_TIER[phase];
+    }
+  }
+  return "cover-concealment"; // Default for software if no tactic mapping
 }
 
 /** Pick the representative tactic slug used to group a technique into an element. */

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
 import { searchGroups, fetchGroupTechniques } from "@/lib/api";
-import { AttackGroup, AttackTechnique, TACTIC_NAMES, tacticForTechnique, TACTIC_TO_TIER } from "@/lib/attack";
+import { AttackAdversary, AttackTechnique, AttackSoftware, TACTIC_NAMES, tacticForTechnique, TACTIC_TO_TIER, tierForSoftware } from "@/lib/attack";
 import { TIER_META, TIER_GROUPS } from "@/lib/oakoc";
 import { PlanElement, ThreatTier } from "@/types";
 import { X, Search, RefreshCw, Users, ArrowLeft, DownloadCloud } from "lucide-react";
@@ -14,26 +14,46 @@ interface ImportAdversaryProps {
 
 /** One importable OAKOC element = an ATT&CK tactic's techniques for this group. */
 interface TacticBucket {
-  tactic: string;
+  id: string; // tactic name or "software"
   tier: ThreatTier;
   name: string;
   techniques: AttackTechnique[];
+  software: AttackSoftware[];
 }
 
-function bucketByTactic(group: AttackGroup, techniques: AttackTechnique[]): TacticBucket[] {
+function bucketByTactic(group: AttackAdversary, techniques: AttackTechnique[], software: AttackSoftware[]): TacticBucket[] {
   const map = new Map<string, AttackTechnique[]>();
   for (const t of techniques) {
     const tactic = tacticForTechnique(t);
     (map.get(tactic) ?? map.set(tactic, []).get(tactic)!).push(t);
   }
-  return [...map.entries()]
+  const buckets: TacticBucket[] = [...map.entries()]
     .map(([tactic, techs]) => ({
-      tactic,
+      id: tactic,
       tier: TACTIC_TO_TIER[tactic] ?? "avenue-of-approach",
       name: TACTIC_NAMES[tactic] ?? tactic,
       techniques: techs.sort((a, b) => a.id.localeCompare(b.id)),
+      software: [],
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  const softwareByTier = new Map<ThreatTier, AttackSoftware[]>();
+  for (const s of software) {
+    const tier = tierForSoftware(s);
+    (softwareByTier.get(tier) ?? softwareByTier.set(tier, []).get(tier)!).push(s);
+  }
+
+  for (const [tier, softs] of softwareByTier.entries()) {
+    buckets.push({
+      id: `software-${tier}`,
+      tier,
+      name: "Software (Malware & Tools)",
+      techniques: [],
+      software: softs.sort((a, b) => a.name.localeCompare(b.name)),
+    });
+  }
+
+  return buckets;
 }
 
 export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
@@ -41,10 +61,10 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
   const setMode = useBriefingStore((s) => s.setMode);
 
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<AttackGroup[]>([]);
+  const [results, setResults] = useState<AttackAdversary[]>([]);
   const [searching, setSearching] = useState(false);
 
-  const [group, setGroup] = useState<AttackGroup | null>(null);
+  const [group, setGroup] = useState<AttackAdversary | null>(null);
   const [buckets, setBuckets] = useState<TacticBucket[]>([]);
   const [loadingGroup, setLoadingGroup] = useState(false);
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
@@ -73,11 +93,11 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
     };
   }, [query]);
 
-  const selectGroup = async (g: AttackGroup) => {
+  const selectGroup = async (g: AttackAdversary) => {
     setLoadingGroup(true);
     setGroup(g);
     const data = await fetchGroupTechniques(g.id);
-    setBuckets(data ? bucketByTactic(g, data.techniques) : []);
+    setBuckets(data ? bucketByTactic(g, data.techniques, data.software) : []);
     setExcluded(new Set());
     setLoadingGroup(false);
   };
@@ -88,25 +108,27 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
     setExcluded(new Set());
   };
 
-  const toggle = (tactic: string) =>
+  const toggle = (id: string) =>
     setExcluded((prev) => {
       const next = new Set(prev);
-      next.has(tactic) ? next.delete(tactic) : next.add(tactic);
+      next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
 
-  const included = buckets.filter((b) => !excluded.has(b.tactic));
+  const included = buckets.filter((b) => !excluded.has(b.id));
   const techCount = included.reduce((n, b) => n + b.techniques.length, 0);
+  const softCount = included.reduce((n, b) => n + b.software.length, 0);
 
   const doImport = () => {
     if (!group) return;
     const elements: PlanElement[] = included.map((b) => ({
-      id: `atk-${group.id.toLowerCase()}-${b.tactic}`,
+      id: `atk-${group.id.toLowerCase()}-${b.id}`,
       name: b.name,
       tier: b.tier,
       cves: [],
       techniques: b.techniques.map((t) => ({ id: t.id, name: t.name })),
-      description: `${group.name} (${group.id}) — ${b.name} techniques.`,
+      software: b.software.map((s) => ({ id: s.id, name: s.name })),
+      description: `${group.name} (${group.id}) — ${b.name}${b.id.startsWith('software-') ? ' (Software)' : ' techniques'}.`,
     }));
     upsertElements(elements);
     setMode("plan");
@@ -174,6 +196,7 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
                     <span className="mono text-[11px] text-[var(--text-muted)]">{g.id}</span>
                     <span className="ml-auto text-[11px] text-[var(--text-muted)] tabular-nums">
                       {g.techniqueCount} techniques
+                      {g.softwareCount > 0 && ` · ${g.softwareCount} software`}
                     </span>
                   </div>
                   {g.aliases.length > 0 && (
@@ -227,10 +250,10 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
                         {grp.tiers.map((tier) =>
                           bucketsForTier(tier).map((b) => {
                             const meta = TIER_META[tier];
-                            const on = !excluded.has(b.tactic);
+                            const on = !excluded.has(b.id);
                             return (
                               <label
-                                key={b.tactic}
+                                key={b.id}
                                 className="flex items-start gap-2.5 px-3 py-2 mb-1.5 rounded-md border cursor-pointer transition-colors"
                                 style={{
                                   borderColor: "var(--border-default)",
@@ -241,7 +264,7 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
                                 <input
                                   type="checkbox"
                                   checked={on}
-                                  onChange={() => toggle(b.tactic)}
+                                  onChange={() => toggle(b.id)}
                                   className="mt-0.5 accent-[var(--accent-primary)]"
                                 />
                                 <div className="min-w-0 flex-1">
@@ -253,12 +276,13 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
                                       {meta.short}
                                     </span>
                                     <span className="ml-auto text-[11px] text-[var(--text-muted)] tabular-nums">
-                                      {b.techniques.length}
+                                      {b.id.startsWith('software-') ? b.software.length : b.techniques.length} items
                                     </span>
                                   </div>
                                   <div className="mt-0.5 text-[10px] text-[var(--text-muted)] truncate mono">
-                                    {b.techniques.slice(0, 6).map((t) => t.id).join(" · ")}
-                                    {b.techniques.length > 6 ? " …" : ""}
+                                    {b.id.startsWith('software-')
+                                      ? b.software.slice(0, 6).map((s) => s.id).join(" · ") + (b.software.length > 6 ? " …" : "")
+                                      : b.techniques.slice(0, 6).map((t) => t.id).join(" · ") + (b.techniques.length > 6 ? " …" : "")}
                                   </div>
                                 </div>
                               </label>
@@ -274,7 +298,7 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
 
             <div className="px-5 py-3 border-t border-[var(--border-default)] bg-[var(--bg-raised)] flex items-center justify-between shrink-0">
               <span className="text-[11px] text-[var(--text-muted)]">
-                {included.length} elements · {techCount} techniques
+                {included.length} elements · {techCount} techniques {softCount > 0 && `· ${softCount} software`}
               </span>
               <button
                 onClick={doImport}

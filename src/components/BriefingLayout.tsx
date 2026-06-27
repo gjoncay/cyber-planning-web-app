@@ -11,6 +11,7 @@ import ImportDetections from "./ImportDetections";
 import ImportMitigations from "./ImportMitigations";
 import ImportDataComponents from "./ImportDataComponents";
 import ImportAnalytics from "./ImportAnalytics";
+import ImportSoftware from "./ImportSoftware";
 import {
   DoorOpen,
   Radar,
@@ -23,6 +24,7 @@ import {
   Trash2,
   Database,
   LineChart,
+  Bug,
   type LucideIcon,
 } from "lucide-react";
 
@@ -56,7 +58,7 @@ function joinClauses(clauses: ReactNode[]): ReactNode {
 }
 
 export default function BriefingLayout() {
-  const { elements, mode, setSelectedId, clearTier } = useBriefingStore();
+  const { elements, mode, setSelectedId, clearTier, clearAll } = useBriefingStore();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [addTier, setAddTier] = useState<ThreatTier | undefined>(undefined);
   const [showImport, setShowImport] = useState(false);
@@ -64,6 +66,7 @@ export default function BriefingLayout() {
   const [showImportMitigations, setShowImportMitigations] = useState(false);
   const [showImportDataComponents, setShowImportDataComponents] = useState(false);
   const [showImportAnalytics, setShowImportAnalytics] = useState(false);
+  const [showImportSoftware, setShowImportSoftware] = useState(false);
 
   const isPlan = mode === "plan";
 
@@ -130,9 +133,20 @@ export default function BriefingLayout() {
         {/* Plan-mode toolbar — start from a real adversary's TTPs */}
         {isPlan && (
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-            <p className="text-[12px] text-[var(--text-secondary)]">
-              Build the story for how a threat operates. Add elements per layer, or import threat actor TTPs.
-            </p>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[12px] text-[var(--text-secondary)]">
+                Build the story for how a threat operates. Add elements per layer, or import threat actor TTPs.
+              </p>
+              {elements.length > 0 && (
+                <button
+                  onClick={clearAll}
+                  className="inline-flex items-center gap-1.5 self-start text-[11px] font-semibold text-[var(--accent-negative)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-negative)] px-2 py-1 rounded-md transition-colors"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Clear All Elements
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowImportMitigations(true)}
@@ -165,6 +179,14 @@ export default function BriefingLayout() {
               >
                 <LineChart className="h-3.5 w-3.5" />
                 Import Analytics
+              </button>
+              <button
+                onClick={() => setShowImportSoftware(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <Bug className="h-3.5 w-3.5" />
+                Import Software
               </button>
               <button
                 onClick={() => setShowImport(true)}
@@ -340,6 +362,7 @@ export default function BriefingLayout() {
       {showImportMitigations && <ImportMitigations onClose={() => setShowImportMitigations(false)} />}
       {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
       {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
+      {showImportSoftware && <ImportSoftware onClose={() => setShowImportSoftware(false)} />}
     </div>
   );
 }

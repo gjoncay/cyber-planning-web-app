@@ -31,6 +31,7 @@ export interface PlanElement {
   mitigations?: { id: string; name?: string }[];
   datacomponents?: { id: string; name?: string }[];
   analytics?: { id: string; name?: string }[];
+  software?: { id: string; name?: string }[];
   description: string;
   metrics?: Record<string, VulnerabilityMetrics>;
   lastEnriched?: string;

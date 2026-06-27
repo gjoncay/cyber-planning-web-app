@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { searchCves, searchTechniques } from "@/lib/api";
-import { AttackTechnique } from "@/lib/attack";
+import { searchCves, searchTechniques, searchDetections, searchMitigations, searchDataComponents, searchAnalytics, searchSoftware } from "@/lib/api";
+import { AttackTechnique, tierForSoftware } from "@/lib/attack";
 import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
 import { PlanElement, ThreatTier, CveSuggestion, TechniqueRef } from "@/types";
 import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle, Crosshair } from "lucide-react";
@@ -57,6 +57,22 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  const [detections, setDetections] = useState<{ id: string; name?: string }[]>([]);
+  const [mitigations, setMitigations] = useState<{ id: string; name?: string }[]>([]);
+  const [datacomponents, setDatacomponents] = useState<{ id: string; name?: string }[]>([]);
+  const [analytics, setAnalytics] = useState<{ id: string; name?: string }[]>([]);
+  const [software, setSoftware] = useState<{ id: string; name?: string }[]>([]);
+
+  // Template state
+  const [templateType, setTemplateType] = useState<"none"|"detection"|"mitigation"|"datacomponent"|"analytic"|"software">("none");
+  const [templateSearch, setTemplateSearch] = useState("");
+  const [templateSuggestions, setTemplateSuggestions] = useState<any[]>([]);
+  const [templateOpen, setTemplateOpen] = useState(false);
+  const [templateLoading, setTemplateLoading] = useState(false);
+  const templateQueryRef = useRef("");
+  const templateDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const templateBlurRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // CVE typeahead state
   const [cveInput, setCveInput] = useState("");
   const [suggestions, setSuggestions] = useState<CveSuggestion[]>([]);
@@ -94,6 +110,11 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       setTier(defaultTier ?? TIER_ORDER[0]);
       setCves([]);
       setTechniques([]);
+      setDetections([]);
+      setMitigations([]);
+      setDatacomponents([]);
+      setAnalytics([]);
+      setSoftware([]);
       setDescription("");
     }
     setTechInput("");
@@ -166,6 +187,39 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       if (techDebounceRef.current) clearTimeout(techDebounceRef.current);
     };
   }, [techInput]);
+
+  useEffect(() => {
+    if (templateDebounceRef.current) clearTimeout(templateDebounceRef.current);
+    
+    const q = templateSearch.trim();
+    templateQueryRef.current = q;
+    
+    if (q.length < 2 || templateType === "none") {
+      setTemplateSuggestions([]);
+      setTemplateLoading(false);
+      setTemplateOpen(false);
+      return;
+    }
+
+    setTemplateLoading(true);
+    setTemplateOpen(true);
+    templateDebounceRef.current = setTimeout(async () => {
+      let results: any[] = [];
+      if (templateType === "detection") results = await searchDetections(q);
+      else if (templateType === "mitigation") results = await searchMitigations(q);
+      else if (templateType === "datacomponent") results = await searchDataComponents(q);
+      else if (templateType === "analytic") results = await searchAnalytics(q);
+      else if (templateType === "software") results = await searchSoftware(q);
+      
+      if (templateQueryRef.current !== q) return;
+      setTemplateSuggestions(results.slice(0, 8));
+      setTemplateLoading(false);
+    }, 200);
+
+    return () => {
+      if (templateDebounceRef.current) clearTimeout(templateDebounceRef.current);
+    };
+  }, [templateSearch, templateType]);
 
   useEffect(() => {
     return () => {
@@ -262,6 +316,42 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     techBlurRef.current = setTimeout(() => setTechOpen(false), 150);
   };
 
+  const handleTemplateBlur = () => {
+    templateBlurRef.current = setTimeout(() => setTemplateOpen(false), 150);
+  };
+
+  const handleSelectTemplate = (s: any) => {
+    setElementId(`${templateType}-${s.id.toLowerCase().replace(/[^a-z0-9]/g, "")}`);
+    setName(s.name);
+    
+    if (templateType === "detection") {
+      setTier("observation");
+      setDetections([{ id: s.id, name: s.name }]);
+      setDescription(s.description || "");
+    } else if (templateType === "mitigation") {
+      setTier("obstacle");
+      setMitigations([{ id: s.id, name: s.name }]);
+      setDescription(s.description || "");
+    } else if (templateType === "datacomponent") {
+      setTier("observation");
+      setDatacomponents([{ id: s.id, name: s.name }]);
+      setDescription(s.description || "");
+    } else if (templateType === "analytic") {
+      setTier("observation");
+      setAnalytics([{ id: s.id, name: s.name }]);
+      setDescription(s.description || "");
+    } else if (templateType === "software") {
+      setTier(tierForSoftware(s));
+      setSoftware([{ id: s.id, name: s.name }]);
+      setDescription(`${s.description}\n\nType: ${s.type}\nPlatforms: ${s.platforms.join(", ")}`);
+    }
+
+    setTemplateSearch("");
+    setTemplateSuggestions([]);
+    setTemplateOpen(false);
+    setTemplateType("none");
+  };
+
   const removeTechnique = (id: string) => {
     setTechniques((prev) => prev.filter((t) => t.id !== id));
   };
@@ -299,6 +389,11 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         tier,
         cves,
         techniques,
+        detections,
+        mitigations,
+        datacomponents,
+        analytics,
+        software,
         description: description.trim(),
         // Preserve previously fetched metrics on edit.
         metrics: selectedElement?.metrics,
@@ -310,6 +405,11 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         tier,
         cves,
         techniques,
+        detections,
+        mitigations,
+        datacomponents,
+        analytics,
+        software,
         description: description.trim(),
       };
       addElement(newElement);
@@ -370,6 +470,85 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
           <div className="flex gap-2 p-3 border rounded-md text-xs" style={dangerStyle}>
             <AlertTriangle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+
+        {/* Template Autofill */}
+        {!isEditMode && (
+          <div>
+            <label className="block data-label mb-2">Autofill from ATT&CK</label>
+            <div className="flex gap-2">
+              <select
+                value={templateType}
+                onChange={(e) => {
+                  setTemplateType(e.target.value as any);
+                  setTemplateSearch("");
+                  setTemplateSuggestions([]);
+                }}
+                className={INPUT_CLASS}
+                style={{ width: "160px" }}
+              >
+                <option value="none">-- Select Type --</option>
+                <option value="detection">Detection</option>
+                <option value="mitigation">Mitigation</option>
+                <option value="datacomponent">Data Component</option>
+                <option value="analytic">Analytic</option>
+                <option value="software">Software</option>
+              </select>
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
+                <input
+                  type="text"
+                  value={templateSearch}
+                  disabled={templateType === "none"}
+                  onChange={(e) => setTemplateSearch(e.target.value)}
+                  onFocus={() => {
+                    if (templateSuggestions.length > 0) setTemplateOpen(true);
+                  }}
+                  onBlur={handleTemplateBlur}
+                  placeholder={templateType === "none" ? "Select a type first" : "Search to autofill..."}
+                  autoComplete="off"
+                  className={`${INPUT_CLASS} pl-8 disabled:opacity-60`}
+                />
+                
+                {templateOpen && templateSuggestions.length > 0 && (
+                  <div className="absolute z-30 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+                    {templateLoading ? (
+                      <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Searching…
+                      </div>
+                    ) : (
+                      templateSuggestions.map((s) => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            handleSelectTemplate(s);
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                        >
+                          <div className="flex items-baseline gap-2">
+                            <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
+                              {s.id}
+                            </span>
+                            <span className="text-[11px] text-[var(--text-muted)] truncate">
+                              {s.name}
+                            </span>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            {templateType !== "none" && (
+              <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
+                Selecting an item will overwrite the element ID, name, layer, and description.
+              </p>
+            )}
           </div>
         )}
 

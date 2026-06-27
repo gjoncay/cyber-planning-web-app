@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p 8096",
     "lint": "next lint",
-    "sync:attack": "node scripts/sync-attack-data.mjs",
+    "sync:attack": "node scripts/sync-excel-data.mjs",
     "sync:detections": "node scripts/sync-detections.mjs",
     "sync:mitigations": "node scripts/sync-mitigations.mjs",
     "sync:datacomponents": "node scripts/sync-data-components.mjs",

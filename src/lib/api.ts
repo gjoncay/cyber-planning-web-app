@@ -1,5 +1,5 @@
 import { VulnerabilityMetrics, CveSuggestion } from "@/types";
-import { AttackGroup, AttackTechnique } from "@/lib/attack";
+import { AttackAdversary, AttackTechnique, AttackSoftware } from "@/lib/attack";
 
 export interface DetectionStrategy {
   id: string;
@@ -98,29 +98,41 @@ export async function searchTechniques(query: string): Promise<AttackTechnique[]
   }
 }
 
-/** ATT&CK group typeahead (for adversary import). */
-export async function searchGroups(query: string): Promise<AttackGroup[]> {
+/** ATT&CK adversary typeahead (for adversary import). */
+export async function searchGroups(query: string): Promise<AttackAdversary[]> {
   const q = query.trim();
   if (q.length < 1) return [];
   try {
     const res = await fetch(`/api/attack/groups?q=${encodeURIComponent(q)}`);
     if (!res.ok) return [];
-    return (await res.json()) as AttackGroup[];
+    return (await res.json()) as AttackAdversary[];
   } catch {
     return [];
   }
 }
 
-/** Fetch a group's techniques for the adversary → OAKOC import. */
+/** Fetch an adversary's techniques and software for the adversary → OAKOC import. */
 export async function fetchGroupTechniques(
   id: string,
-): Promise<{ group: AttackGroup; techniques: AttackTechnique[] } | null> {
+): Promise<{ group: AttackAdversary; techniques: AttackTechnique[]; software: AttackSoftware[] } | null> {
   try {
     const res = await fetch(`/api/attack/group/${encodeURIComponent(id)}`);
     if (!res.ok) return null;
     return await res.json();
   } catch {
     return null;
+  }
+}
+
+/** Fluid Software typeahead. */
+export async function searchSoftware(query: string): Promise<AttackSoftware[]> {
+  const q = query.trim();
+  try {
+    const res = await fetch(`/api/attack/software?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as AttackSoftware[];
+  } catch {
+    return [];
   }
 }
 
