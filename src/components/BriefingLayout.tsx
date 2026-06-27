@@ -13,6 +13,8 @@ import ImportDataComponents from "./ImportDataComponents";
 import ImportAnalytics from "./ImportAnalytics";
 import ImportSoftware from "./ImportSoftware";
 import SubwayMap from "./SubwayMap";
+import SwimlanesView from "./SwimlanesView";
+import DashboardView from "./DashboardView";
 import {
   DoorOpen,
   Radar,
@@ -68,6 +70,7 @@ export default function BriefingLayout() {
   const [showImportDataComponents, setShowImportDataComponents] = useState(false);
   const [showImportAnalytics, setShowImportAnalytics] = useState(false);
   const [showImportSoftware, setShowImportSoftware] = useState(false);
+  const [briefView, setBriefView] = useState<"swimlanes" | "dashboard">("swimlanes");
 
   const isPlan = mode === "plan";
 
@@ -129,11 +132,13 @@ export default function BriefingLayout() {
   const lastIndex = TIER_ORDER.length - 1;
 
   return (
-    <div className="flex flex-col xl:flex-row gap-6">
-      {/* Subway Map Sidebar */}
-      <div className="xl:w-64 shrink-0 order-2 xl:order-1">
-        <SubwayMap />
-      </div>
+    <div className={`flex flex-col gap-6 ${isPlan ? "xl:flex-row" : ""}`}>
+      {/* Subway Map Sidebar - Only visible in Plan mode now since Brief mode has its own full-page views */}
+      {isPlan && (
+        <div className="xl:w-64 shrink-0 order-2 xl:order-1">
+          <SubwayMap />
+        </div>
+      )}
 
       <div className="relative flex-1 min-w-0 order-1 xl:order-2">
         <div className="w-full">
@@ -209,27 +214,47 @@ export default function BriefingLayout() {
 
         {/* Brief mode opens with the story framing for the room. */}
         {!isPlan && (
-          <div className="mb-7 text-center">
-            <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
-              Threat Briefing
-            </span>
-            <h2 className="mt-1 text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-              How the adversary moves through our{" "}
-              <span style={{ color: "var(--accent-primary)" }}>terrain</span>
-            </h2>
-            {renderStory()}
-            <div
-              className="mx-auto mt-5 h-px w-24 rounded-full"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, var(--accent-primary), var(--accent-secondary), transparent)",
-              }}
-            />
+          <div className="mb-7">
+            <div className="text-center mb-6">
+              <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
+                Threat Briefing
+              </span>
+              <h2 className="mt-1 text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+                Executive <span style={{ color: "var(--accent-primary)" }}>Summary</span>
+              </h2>
+            </div>
+            
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex items-center p-1 bg-[var(--bg-raised)] rounded-lg border border-[var(--border-default)] shadow-sm">
+                <button
+                  onClick={() => setBriefView("swimlanes")}
+                  className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
+                    briefView === "swimlanes"
+                      ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                  }`}
+                >
+                  Kill Chain Swimlanes
+                </button>
+                <button
+                  onClick={() => setBriefView("dashboard")}
+                  className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
+                    briefView === "dashboard"
+                      ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                  }`}
+                >
+                  Risk Dashboard
+                </button>
+              </div>
+            </div>
+
+            {briefView === "swimlanes" ? <SwimlanesView /> : <DashboardView />}
           </div>
         )}
 
-        {/* Plan Mode / Brief Mode Grid */}
-        {TIER_GROUPS.map((group) => (
+        {/* Plan Mode Grid */}
+        {isPlan && TIER_GROUPS.map((group) => (
           <div key={group.role}>
             {/* Story act divider — adversary maneuver / objective / defensive response */}
             <div className="flex items-center gap-3 mb-3 mt-2 first:mt-0">
@@ -257,7 +282,7 @@ export default function BriefingLayout() {
               return (
                 <div key={tier}>
                   <section
-                    className="rounded-xl border border-[var(--border-default)] overflow-hidden"
+                    className="rounded-xl border border-[var(--border-default)]"
                     style={{ background: meta.tint, borderLeft: `3px solid ${meta.color}` }}
                   >
                     <header className="flex items-start gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">
@@ -273,14 +298,6 @@ export default function BriefingLayout() {
                           <h3 className="text-[14px] font-bold tracking-tight text-[var(--text-primary)]">
                             {meta.name}
                           </h3>
-                          {!isPlan && (
-                            <span
-                              className="text-[12px] font-semibold italic"
-                              style={{ color: meta.color }}
-                            >
-                              — {meta.brief}
-                            </span>
-                          )}
                         </div>
                         <p className="mt-0.5 text-[11.5px] text-[var(--text-secondary)] leading-relaxed">
                           {meta.definition}
@@ -290,53 +307,40 @@ export default function BriefingLayout() {
                         <span className="text-[11px] text-[var(--text-muted)] tabular-nums whitespace-nowrap">
                           {items.length} {items.length === 1 ? "element" : "elements"}
                         </span>
-                        {isPlan && (
-                          <div className="flex items-center gap-2">
-                            {items.length > 0 && (
-                              <button
-                                onClick={() => clearTier(tier)}
-                                className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors text-[var(--text-secondary)] hover:text-[var(--accent-negative)] hover:bg-[var(--bg-sunken)]"
-                                title={`Clear all in ${meta.name}`}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                                Clear
-                              </button>
-                            )}
+                        <div className="flex items-center gap-2">
+                          {items.length > 0 && (
                             <button
-                              onClick={() => openAdd(tier)}
-                              className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-opacity text-[var(--text-inverse)] hover:opacity-90"
-                              style={{ background: meta.color }}
-                              title={`Add to ${meta.name}`}
+                              onClick={() => clearTier(tier)}
+                              className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors text-[var(--text-secondary)] hover:text-[var(--accent-negative)] hover:bg-[var(--bg-sunken)]"
+                              title={`Clear all in ${meta.name}`}
                             >
-                              <Plus className="h-3.5 w-3.5" />
-                              Add
+                              <Trash2 className="h-3.5 w-3.5" />
+                              Clear
                             </button>
-                          </div>
-                        )}
+                          )}
+                          <button
+                            onClick={() => openAdd(tier)}
+                            className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-opacity text-[var(--text-inverse)] hover:opacity-90"
+                            style={{ background: meta.color }}
+                            title={`Add to ${meta.name}`}
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            Add
+                          </button>
+                        </div>
                       </div>
                     </header>
 
                     <div className="p-4">
                       {items.length === 0 ? (
                         <button
-                          onClick={isPlan ? () => openAdd(tier) : undefined}
-                          disabled={!isPlan}
-                          className={`w-full rounded-lg border border-dashed border-[var(--border-strong)] py-6 text-center text-[12px] text-[var(--text-muted)] transition-colors ${
-                            isPlan
-                              ? "hover:text-[var(--text-secondary)] hover:border-[var(--accent-primary)]"
-                              : "cursor-default"
-                          }`}
+                          onClick={() => openAdd(tier)}
+                          className="w-full rounded-lg border border-dashed border-[var(--border-strong)] py-6 text-center text-[12px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)] hover:border-[var(--accent-primary)]"
                         >
-                          {isPlan ? `Add the first ${meta.short.toLowerCase()} element` : "No elements in this layer"}
+                          Add the first {meta.short.toLowerCase()} element
                         </button>
                       ) : (
-                        <div
-                          className={`grid gap-3 ${
-                            isPlan
-                              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-                              : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
-                          }`}
-                        >
+                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                           {items.map((el) => (
                             <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
                           ))}

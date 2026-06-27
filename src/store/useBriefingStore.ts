@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { PlanElement, ThreatTier, TechniqueRef, AttackChain } from "@/types";
 import { fetchThreatIntelligence } from "@/lib/api";
 
-export type BriefMode = "plan" | "brief";
+export type BriefMode = "guide" | "plan" | "brief";
 
 interface BriefingState {
   elements: PlanElement[];

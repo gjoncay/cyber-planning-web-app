@@ -5,11 +5,12 @@ import { useBriefingStore } from "@/store/useBriefingStore";
 import { TIER_ORDER, TIER_META } from "@/lib/oakoc";
 import Header from "@/components/Header";
 import BriefingLayout from "@/components/BriefingLayout";
+import GuideView from "@/components/GuideView";
 import { RefreshCw, ShieldAlert } from "lucide-react";
 
 export default function Home() {
   const [hydrated, setHydrated] = useState(false);
-  const { elements } = useBriefingStore();
+  const { elements, mode } = useBriefingStore();
 
   useEffect(() => {
     useBriefingStore.persist.rehydrate();
@@ -89,7 +90,7 @@ export default function Home() {
 
       <main className="flex-1 overflow-y-auto min-h-0 min-w-0">
         <div className="px-4 md:px-6 py-6">
-          <BriefingLayout />
+          {mode === "guide" ? <GuideView /> : <BriefingLayout />}
         </div>
       </main>
     </div>

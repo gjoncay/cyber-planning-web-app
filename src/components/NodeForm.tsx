@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
 import { searchCves, searchTechniques, searchDetections, searchMitigations, searchDataComponents, searchAnalytics, searchSoftware } from "@/lib/api";
+import { searchTargets } from "@/lib/targets";
 import { AttackTechnique, tierForSoftware } from "@/lib/attack";
 import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
 import { PlanElement, ThreatTier, CveSuggestion, TechniqueRef } from "@/types";
@@ -64,7 +65,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [software, setSoftware] = useState<{ id: string; name?: string }[]>([]);
 
   // Template state
-  const [templateType, setTemplateType] = useState<"none"|"detection"|"mitigation"|"datacomponent"|"analytic"|"software">("none");
+  const [templateType, setTemplateType] = useState<"none"|"detection"|"mitigation"|"datacomponent"|"analytic"|"software"|"target">("none");
   const [templateSearch, setTemplateSearch] = useState("");
   const [templateSuggestions, setTemplateSuggestions] = useState<any[]>([]);
   const [templateOpen, setTemplateOpen] = useState(false);
@@ -194,7 +195,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     const q = templateSearch.trim();
     templateQueryRef.current = q;
     
-    if (q.length < 2 || templateType === "none") {
+    if (templateType === "none") {
       setTemplateSuggestions([]);
       setTemplateLoading(false);
       setTemplateOpen(false);
@@ -202,7 +203,10 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     }
 
     setTemplateLoading(true);
-    setTemplateOpen(true);
+    // If there is a search term, auto-open. If not, only open if it was already open.
+    if (q.length > 0) {
+      setTemplateOpen(true);
+    }
     templateDebounceRef.current = setTimeout(async () => {
       let results: any[] = [];
       if (templateType === "detection") results = await searchDetections(q);
@@ -210,9 +214,10 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       else if (templateType === "datacomponent") results = await searchDataComponents(q);
       else if (templateType === "analytic") results = await searchAnalytics(q);
       else if (templateType === "software") results = await searchSoftware(q);
+      else if (templateType === "target") results = await searchTargets(q);
       
       if (templateQueryRef.current !== q) return;
-      setTemplateSuggestions(results.slice(0, 8));
+      setTemplateSuggestions(results.slice(0, 100));
       setTemplateLoading(false);
     }, 200);
 
@@ -344,6 +349,9 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       setTier(tierForSoftware(s));
       setSoftware([{ id: s.id, name: s.name }]);
       setDescription(`${s.description}\n\nType: ${s.type}\nPlatforms: ${s.platforms.join(", ")}`);
+    } else if (templateType === "target") {
+      setTier("key-terrain");
+      setDescription(s.description || "");
     }
 
     setTemplateSearch("");
@@ -476,7 +484,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         {/* Template Autofill */}
         {!isEditMode && (
           <div>
-            <label className="block data-label mb-2">Autofill from ATT&CK</label>
+            <label className="block data-label mb-2">Autofill</label>
             <div className="flex gap-2">
               <select
                 value={templateType}
@@ -494,6 +502,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                 <option value="datacomponent">Data Component</option>
                 <option value="analytic">Analytic</option>
                 <option value="software">Software</option>
+                <option value="target">Common Target</option>
               </select>
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
@@ -503,7 +512,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   disabled={templateType === "none"}
                   onChange={(e) => setTemplateSearch(e.target.value)}
                   onFocus={() => {
-                    if (templateSuggestions.length > 0) setTemplateOpen(true);
+                    if (templateType !== "none") setTemplateOpen(true);
                   }}
                   onBlur={handleTemplateBlur}
                   placeholder={templateType === "none" ? "Select a type first" : "Search to autofill..."}
@@ -511,7 +520,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   className={`${INPUT_CLASS} pl-8 disabled:opacity-60`}
                 />
                 
-                {templateOpen && templateSuggestions.length > 0 && (
+                {templateOpen && (templateSuggestions.length > 0 || templateLoading) && (
                   <div className="absolute z-30 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
                     {templateLoading ? (
                       <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">

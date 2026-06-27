@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { Sun, Moon, LayoutGrid, Presentation, Download } from "lucide-react";
+import { Sun, Moon, LayoutGrid, Presentation, Download, BookOpen } from "lucide-react";
 import { exportBriefing } from "@/lib/exportBrief";
 import logoImg from "../../chinook-logo.png";
 
@@ -52,8 +52,21 @@ export default function Header() {
 
       {/* Controls */}
       <div className="flex items-center gap-3">
-        {/* Plan / Brief mode — build the model, or present it to leadership */}
+        {/* Mode Toggle */}
         <div className="inline-flex items-center gap-0.5 p-0.5 rounded-md bg-[var(--bg-raised)] border border-[var(--border-default)]">
+          <button
+            onClick={() => setMode("guide")}
+            aria-pressed={mode === "guide"}
+            title="Guide — Learn how to use this tool"
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold transition-colors ${
+              mode === "guide"
+                ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-subtle"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+            }`}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Guide
+          </button>
           <button
             onClick={() => setMode("plan")}
             aria-pressed={mode === "plan"}
