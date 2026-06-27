@@ -59,17 +59,17 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
   };
 
   return (
-    <div id={element.id} className="pl-8 relative w-full">
-      <Wrapper
-        {...(isPlan
-          ? { onClick: () => onEdit(element.id), type: "button", title: "Edit element" }
-          : {})}
-        className={`group relative text-left w-full overflow-hidden rounded-lg border bg-[var(--bg-surface)] shadow-card transition-colors ${
-          isPlan ? "hover:border-[var(--accent-primary)] cursor-pointer" : "cursor-default"
-        } border-[var(--border-default)]`}
-        style={isHot ? { borderColor: `${DANGER}55` } : undefined}
-      >
-        {/* active chain borders / background indicators */}
+    <Wrapper
+      id={element.id}
+      {...(isPlan
+        ? { onClick: () => onEdit(element.id), type: "button", title: "Edit element" }
+        : {})}
+      className={`group relative text-left w-full rounded-lg border bg-[var(--bg-surface)] shadow-card transition-colors ${
+        isPlan ? "hover:border-[var(--accent-primary)] cursor-pointer" : "cursor-default"
+      } border-[var(--border-default)]`}
+      style={isHot ? { borderColor: `${DANGER}55` } : undefined}
+    >
+      {/* active chain borders / background indicators */}
       {activeChains.length > 0 && (
         <div className="absolute top-0 right-0 flex p-1 gap-1">
           {activeChains.map(c => (
@@ -80,7 +80,7 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
 
       {/* tier color spine */}
       <span
-        className="absolute left-0 top-0 bottom-0 w-[3px]"
+        className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-[7px]"
         style={{ background: meta.color }}
         aria-hidden
       />
@@ -414,6 +414,5 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
         </div>
       )}
     </Wrapper>
-    </div>
   );
 }

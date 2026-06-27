@@ -18,7 +18,6 @@
     "next": "^15.5.19",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-xarrows": "^2.0.2",
     "zustand": "^5.0.2"
   },
   "devDependencies": {

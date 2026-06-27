@@ -12,7 +12,7 @@ import ImportMitigations from "./ImportMitigations";
 import ImportDataComponents from "./ImportDataComponents";
 import ImportAnalytics from "./ImportAnalytics";
 import ImportSoftware from "./ImportSoftware";
-import Xarrow, { Xwrapper } from "react-xarrows";
+import SubwayMap from "./SubwayMap";
 import {
   DoorOpen,
   Radar,
@@ -129,8 +129,13 @@ export default function BriefingLayout() {
   const lastIndex = TIER_ORDER.length - 1;
 
   return (
-    <Xwrapper>
-      <div className="relative">
+    <div className="flex flex-col xl:flex-row gap-6">
+      {/* Subway Map Sidebar */}
+      <div className="xl:w-64 shrink-0 order-2 xl:order-1">
+        <SubwayMap />
+      </div>
+
+      <div className="relative flex-1 min-w-0 order-1 xl:order-2">
         <div className="w-full">
           {/* Plan-mode toolbar — start from a real adversary's TTPs */}
         {isPlan && (
@@ -366,37 +371,7 @@ export default function BriefingLayout() {
       {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
       {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
       {showImportSoftware && <ImportSoftware onClose={() => setShowImportSoftware(false)} />}
-      {/* Draw Attack Chains using Xarrow */}
-      {chains.map((chain) => {
-        const arrows = [];
-        for (let i = 0; i < chain.elements.length - 1; i++) {
-          const start = chain.elements[i];
-          const end = chain.elements[i + 1];
-          
-          // only draw if both elements exist in DOM (since they might be filtered or deleted)
-          if (elements.some(e => e.id === start) && elements.some(e => e.id === end)) {
-            arrows.push(
-              <Xarrow
-                key={`${chain.id}-${start}-${end}`}
-                start={start}
-                end={end}
-                color={chain.color}
-                strokeWidth={3}
-                path="grid"
-                startAnchor="left"
-                endAnchor="left"
-                curveness={0.8}
-                showHead={true}
-                headSize={4}
-                animateDrawing={0.5}
-                dashness={isPlan ? false : { strokeLen: 10, nonStrokeLen: 5, animation: true }}
-              />
-            );
-          }
-        }
-        return arrows;
-      })}
-      </div>
-    </Xwrapper>
+    </div>
+    </div>
   );
 }
