@@ -7,9 +7,11 @@ import Header from "@/components/Header";
 import BriefingLayout from "@/components/BriefingLayout";
 import GuideView from "@/components/GuideView";
 import { RefreshCw, ShieldAlert } from "lucide-react";
+import { AboutDialog } from "@/components/AboutDialog";
 
 export default function Home() {
   const [hydrated, setHydrated] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const { elements, mode } = useBriefingStore();
 
   useEffect(() => {
@@ -88,11 +90,17 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="flex-1 overflow-y-auto min-h-0 min-w-0">
-        <div className="px-4 md:px-6 py-6">
+      <main className="flex-1 flex flex-col overflow-y-auto min-h-0 min-w-0">
+        <div className="px-4 md:px-6 py-6 flex-1">
           {mode === "guide" ? <GuideView /> : <BriefingLayout />}
         </div>
+        {/* Footer */}
+        <div className="shrink-0 px-6 py-3 border-t border-[var(--border-default)] flex items-center justify-between mt-auto">
+           <button onClick={() => setAboutOpen(true)} className="text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">About &amp; legal</button>
+           <span className="text-[10px] text-[var(--text-muted)]">Data: MITRE ATT&amp;CK® · D3FEND™</span>
+        </div>
       </main>
+      <AboutDialog open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </div>
   );
 }
