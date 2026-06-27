@@ -1,6 +1,33 @@
 import { VulnerabilityMetrics, CveSuggestion } from "@/types";
 import { AttackGroup, AttackTechnique } from "@/lib/attack";
 
+export interface DetectionStrategy {
+  id: string;
+  name: string;
+  domain: string;
+}
+
+export interface Mitigation {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface DataComponent {
+  id: string;
+  name: string;
+  domain: string;
+  description: string;
+}
+
+export interface Analytic {
+  id: string;
+  platform: string;
+  domain: string;
+  relatedDetection: string | null;
+  description: string;
+}
+
 /**
  * Enrich a list of CVE IDs with CISA KEV exploitation status and FIRST EPSS
  * likelihood scores via the server-side proxy routes.
@@ -94,5 +121,54 @@ export async function fetchGroupTechniques(
     return await res.json();
   } catch {
     return null;
+  }
+}
+
+/** Fluid Detection Strategies typeahead. */
+export async function searchDetections(query: string): Promise<DetectionStrategy[]> {
+  const q = query.trim();
+  try {
+    // If no query, we return all (or top 50, handled by API)
+    const res = await fetch(`/api/detections?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as DetectionStrategy[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fluid Mitigations typeahead. */
+export async function searchMitigations(query: string): Promise<Mitigation[]> {
+  const q = query.trim();
+  try {
+    const res = await fetch(`/api/mitigations?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as Mitigation[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fluid Data Components typeahead. */
+export async function searchDataComponents(query: string): Promise<DataComponent[]> {
+  const q = query.trim();
+  try {
+    const res = await fetch(`/api/datacomponents?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as DataComponent[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fluid Analytics typeahead. */
+export async function searchAnalytics(query: string): Promise<Analytic[]> {
+  const q = query.trim();
+  try {
+    const res = await fetch(`/api/analytics?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as Analytic[];
+  } catch {
+    return [];
   }
 }

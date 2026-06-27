@@ -27,6 +27,10 @@ export interface PlanElement {
   tier: ThreatTier;
   cves: string[];
   techniques?: TechniqueRef[];
+  detections?: { id: string; name?: string }[];
+  mitigations?: { id: string; name?: string }[];
+  datacomponents?: { id: string; name?: string }[];
+  analytics?: { id: string; name?: string }[];
   description: string;
   metrics?: Record<string, VulnerabilityMetrics>;
   lastEnriched?: string;

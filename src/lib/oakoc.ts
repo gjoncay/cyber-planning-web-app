@@ -35,7 +35,7 @@ export const TIER_META: Record<ThreatTier, TierMeta> = {
     name: "Avenues of Approach",
     role: "adversary",
     definition:
-      "Routes the adversary uses to reach and move through the network — exposed edge services, remote access, and lateral movement (e.g. SMB).",
+      "Routes the adversary uses to reach and move through the network, such as exposed edge services, remote access, or lateral movement.",
     brief: "How the threat gets in and moves.",
     color: "var(--color-avenue)",
     tint: "var(--tint-avenue)",
@@ -46,7 +46,7 @@ export const TIER_META: Record<ThreatTier, TierMeta> = {
     name: "Cover & Concealment",
     role: "adversary",
     definition:
-      "How the adversary avoids detection — in-memory-only malware, encrypted channels, DNS tunneling, and living-off-the-land.",
+      "How the adversary avoids detection, utilizing methods like in-memory-only malware, encrypted channels, DNS tunneling, or living-off-the-land.",
     brief: "How the threat stays hidden.",
     color: "var(--color-cover)",
     tint: "var(--tint-cover)",
@@ -57,7 +57,7 @@ export const TIER_META: Record<ThreatTier, TierMeta> = {
     name: "Key Terrain",
     role: "objective",
     definition:
-      "The assets the adversary is after and the defender must hold — domain controllers, credential stores, and crown-jewel data.",
+      "The assets the adversary is after and the defender must hold, which may include domain controllers, credential stores, or crown-jewel data.",
     brief: "What the threat is after.",
     color: "var(--color-key-terrain)",
     tint: "var(--tint-key-terrain)",
@@ -68,7 +68,7 @@ export const TIER_META: Record<ThreatTier, TierMeta> = {
     name: "Observation & Fields of Fire",
     role: "defender",
     definition:
-      "How the defender senses the adversary — IAM logging, NetFlow, PCAP, and EDR telemetry across the terrain.",
+      "How the defender senses the adversary, employing tools like IAM logging, NetFlow, PCAP, or EDR telemetry across the terrain.",
     brief: "How we see the threat.",
     color: "var(--color-observation)",
     tint: "var(--tint-observation)",
@@ -79,7 +79,7 @@ export const TIER_META: Record<ThreatTier, TierMeta> = {
     name: "Obstacles",
     role: "defender",
     definition:
-      "How the defender slows or stops the adversary — segmentation, MFA, SOAR playbooks, and DNS sinkholing.",
+      "How the defender slows or stops the adversary, utilizing controls such as segmentation, MFA, SOAR playbooks, or DNS sinkholing.",
     brief: "How we slow the threat down.",
     color: "var(--color-obstacle)",
     tint: "var(--tint-obstacle)",

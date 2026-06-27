@@ -1,0 +1,4592 @@
+[
+  {
+    "id": "DET0210",
+    "name": "Abuse of Domain Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0413",
+    "name": "Abuse of Information Repositories for Data Collection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0455",
+    "name": "Abuse of PowerShell for Arbitrary Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0120",
+    "name": "Account Access Removal via Multi-Platform Audit Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0096",
+    "name": "Account Manipulation Behavior Chain Detection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0415",
+    "name": "Application Exhaustion Flood Detection Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0397",
+    "name": "Automated Exfiltration Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0186",
+    "name": "Automated File and API Collection Detection Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0088",
+    "name": "Backup Software Discovery via CLI, Registry, and Process Inspection (T1518.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0280",
+    "name": "Behavior-Based Registry Modification Detection on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0496",
+    "name": "Behavior-Chain Detection for Remote Access Tools (Tool-Agnostic)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0124",
+    "name": "Behavior-chain detection for T1132.001 Data Encoding: Standard Encoding (Base64/Hex/MIME) across Windows, Linux, macOS, ESXi",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0326",
+    "name": "Behavior-chain detection for T1132.002 Data Encoding: Non-Standard Encoding across Windows, Linux, macOS, ESXi",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0354",
+    "name": "Behavior-chain detection for T1133 External Remote Services across Windows, Linux, macOS, Containers",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0283",
+    "name": "Behavior-chain detection for T1134 Access Token Manipulation on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0482",
+    "name": "Behavior-chain detection for T1134.001 Access Token Manipulation: Token Impersonation/Theft on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0456",
+    "name": "Behavior-chain detection for T1134.002 Create Process with Token (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0489",
+    "name": "Behavior-chain detection for T1134.004 Access Token Manipulation: Parent PID Spoofing (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0136",
+    "name": "Behavior-chain detection for T1134.005 Access Token Manipulation: SID-History Injection (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0182",
+    "name": "Behavior-chain detection for T1135 Network Share Discovery across Windows, Linux, and macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0249",
+    "name": "Behavior-chain detection for T1610 Deploy Container across Docker & Kubernetes control/node planes",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0556",
+    "name": "Behavior-chain detection strategy for T1127.001 Trusted Developer Utilities Proxy Execution: MSBuild (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0191",
+    "name": "Behavior-chain detection strategy for T1127.002 Trusted Developer Utilities Proxy Execution: ClickOnce (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0585",
+    "name": "Behavior-chain detection strategy for T1127.003 Trusted Developer Utilities Proxy Execution: JamPlus (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0151",
+    "name": "Behavior-chain, platform-aware detection strategy for T1124 System Time Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0197",
+    "name": "Behavior-chain, platform-aware detection strategy for T1125 Video Capture",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0172",
+    "name": "Behavior-chain, platform-aware detection strategy for T1127 Trusted Developer Utilities Proxy Execution (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0018",
+    "name": "Behavior-chain, platform-aware detection strategy for T1129 Shared Modules",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0021",
+    "name": "Behavioral Detection for Service Stop across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0537",
+    "name": "Behavioral detection for Supply Chain Compromise (package/update tamper → install → first-run)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0329",
+    "name": "Behavioral Detection for T1490 - Inhibit System Recovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0100",
+    "name": "Behavioral Detection of Asynchronous Procedure Call (APC) Injection via Remote Thread Queuing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0142",
+    "name": "Behavioral Detection of CLI Abuse on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0251",
+    "name": "Behavioral Detection of Cloud Group Enumeration via API and CLI Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0516",
+    "name": "Behavioral Detection of Command and Scripting Interpreter Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0165",
+    "name": "Behavioral Detection of Command History Clearing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0389",
+    "name": "Behavioral Detection of DLL Injection via Windows API",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0400",
+    "name": "Behavioral Detection of DNS Tunneling and Application Layer Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0360",
+    "name": "Behavioral Detection of Domain Group Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0010",
+    "name": "Behavioral Detection of Event Triggered Execution Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0590",
+    "name": "Behavioral Detection of External Website Defacement across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0499",
+    "name": "Behavioral Detection of Fallback or Alternate C2 Channels",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0184",
+    "name": "Behavioral Detection of Indicator Removal Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0102",
+    "name": "Behavioral Detection of Input Capture Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0357",
+    "name": "Behavioral Detection of Internet Connection Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0089",
+    "name": "Behavioral Detection of Keylogging Activity Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0114",
+    "name": "Behavioral Detection of Local Group Enumeration Across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0520",
+    "name": "Behavioral Detection of Log File Clearing on Linux and macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0266",
+    "name": "Behavioral Detection of Mailbox Data and Log Deletion for Anti-Forensics",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0078",
+    "name": "Behavioral Detection of Malicious Cloud API Scripting",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0140",
+    "name": "Behavioral Detection of Malicious File Deletion",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0127",
+    "name": "Behavioral Detection of Masquerading Across Platforms via Metadata and Execution Discrepancy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0529",
+    "name": "Behavioral Detection of Native API Invocation via Unusual DLL Loads and Direct Syscalls",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0049",
+    "name": "Behavioral Detection of Network History and Configuration Tampering",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0103",
+    "name": "Behavioral Detection of Network Share Connection Removal via CLI and SMB Disconnects",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0378",
+    "name": "Behavioral Detection of Obfuscated Files or Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0106",
+    "name": "Behavioral Detection of PE Injection via Remote Memory Mapping",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0179",
+    "name": "Behavioral Detection of Permission Groups Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0508",
+    "name": "Behavioral Detection of Process Injection Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0002",
+    "name": "Behavioral Detection of Publish/Subscribe Protocol Misuse for C2",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0008",
+    "name": "Behavioral Detection of Remote Cloud Logins via Valid Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0596",
+    "name": "Behavioral Detection of Remote SSH Logins Followed by Post-Login Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0521",
+    "name": "Behavioral Detection of Spoofed GUI Credential Prompts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0195",
+    "name": "Behavioral Detection of System Network Configuration Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0231",
+    "name": "Behavioral Detection of Systemd Timer Abuse for Scheduled Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0518",
+    "name": "Behavioral Detection of T1498 – Network Denial of Service Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0295",
+    "name": "Behavioral Detection of Thread Execution Hijacking via Thread Suspension and Context Switching",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0178",
+    "name": "Behavioral Detection of Unauthorized VNC Remote Control Sessions",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0384",
+    "name": "Behavioral Detection of Unix Shell Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0093",
+    "name": "Behavioral Detection of User Discovery via Local and Remote Enumeration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0076",
+    "name": "Behavioral Detection of Visual Basic Execution (VBS/VBA/VBScript)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0464",
+    "name": "Behavioral Detection of Wi-Fi Discovery Activity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0202",
+    "name": "Behavioral Detection of Windows Command Shell Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0477",
+    "name": "Behavioral Detection of WinRM-Based Remote Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0052",
+    "name": "Behavioral Detection Strategy for Abuse of Sudo and Sudo Caching",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0131",
+    "name": "Behavioral Detection Strategy for Exfiltration Over Alternative Protocol",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0503",
+    "name": "Behavioral Detection Strategy for Exfiltration Over Symmetric Encrypted Non-C2 Protocol",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0376",
+    "name": "Behavioral Detection Strategy for Network Service Discovery Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0269",
+    "name": "Behavioral Detection Strategy for Remote Service Logins and Post-Access Activity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0221",
+    "name": "Behavioral Detection Strategy for T1123 Audio Capture Across Windows, Linux, macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0338",
+    "name": "Behavioral Detection Strategy for Use Alternate Authentication Material (T1550)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0185",
+    "name": "Behavioral Detection Strategy for Use Alternate Authentication Material: Application Access Token (T1550.001)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0364",
+    "name": "Behavioral Detection Strategy for WMI Execution Abuse on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0498",
+    "name": "Behavior‑chain detection for T1134.003 Make and Impersonate Token (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0274",
+    "name": "Boot or Logon Autostart Execution Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0112",
+    "name": "Boot or Logon Initialization Scripts Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0463",
+    "name": "Brute Force Authentication Failures with Multi-Platform Log Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0341",
+    "name": "Clipboard Data Access with Anomalous Context",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0386",
+    "name": "Cloud Account Enumeration via API, CLI, and Scripting Interfaces",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0309",
+    "name": "Compromised software/update chain (installer/write → first-run/child → egress/signature anomaly)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0083",
+    "name": "Container CLI and API Abuse via Docker/Kubernetes (T1059.013)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0446",
+    "name": "Credential Access via /etc/passwd and /etc/shadow Parsing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0085",
+    "name": "Credential Dumping from SAM via Registry Dump and Local File Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0234",
+    "name": "Credential Dumping via Sensitive Memory and Registry Access Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0460",
+    "name": "Credential Stuffing Detection via Reused Breached Credentials Across Services",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0090",
+    "name": "Cross-host C2 via Removable Media Relay",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0591",
+    "name": "Cross-Platform Behavioral Detection of File Timestomping via Metadata Tampering",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0063",
+    "name": "Cross-Platform Behavioral Detection of Python Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0094",
+    "name": "Cross-Platform Behavioral Detection of Scheduled Task/Job Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0290",
+    "name": "Cross-Platform Detection of Cron Job Abuse for Persistence and Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0573",
+    "name": "Cross-Platform Detection of Data Transfer to Cloud Account",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0264",
+    "name": "Cross-Platform Detection of JavaScript Execution Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0333",
+    "name": "Cross-Platform Detection of Scheduled Task/Job Abuse via `at` Utility",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0238",
+    "name": "Defacement via File and Web Content Modification Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0224",
+    "name": "Detect Abuse of Component Object Model (T1559.001)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0198",
+    "name": "Detect Abuse of Container APIs for Credential Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0504",
+    "name": "Detect Abuse of Dynamic Data Exchange (T1559.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0493",
+    "name": "Detect Abuse of Inter-Process Communication (T1559)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0488",
+    "name": "Detect abuse of Trusted Relationships (third-party and delegated admin access)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0535",
+    "name": "Detect Abuse of vSphere Installation Bundles (VIBs) for Persistent Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0098",
+    "name": "Detect abuse of Windows BITS Jobs for download, execution and persistence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0122",
+    "name": "Detect Abuse of Windows Time Providers for Persistence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0335",
+    "name": "Detect Abuse of XPC Services (T1559.003)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0381",
+    "name": "Detect Access and Decryption of Group Policy Preference (GPP) Credentials in SYSVOL",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0385",
+    "name": "Detect Access and Parsing of .bash_history Files for Credential Harvesting",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0412",
+    "name": "Detect Access or Search for Unsecured Credentials Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0001",
+    "name": "Detect Access to Cloud Instance Metadata API (IaaS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0396",
+    "name": "Detect Access to macOS Keychain for Credential Theft",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0307",
+    "name": "Detect Access to Unsecured Credential Files Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0312",
+    "name": "Detect Active Setup Persistence via StubPath Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0275",
+    "name": "Detect Adversary Deobfuscation or Decoding of Files and Payloads",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0296",
+    "name": "Detect Adversary-in-the-Middle via Network and Configuration Anomalies",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0526",
+    "name": "Detect Archiving and Encryption of Collected Data (T1560)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0438",
+    "name": "Detect Archiving via Custom Method (T1560.003)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0268",
+    "name": "Detect Archiving via Library (T1560.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0298",
+    "name": "Detect Archiving via Utility (T1560.001)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0387",
+    "name": "Detect ARP Cache Poisoning Across Linux, Windows, and macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0113",
+    "name": "Detect AS-REP Roasting Attempts (T1558.004)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0035",
+    "name": "Detect Bidirectional Web Service C2 Channels via Process & Network Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0507",
+    "name": "Detect browser session hijacking via privilege, handle access, and remote thread into browsers",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0523",
+    "name": "Detect Code Signing Policy Modification (Windows & macOS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0336",
+    "name": "Detect Compromise of Host Software Binaries",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0030",
+    "name": "Detect Conditional Access Policy Modification in Identity and Cloud Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0250",
+    "name": "Detect Credential Discovery via Windows Registry Enumeration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0430",
+    "name": "Detect Credentials Access from Password Stores",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0061",
+    "name": "Detect Default File Association Hijack via Registry & Execution Correlation on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0468",
+    "name": "Detect DHCP Spoofing Across Linux, Windows, and macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0187",
+    "name": "Detect Disabled Windows Event Log",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0271",
+    "name": "Detect Domain Controller Authentication Process Modification (Skeleton Key)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0379",
+    "name": "Detect Evil Twin Wi-Fi Access Points on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0028",
+    "name": "Detect Excessive or Unauthorized Bandwidth Usage for Botnet, Proxyjacking, or Scanning Purposes",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0022",
+    "name": "Detect Forced SMB/WebDAV Authentication via lure files and outbound NTLM",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0144",
+    "name": "Detect Forged Kerberos Golden Tickets (T1558.001)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0241",
+    "name": "Detect Forged Kerberos Silver Tickets (T1558.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0288",
+    "name": "Detect Gatekeeper Bypass via Quarantine Flag and Trust Control Manipulation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0293",
+    "name": "Detect Hybrid Identity Authentication Process Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0060",
+    "name": "Detect Ingress Tool Transfers via Behavioral Chain",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0157",
+    "name": "Detect Kerberoasting Attempts (T1558.003)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0024",
+    "name": "Detect Kerberos Ccache File Theft or Abuse (T1558.005)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0522",
+    "name": "Detect Kerberos Ticket Theft or Forgery (T1558)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0462",
+    "name": "Detect LLMNR/NBT-NS Poisoning and SMB Relay on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0047",
+    "name": "Detect Local Email Collection via Outlook Data File Access and Command Line Tooling",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0072",
+    "name": "Detect Logon Script Modifications and Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0207",
+    "name": "Detect LSA Authentication Package Persistence via Registry and LSASS DLL Load",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0561",
+    "name": "Detect malicious IDE extension install/usage and IDE tunneling",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0454",
+    "name": "Detect Malicious Modification of Pluggable Authentication Modules (PAM)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0472",
+    "name": "Detect Malicious Password Filter DLL Registration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0257",
+    "name": "Detect Mark-of-the-Web (MOTW) Bypass via Container and Disk Image Files",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0190",
+    "name": "Detect MFA Modification or Disabling Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0589",
+    "name": "Detect Modification of Authentication Process via Reversible Encryption",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0104",
+    "name": "Detect Modification of Authentication Processes Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0429",
+    "name": "Detect Modification of macOS Startup Items",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0272",
+    "name": "Detect Modification of Network Device Authentication via Patched System Images",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0228",
+    "name": "Detect Multi-Stage Command and Control Channels",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0367",
+    "name": "Detect Network Logon Script Abuse via Multi-Event Correlation on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0580",
+    "name": "Detect Network Provider DLL Registration and Credential Capture",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0053",
+    "name": "Detect Obfuscated C2 via Network Traffic Analysis",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0398",
+    "name": "Detect Office Startup-Based Persistence via Macros, Forms, and Registry Hooks",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0581",
+    "name": "Detect One-Way Web Service Command Channels",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0050",
+    "name": "Detect Persistence via Malicious Office Add-ins",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0095",
+    "name": "Detect Persistence via Malicious Outlook Rules",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0519",
+    "name": "Detect Persistence via Office Template Macro Injection or Registry Hijack",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0315",
+    "name": "Detect Persistence via Office Test Registry DLL Injection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0029",
+    "name": "Detect Persistence via Outlook Custom Forms Triggered by Malicious Email",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0177",
+    "name": "Detect Persistence via Outlook Home Page Exploitation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0125",
+    "name": "Detect persistence via reopened application plist modification (macOS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0473",
+    "name": "Detect persistent or elevated container services via container runtime or cluster manipulation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0365",
+    "name": "Detect Registry and Startup Folder Persistence (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0159",
+    "name": "Detect Remote Access via USB Hardware (TinyPilot, PiKVM)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0048",
+    "name": "Detect Remote Email Collection via Abnormal Login and Programmatic Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0346",
+    "name": "Detect Screen Capture via Commands and API Calls",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0154",
+    "name": "Detect Screensaver-Based Persistence via Registry and Execution Chains",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0020",
+    "name": "Detect Shell Configuration Modification for Persistence via Event-Triggered Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0899",
+    "name": "Detect Social Engineering",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0452",
+    "name": "Detect Subversion of Trust Controls via Certificate, Registry, and Attribute Manipulation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0037",
+    "name": "Detect Suspicious Access to Browser Credential Stores",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0549",
+    "name": "Detect Suspicious Access to Private Key Files and Export Attempts Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0057",
+    "name": "Detect Suspicious Access to securityd Memory for Credential Extraction",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0134",
+    "name": "Detect Suspicious Access to Windows Credential Manager",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0230",
+    "name": "Detect Suspicious or Malicious Code Signing Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0141",
+    "name": "Detect Time-Based Evasion via Sleep, Timer Loops, and Delayed Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0130",
+    "name": "Detect Unauthorized Access to Cloud Secrets Management Stores",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0597",
+    "name": "Detect Unauthorized Access to Password Managers",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0225",
+    "name": "Detect unauthorized LSASS driver persistence via LSA plugin abuse (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0069",
+    "name": "Detect unauthorized or suspicious Hardware Additions (USB/Thunderbolt/Network)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0111",
+    "name": "Detect Unsecured Credentials Shared in Chat Messages",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0074",
+    "name": "Detect Use of Stolen Web Session Cookies Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0420",
+    "name": "Detect User Activity Based Sandbox Evasion via Input & Artifact Probing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0901",
+    "name": "Detect Windows Firewall",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0404",
+    "name": "Detect Winlogon Helper DLL Abuse via Registry and Process Artifacts on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0086",
+    "name": "Detect WMI Event Subscription for Persistence via WmiPrvSE Process and MOF Compilation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0205",
+    "name": "Detect XSL Script Abuse via msxsl and wmic",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0361",
+    "name": "Detecting .NET COM Registration Abuse via Regsvcs/Regasm",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0500",
+    "name": "Detecting Abnormal SharePoint Data Mining by Privileged or Rare Users",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0263",
+    "name": "Detecting Bulk or Anomalous Access to Private Code Repositories via SaaS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0433",
+    "name": "Detecting Code Injection via mavinject.exe (App-V Injector)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0350",
+    "name": "Detecting Downgrade Attacks",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0025",
+    "name": "Detecting Electron Application Abuse for Proxy Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0011",
+    "name": "Detecting Junk Data in C2 Channels via Behavioral Analysis",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0044",
+    "name": "Detecting Malicious Browser Extensions Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0222",
+    "name": "Detecting MMC (.msc) Proxy Execution and Malicious COM Activation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0506",
+    "name": "Detecting Mshta-based Proxy Execution via Suspicious HTA or Script Invocation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0486",
+    "name": "Detecting Odbcconf Proxy Execution of Malicious DLLs",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0593",
+    "name": "Detecting OS Credential Dumping via /proc Filesystem Access on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0440",
+    "name": "Detecting PowerShell Execution via SyncAppvPublishingServer.vbs Proxy Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0470",
+    "name": "Detecting Protocol or Service Impersonation via Anomalous TLS, HTTP Header, and Port Mismatch Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0528",
+    "name": "Detecting Remote Script Proxy Execution via PubPrn.vbs",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0235",
+    "name": "Detecting Steganographic Command and Control via File + Network Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0550",
+    "name": "Detecting Suspicious Access to CRM Data in SaaS Environments",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0567",
+    "name": "Detecting Unauthorized Collection from Messaging Applications in SaaS and Office Environments",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0311",
+    "name": "Detection for Spoofing Tool UI across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0697",
+    "name": "Detection of Abuse Accessibility Features",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0642",
+    "name": "Detection of Abuse Elevation Control Mechanism",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0546",
+    "name": "Detection of Abused or Compromised Cloud Accounts for Access and Persistence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0611",
+    "name": "Detection of Access Notifications",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0605",
+    "name": "Detection of Account Access Removal",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0635",
+    "name": "Detection of Accounts",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0884",
+    "name": "Detection of Acquire Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0895",
+    "name": "Detection of Acquire Infrastructure",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0802",
+    "name": "Detection of Activate Firmware Update Mode",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0830",
+    "name": "Detection of Active Scanning",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0034",
+    "name": "Detection of Adversarial Process Discovery Behavior",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0223",
+    "name": "Detection of Adversary Abuse of Software Deployment Tools",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0247",
+    "name": "Detection of Adversary Use of Unused or Unsupported Cloud Regions (IaaS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0623",
+    "name": "Detection of Adversary-in-the-Middle",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0764",
+    "name": "Detection of Adversary-in-the-Middle",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0728",
+    "name": "Detection of Alarm Suppression",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0414",
+    "name": "Detection of AppleScript-Based Execution on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0685",
+    "name": "Detection of Application Layer Protocol",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0652",
+    "name": "Detection of Application Versioning",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0097",
+    "name": "Detection of Application Window Enumeration via API or Scripting",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0670",
+    "name": "Detection of Archive Collected Data",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0842",
+    "name": "Detection of Artificial Intelligence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0667",
+    "name": "Detection of Asymmetric Cryptography",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0673",
+    "name": "Detection of Audio Capture",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0918",
+    "name": "Detection of Audio-Visual Content",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0734",
+    "name": "Detection of Automated Collection",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0748",
+    "name": "Detection of Autorun Image",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0700",
+    "name": "Detection of Bidirectional Communication",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0784",
+    "name": "Detection of Block Command Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0910",
+    "name": "Detection of Block Communications",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0911",
+    "name": "Detection of Block Ethernet",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0903",
+    "name": "Detection of Block Operational Technology Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0789",
+    "name": "Detection of Block Reporting Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0797",
+    "name": "Detection of Block Serial COM",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0912",
+    "name": "Detection of Block Wi-Fi",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0554",
+    "name": "Detection of Bluetooth-Based Data Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0654",
+    "name": "Detection of Boot or Logon Initialization Scripts",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0883",
+    "name": "Detection of Botnet",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0837",
+    "name": "Detection of Botnet",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0908",
+    "name": "Detection of Broadcast Discovery",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0711",
+    "name": "Detection of Broadcast Receivers",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0737",
+    "name": "Detection of Brute Force I/O",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0855",
+    "name": "Detection of Business Relationships",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0513",
+    "name": "Detection of Cached Domain Credential Dumping via Local Hash Cache Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0674",
+    "name": "Detection of Calendar Entries",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0703",
+    "name": "Detection of Call Control",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0602",
+    "name": "Detection of Call Log",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0809",
+    "name": "Detection of CDNs",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0771",
+    "name": "Detection of Change Credential",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0755",
+    "name": "Detection of Change Operating Mode",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0820",
+    "name": "Detection of Client Configurations",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0643",
+    "name": "Detection of Clipboard Data",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0879",
+    "name": "Detection of Cloud Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0846",
+    "name": "Detection of Cloud Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0291",
+    "name": "Detection of Cloud Service Dashboard Usage via GUI-Based Cloud Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0805",
+    "name": "Detection of Code Repositories",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0833",
+    "name": "Detection of Code Signing Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0875",
+    "name": "Detection of Code Signing Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0619",
+    "name": "Detection of Code Signing Policy Modification",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0444",
+    "name": "Detection of Command and Control Over Application Layer Protocols",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0655",
+    "name": "Detection of Command and Scripting Interpreter",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0760",
+    "name": "Detection of Command-Line Interface",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0736",
+    "name": "Detection of Commonly Used Port",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0876",
+    "name": "Detection of Compromise Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0649",
+    "name": "Detection of Compromise Application Executable",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0712",
+    "name": "Detection of Compromise Client Software Binary",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0604",
+    "name": "Detection of Compromise Hardware Supply Chain",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0885",
+    "name": "Detection of Compromise Infrastructure",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0704",
+    "name": "Detection of Compromise Software Dependencies and Development Tools",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0721",
+    "name": "Detection of Compromise Software Supply Chain",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0659",
+    "name": "Detection of Conceal Multimedia Files",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0759",
+    "name": "Detection of Connection Proxy",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0679",
+    "name": "Detection of Contact List",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0363",
+    "name": "Detection of Credential Dumping from LSASS Memory via Access and Dump Sequence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0139",
+    "name": "Detection of Credential Harvesting via API Hooking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0480",
+    "name": "Detection of Credential Harvesting via Web Portal Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0813",
+    "name": "Detection of Credentials",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0633",
+    "name": "Detection of Credentials from Password Store",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0762",
+    "name": "Detection of Damage to Property",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0511",
+    "name": "Detection of Data Access and Collection from Removable Media",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0671",
+    "name": "Detection of Data Destruction",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0758",
+    "name": "Detection of Data Destruction",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0146",
+    "name": "Detection of Data Destruction Across Platforms via Mass Overwrite and Deletion Patterns",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0678",
+    "name": "Detection of Data Encrypted for Impact",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0123",
+    "name": "Detection of Data Exfiltration via Removable Media",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0754",
+    "name": "Detection of Data from Information Repositories",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0713",
+    "name": "Detection of Data from Local System",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0749",
+    "name": "Detection of Data from Local System",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0660",
+    "name": "Detection of Data Manipulation",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0014",
+    "name": "Detection of Data Staging Prior to Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0617",
+    "name": "Detection of Dead Drop Resolver",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0465",
+    "name": "Detection of Default Account Abuse Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0756",
+    "name": "Detection of Default Credentials",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0900",
+    "name": "Detection of Defense Impairment",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0497",
+    "name": "Detection of Defense Impairment through Disabled or Modified Tools across OS Platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0786",
+    "name": "Detection of Denial of Control",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0723",
+    "name": "Detection of Denial of Service",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0769",
+    "name": "Detection of Denial of View",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0768",
+    "name": "Detection of Detect Operating Mode",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0806",
+    "name": "Detection of Determine Physical Locations",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0853",
+    "name": "Detection of Develop Capabilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0630",
+    "name": "Detection of Device Administrator Permissions",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0603",
+    "name": "Detection of Device Lockout",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0801",
+    "name": "Detection of Device Restart/Shutdown",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0831",
+    "name": "Detection of Digital Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0844",
+    "name": "Detection of Digital Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0848",
+    "name": "Detection of Digital Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0211",
+    "name": "Detection of Direct VM Console Access via Cloud-Native Methods",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0426",
+    "name": "Detection of Direct Volume Access for File System Evasion",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0693",
+    "name": "Detection of Disable or Modify Tools",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0145",
+    "name": "Detection of Disabled or Modified System Firewalls across OS Platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0710",
+    "name": "Detection of Disguise Root/Jailbreak Indicators",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0843",
+    "name": "Detection of DNS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0862",
+    "name": "Detection of DNS Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0891",
+    "name": "Detection of DNS Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0877",
+    "name": "Detection of DNS/Passive DNS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0669",
+    "name": "Detection of Domain Generation Algorithms",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0270",
+    "name": "Detection of Domain or Tenant Policy Modifications via AD and Identity Provider",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0847",
+    "name": "Detection of Domain Properties",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0007",
+    "name": "Detection of Domain Trust Discovery via API, Script, and CLI Enumeration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0863",
+    "name": "Detection of Domains",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0892",
+    "name": "Detection of Domains",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0618",
+    "name": "Detection of Download New Code at Runtime",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0614",
+    "name": "Detection of Drive-By Compromise",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0782",
+    "name": "Detection of Drive-by Compromise",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0825",
+    "name": "Detection of Drive-by Target",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0613",
+    "name": "Detection of Dynamic Resolution",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0861",
+    "name": "Detection of Email Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0835",
+    "name": "Detection of Email Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0814",
+    "name": "Detection of Email Addresses",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0857",
+    "name": "Detection of Employee Names",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0641",
+    "name": "Detection of Encrypted Channel",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0627",
+    "name": "Detection of Endpoint Denial of Service",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0873",
+    "name": "Detection of Establish Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0532",
+    "name": "Detection of Event Log Clearing on Windows via Behavioral Chain",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0647",
+    "name": "Detection of Event Triggered Execution",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0653",
+    "name": "Detection of Execution Guardrails",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0742",
+    "name": "Detection of Execution through API",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0077",
+    "name": "Detection of Exfiltration Over Alternate Network Interfaces",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0698",
+    "name": "Detection of Exfiltration Over Alternative Protocol",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0512",
+    "name": "Detection of Exfiltration Over Asymmetric Encrypted Non-C2 Protocol",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0615",
+    "name": "Detection of Exfiltration Over C2 Channel",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0149",
+    "name": "Detection of Exfiltration Over Unencrypted Non-C2 Protocol",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0701",
+    "name": "Detection of Exfiltration Over Unencrypted Non-C2 Protocol",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0740",
+    "name": "Detection of Exploit Public-Facing Application",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0629",
+    "name": "Detection of Exploitation for Client Execution",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0795",
+    "name": "Detection of Exploitation for Evasion",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0666",
+    "name": "Detection of Exploitation for Initial Access",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0665",
+    "name": "Detection of Exploitation for Privilege Escalation",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0738",
+    "name": "Detection of Exploitation for Privilege Escalation",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0663",
+    "name": "Detection of Exploitation of Remote Services",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0767",
+    "name": "Detection of Exploitation of Remote Services",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0827",
+    "name": "Detection of Exploits",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0894",
+    "name": "Detection of Exploits",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0803",
+    "name": "Detection of External Remote Services",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0682",
+    "name": "Detection of File and Directory Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0638",
+    "name": "Detection of File Deletion",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0416",
+    "name": "Detection of File Transfer Protocol-Based C2 (FTP, FTPS, SMB, TFTP)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0818",
+    "name": "Detection of Firmware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0904",
+    "name": "Detection of Firmware Modification",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0637",
+    "name": "Detection of Foreground Persistence",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0826",
+    "name": "Detection of Gather Victim Host Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0841",
+    "name": "Detection of Gather Victim Identity Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0869",
+    "name": "Detection of Gather Victim Network Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0890",
+    "name": "Detection of Gather Victim Org Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0916",
+    "name": "Detection of Generate Content",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0608",
+    "name": "Detection of Generate Traffic from Victim",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0648",
+    "name": "Detection of Geofencing",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0772",
+    "name": "Detection of Graphical User Interface",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0305",
+    "name": "Detection of Group Policy Modifications via AD Object Changes and File Activity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0676",
+    "name": "Detection of GUI Input Capture",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0798",
+    "name": "Detection of Hardcoded Credentials",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0887",
+    "name": "Detection of Hardware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0640",
+    "name": "Detection of Hide Artifacts",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0694",
+    "name": "Detection of Hijack Execution Flow",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0719",
+    "name": "Detection of Hooking",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0722",
+    "name": "Detection of Hooking",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0774",
+    "name": "Detection of I/O Image",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0849",
+    "name": "Detection of Identify Business Tempo",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0807",
+    "name": "Detection of Identify Roles",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0687",
+    "name": "Detection of Impair Defenses",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0662",
+    "name": "Detection of Impersonate SS7 Nodes",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0651",
+    "name": "Detection of Indicator Removal on Host",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0750",
+    "name": "Detection of Indicator Removal on Host",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0718",
+    "name": "Detection of Ingress Tool Transfer",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0705",
+    "name": "Detection of Input Capture",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0612",
+    "name": "Detection of Input Injection",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0905",
+    "name": "Detection of Insecure Credentials",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0840",
+    "name": "Detection of Install Digital Certificate",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0796",
+    "name": "Detection of Internet Accessible Device",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0708",
+    "name": "Detection of Internet Connection Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0815",
+    "name": "Detection of IP Addresses",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0377",
+    "name": "Detection of Kernel/User-Level Rootkit Behavior Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0664",
+    "name": "Detection of Keychain",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0661",
+    "name": "Detection of Keylogging",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0745",
+    "name": "Detection of Lateral Tool Transfer",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0434",
+    "name": "Detection of Launch Agent Creation or Modification on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0041",
+    "name": "Detection of Lifecycle Policy Modifications for Triggered Deletion in IaaS Cloud Storage",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0893",
+    "name": "Detection of Link Target",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0716",
+    "name": "Detection of Linked Devices",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0407",
+    "name": "Detection of Local Account Abuse for Initial Access and Persistence",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0013",
+    "name": "Detection of Local Browser Artifact Access for Reconnaissance",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0380",
+    "name": "Detection of Local Data Collection Prior to Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0261",
+    "name": "Detection of Local Data Staging Prior to Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0675",
+    "name": "Detection of Location Tracking",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0645",
+    "name": "Detection of Lockscreen Bypass",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0729",
+    "name": "Detection of Loss of Availability",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0778",
+    "name": "Detection of Loss of Control",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0757",
+    "name": "Detection of Loss of Productivity and Revenue",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0775",
+    "name": "Detection of Loss of Protection",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0779",
+    "name": "Detection of Loss of Safety",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0763",
+    "name": "Detection of Loss of View",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0437",
+    "name": "Detection of LSA Secrets Dumping via Registry and Memory Extraction",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0135",
+    "name": "Detection of Mail Protocol-Based C2 Activity (SMTP, IMAP, POP3)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0138",
+    "name": "Detection of Malicious Code Execution via InstallUtil.exe",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0194",
+    "name": "Detection of Malicious Control Panel Item Execution via control.exe or Rundll32",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0206",
+    "name": "Detection of Malicious Kubernetes CronJob Scheduling",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0092",
+    "name": "Detection of Malicious or Unauthorized Software Extensions",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0328",
+    "name": "Detection of Malicious Profile Installation via CMSTP.exe",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0836",
+    "name": "Detection of Malvertising",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0872",
+    "name": "Detection of Malware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0845",
+    "name": "Detection of Malware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0439",
+    "name": "Detection of Malware Relocation via Suspicious File Movement",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0773",
+    "name": "Detection of Manipulate I/O Image",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0747",
+    "name": "Detection of Manipulation of Control",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0785",
+    "name": "Detection of Manipulation of View",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0117",
+    "name": "Detection of Masqueraded Tasks or Services with Suspicious Naming and Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0715",
+    "name": "Detection of Masquerading",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0725",
+    "name": "Detection of Masquerading",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0609",
+    "name": "Detection of Match Legitimate Name or Location",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0777",
+    "name": "Detection of Modify Alarm Settings",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0741",
+    "name": "Detection of Modify Controller Tasking",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0776",
+    "name": "Detection of Modify Parameter",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0783",
+    "name": "Detection of Modify Program",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0790",
+    "name": "Detection of Module Firmware",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0727",
+    "name": "Detection of Monitor Process State",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0158",
+    "name": "Detection of Msiexec Abuse for Local, Network, and DLL Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0215",
+    "name": "Detection of Multi-Platform File Encryption for Impact",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0909",
+    "name": "Detection of Multicast Discovery",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0132",
+    "name": "Detection of Mutex-Based Execution Guardrails Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0717",
+    "name": "Detection of Native API",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0753",
+    "name": "Detection of Native API",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0770",
+    "name": "Detection of Network Connection Enumeration",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0639",
+    "name": "Detection of Network Denial of Service",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0859",
+    "name": "Detection of Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0889",
+    "name": "Detection of Network Security Appliances",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0696",
+    "name": "Detection of Network Service Scanning",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0800",
+    "name": "Detection of Network Sniffing",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0819",
+    "name": "Detection of Network Topology",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0828",
+    "name": "Detection of Network Trust Dependencies",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0457",
+    "name": "Detection of Non-Application Layer Protocols for C2",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0706",
+    "name": "Detection of Non-Standard Port",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0586",
+    "name": "Detection of NTDS.dit Credential Dumping from Domain Controllers",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0720",
+    "name": "Detection of Obfuscated Files or Information",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0850",
+    "name": "Detection of Obtain Capabilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0610",
+    "name": "Detection of One-Way Communication",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0915",
+    "name": "Detection of Online Edit",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0688",
+    "name": "Detection of Out of Band Data",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0040",
+    "name": "Detection of Persistence Artifact Removal Across Host Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0684",
+    "name": "Detection of Phishing",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0823",
+    "name": "Detection of Phishing for Information",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0788",
+    "name": "Detection of Point & Tag Identification",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0907",
+    "name": "Detection of Port Scan",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0598",
+    "name": "Detection of Prevent Application Removal",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0692",
+    "name": "Detection of Process Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0632",
+    "name": "Detection of Process Injection",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0914",
+    "name": "Detection of Program Append",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0752",
+    "name": "Detection of Program Download",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0913",
+    "name": "Detection of Program Download All",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0761",
+    "name": "Detection of Program Upload",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0766",
+    "name": "Detection of Project File Infection",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0681",
+    "name": "Detection of Protected User Data",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0081",
+    "name": "Detection of Proxy Execution via Trusted Signed Binaries Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0445",
+    "name": "Detection of Proxy Infrastructure Setup and Traffic Bridging",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0631",
+    "name": "Detection of Proxy Through Victim",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0622",
+    "name": "Detection of Ptrace System Calls",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0880",
+    "name": "Detection of Purchase Technical Data",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0919",
+    "name": "Detection of Query Public AI Services",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0209",
+    "name": "Detection of Registry Query for Environmental Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0624",
+    "name": "Detection of Remote Access Software",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0071",
+    "name": "Detection of Remote Data Staging Prior to Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0702",
+    "name": "Detection of Remote Device Management Services",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0079",
+    "name": "Detection of Remote Service Session Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0588",
+    "name": "Detection of Remote Service Session Hijacking for RDP.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0804",
+    "name": "Detection of Remote Services",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0739",
+    "name": "Detection of Remote System Discovery",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0787",
+    "name": "Detection of Remote System Information Discovery",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0691",
+    "name": "Detection of Replication Through Removable Media",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0733",
+    "name": "Detection of Replication Through Removable Media",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0792",
+    "name": "Detection of Rogue Master",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0780",
+    "name": "Detection of Rootkit",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0858",
+    "name": "Detection of Scan Databases",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0817",
+    "name": "Detection of Scanning IP Blocks",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0707",
+    "name": "Detection of Scheduled Task/Job",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0668",
+    "name": "Detection of Screen Capture",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0751",
+    "name": "Detection of Screen Capture",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0466",
+    "name": "Detection of Script-Based Proxy Execution via Signed Microsoft Utilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0735",
+    "name": "Detection of Scripting",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0822",
+    "name": "Detection of Search Closed Sources",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0811",
+    "name": "Detection of Search Engines",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0860",
+    "name": "Detection of Search Open Technical Databases",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0856",
+    "name": "Detection of Search Open Websites/Domains",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0866",
+    "name": "Detection of Search Threat Vendor Data",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0810",
+    "name": "Detection of Search Victim-Owned Websites",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0680",
+    "name": "Detection of Security Software Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0897",
+    "name": "Detection of Selective Exclusion",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0881",
+    "name": "Detection of SEO Poisoning",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0874",
+    "name": "Detection of Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0871",
+    "name": "Detection of Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0829",
+    "name": "Detection of Serverless",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0864",
+    "name": "Detection of Serverless",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0765",
+    "name": "Detection of Service Stop",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0906",
+    "name": "Detection of Siemens Project File Format Infection",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0658",
+    "name": "Detection of SIM Card Swap",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0599",
+    "name": "Detection of SMS Control",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0686",
+    "name": "Detection of SMS Messages",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0812",
+    "name": "Detection of Social Media",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0870",
+    "name": "Detection of Social Media Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0851",
+    "name": "Detection of Social Media Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0888",
+    "name": "Detection of Software",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0600",
+    "name": "Detection of Software Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0644",
+    "name": "Detection of Software Packing",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0865",
+    "name": "Detection of Spearphishing Attachment",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0781",
+    "name": "Detection of Spearphishing Attachment",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0878",
+    "name": "Detection of Spearphishing Link",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0821",
+    "name": "Detection of Spearphishing Service",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0886",
+    "name": "Detection of Spearphishing Voice",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0746",
+    "name": "Detection of Spoof Reporting Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0898",
+    "name": "Detection of Spoofed User-Agent",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0646",
+    "name": "Detection of SSL Pinning",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0839",
+    "name": "Detection of Stage Capabilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0799",
+    "name": "Detection of Standard Application Layer Protocol",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0656",
+    "name": "Detection of Steal Application Access Token",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0677",
+    "name": "Detection of Steganography",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0621",
+    "name": "Detection of Stored Application Data",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0657",
+    "name": "Detection of Subvert Trust Controls",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0628",
+    "name": "Detection of Supply Chain Compromise",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0730",
+    "name": "Detection of Supply Chain Compromise",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0714",
+    "name": "Detection of Suppress Application Icon",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0342",
+    "name": "Detection of Suspicious Compiled HTML File Execution via hh.exe",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0441",
+    "name": "Detection of Suspicious Scheduled Task Creation and Execution on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0650",
+    "name": "Detection of Symmetric Cryptography",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0793",
+    "name": "Detection of System Binary Proxy Execution",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0625",
+    "name": "Detection of System Checks",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0731",
+    "name": "Detection of System Firmware",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0601",
+    "name": "Detection of System Information Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0634",
+    "name": "Detection of System Network Configuration Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0636",
+    "name": "Detection of System Network Connections Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0320",
+    "name": "Detection of System Network Connections Discovery Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0571",
+    "name": "Detection of System Process Creation or Modification Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0689",
+    "name": "Detection of System Runtime API Hijacking",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0483",
+    "name": "Detection of System Service Discovery Commands Across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0253",
+    "name": "Detection of Systemd Service Creation or Modification on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0471",
+    "name": "Detection of Tainted Content Written to Shared Storage",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0732",
+    "name": "Detection of Theft of Operational Information",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0816",
+    "name": "Detection of Threat Intel Vendors",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0852",
+    "name": "Detection of Tool",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0744",
+    "name": "Detection of Transient Cyber Asset",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0683",
+    "name": "Detection of Transmitted Data Manipulation",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0458",
+    "name": "Detection of Trust Relationship Modifications in Domain or Tenant Policies",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0794",
+    "name": "Detection of Unauthorized Command Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0594",
+    "name": "Detection of Unauthorized DCSync Operations via Replication API Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0902",
+    "name": "Detection of Unauthorized Message",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0306",
+    "name": "Detection of Unauthorized Network Firewall Rule Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0690",
+    "name": "Detection of Uninstall Malicious Application",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0607",
+    "name": "Detection of Unix Shell",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0824",
+    "name": "Detection of Upload Malware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0834",
+    "name": "Detection of Upload Tool",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0626",
+    "name": "Detection of URI Hijacking",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0220",
+    "name": "Detection of USB-Based Data Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0699",
+    "name": "Detection of User Evasion",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0791",
+    "name": "Detection of User Execution",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0560",
+    "name": "Detection of Valid Account Abuse Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0724",
+    "name": "Detection of Valid Accounts",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0695",
+    "name": "Detection of Video Capture",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0854",
+    "name": "Detection of Virtual Private Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0838",
+    "name": "Detection of Virtual Private Server",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0606",
+    "name": "Detection of Virtualization Solution",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0616",
+    "name": "Detection of Virtualization/Sandbox Evasion",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0808",
+    "name": "Detection of Vulnerabilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0867",
+    "name": "Detection of Vulnerability Scanning",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0027",
+    "name": "Detection of Web Protocol-Based C2 Over HTTP, HTTPS, or WebSockets",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0620",
+    "name": "Detection of Web Protocols",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0672",
+    "name": "Detection of Web Service",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0882",
+    "name": "Detection of Web Services",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0896",
+    "name": "Detection of Web Services",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0509",
+    "name": "Detection of Web Session Cookie Theft via File, Memory, and Network Artifacts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0832",
+    "name": "Detection of WHOIS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0709",
+    "name": "Detection of Wi-Fi Discovery",
+    "domain": "Mobile"
+  },
+  {
+    "id": "DET0552",
+    "name": "Detection of Windows Service Creation or Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0726",
+    "name": "Detection of Wireless Compromise",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0743",
+    "name": "Detection of Wireless Sniffing",
+    "domain": "ICS"
+  },
+  {
+    "id": "DET0868",
+    "name": "Detection of Wordlist Scanning",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0917",
+    "name": "Detection of Written Content",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0541",
+    "name": "Detection Strategy for /proc Memory Injection on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0345",
+    "name": "Detection Strategy for Abuse Elevation Control Mechanism (T1548)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0033",
+    "name": "Detection Strategy for Accessibility Feature Hijacking via Binary Replacement or Registry Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0373",
+    "name": "Detection Strategy for Addition of Email Delegate Permissions",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0531",
+    "name": "Detection Strategy for Additional Cloud Credentials in IaaS/IdP/SaaS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0362",
+    "name": "Detection Strategy for AppCert DLLs Persistence via Registry Injection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0017",
+    "name": "Detection Strategy for Application Shimming via sdbinst.exe and Registry Artifacts (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0332",
+    "name": "Detection Strategy for AutoHotKey & AutoIT Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0428",
+    "name": "Detection Strategy for Bind Mounts on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0237",
+    "name": "Detection Strategy for Boot or Logon Initialization Scripts: RC Scripts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0459",
+    "name": "Detection Strategy for Build Image on Host",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0545",
+    "name": "Detection Strategy for Cloud Administration Command",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0539",
+    "name": "Detection Strategy for Cloud Application Integration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0169",
+    "name": "Detection Strategy for Cloud Infrastructure Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0402",
+    "name": "Detection Strategy for Cloud Service Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0147",
+    "name": "Detection Strategy for Cloud Service Hijacking via SaaS Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0578",
+    "name": "Detection Strategy for Cloud Storage Object Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0505",
+    "name": "Detection Strategy for Command Obfuscation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0501",
+    "name": "Detection Strategy for Compile After Delivery - Source Code to Executable Transformation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0281",
+    "name": "Detection Strategy for Compressed Payload Creation and Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0065",
+    "name": "Detection Strategy for Container Administration Command Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0490",
+    "name": "Detection Strategy for Container and Resource Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0349",
+    "name": "Detection Strategy for Content Injection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0108",
+    "name": "Detection Strategy for Data Encoding in C2 Channels",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0592",
+    "name": "Detection Strategy for Data from Configuration Repository on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0410",
+    "name": "Detection Strategy for Data from Network Shared Drive",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0059",
+    "name": "Detection Strategy for Data Manipulation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0213",
+    "name": "Detection Strategy for Data Transfer Size Limits and Chunked Exfiltration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0371",
+    "name": "Detection Strategy for Debugger Evasion (T1622)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0563",
+    "name": "Detection Strategy for Defense Impairment via Prevent Command History Logging across OS platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0579",
+    "name": "Detection Strategy for Device Driver Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0424",
+    "name": "Detection Strategy for Disable or Modify Cloud Firewall",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0289",
+    "name": "Detection Strategy for Disable or Modify Cloud Log",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0062",
+    "name": "Detection Strategy for Disable or Modify Linux Audit System Log",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0316",
+    "name": "Detection Strategy for Disk Content Wipe via Direct Access and Overwrite",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0297",
+    "name": "Detection Strategy for Disk Structure Wipe via Boot/Partition Overwrite",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0137",
+    "name": "Detection Strategy for Disk Wipe via Direct Disk Access and Destructive Commands",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0366",
+    "name": "Detection Strategy for Double File Extension Masquerading",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0569",
+    "name": "Detection Strategy for Downgrade System Image on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0091",
+    "name": "Detection Strategy for Dynamic API Resolution via Hash-Based Function Lookups",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0039",
+    "name": "Detection Strategy for Dynamic Resolution across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0262",
+    "name": "Detection Strategy for Dynamic Resolution through DNS Calculation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0419",
+    "name": "Detection Strategy for Dynamic Resolution using Domain Generation Algorithms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0485",
+    "name": "Detection Strategy for Dynamic Resolution using Fast Flux DNS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0355",
+    "name": "Detection Strategy for Email Bombing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0192",
+    "name": "Detection Strategy for Email Hiding Rules",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0431",
+    "name": "Detection Strategy for Email Spoofing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0214",
+    "name": "Detection Strategy for Embedded Payloads",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0273",
+    "name": "Detection Strategy for Encrypted Channel across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0543",
+    "name": "Detection Strategy for Encrypted Channel via Asymmetric Cryptography across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0143",
+    "name": "Detection Strategy for Encrypted Channel via Symmetric Cryptography across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0304",
+    "name": "Detection Strategy for Endpoint DoS via Application or System Exploitation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0173",
+    "name": "Detection Strategy for Endpoint DoS via Service Exhaustion Flood",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0219",
+    "name": "Detection Strategy for Escape to Host",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0232",
+    "name": "Detection Strategy for ESXi Administration Command",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0558",
+    "name": "Detection Strategy for ESXi Hypervisor CLI Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0555",
+    "name": "Detection Strategy for Event Triggered Execution via emond on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0369",
+    "name": "Detection Strategy for Event Triggered Execution via Trap (T1546.005)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0557",
+    "name": "Detection Strategy for Event Triggered Execution: AppInit DLLs (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0015",
+    "name": "Detection Strategy for Exclusive Control",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0348",
+    "name": "Detection Strategy for Exfiltration Over C2 Channel",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0548",
+    "name": "Detection Strategy for Exfiltration Over Web Service",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0153",
+    "name": "Detection Strategy for Exfiltration Over Webhook",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0570",
+    "name": "Detection Strategy for Exfiltration to Cloud Storage",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0318",
+    "name": "Detection Strategy for Exfiltration to Code Repository",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0284",
+    "name": "Detection Strategy for Exfiltration to Text Storage Sites",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0174",
+    "name": "Detection Strategy for Exploitation for Credential Access",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0514",
+    "name": "Detection Strategy for Exploitation for Privilege Escalation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0595",
+    "name": "Detection Strategy for Exploitation for Stealth",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0406",
+    "name": "Detection Strategy for Extended Attributes Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0217",
+    "name": "Detection Strategy for Extra Window Memory (EWM) Injection on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0150",
+    "name": "Detection Strategy for File Creation or Modification of Boot Files",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0051",
+    "name": "Detection Strategy for File/Path Exclusions",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0344",
+    "name": "Detection Strategy for Fileless Storage via Registry, WMI, and Shared Memory",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0495",
+    "name": "Detection Strategy for Financial Theft",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0148",
+    "name": "Detection Strategy for Forged SAML Tokens",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0171",
+    "name": "Detection Strategy for Forged Web Cookies",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0260",
+    "name": "Detection Strategy for Forged Web Credentials",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0055",
+    "name": "Detection strategy for Group Policy Discovery on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0502",
+    "name": "Detection Strategy for Hidden Artifacts Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0461",
+    "name": "Detection Strategy for Hidden File System Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0032",
+    "name": "Detection Strategy for Hidden Files and Directories",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0353",
+    "name": "Detection Strategy for Hidden User Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0321",
+    "name": "Detection Strategy for Hidden Virtual Instance Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0128",
+    "name": "Detection Strategy for Hidden Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0411",
+    "name": "Detection Strategy for Hide Infrastructure",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0218",
+    "name": "Detection Strategy for Hijack Execution Flow across OS platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0201",
+    "name": "Detection Strategy for Hijack Execution Flow for DLLs",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0064",
+    "name": "Detection Strategy for Hijack Execution Flow through Path Interception by Unquoted Path",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0427",
+    "name": "Detection Strategy for Hijack Execution Flow through Service Registry Premission Weakness.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0436",
+    "name": "Detection Strategy for Hijack Execution Flow through Services File Permissions Weakness.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0517",
+    "name": "Detection Strategy for Hijack Execution Flow through the AppDomainManager on Windows.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0577",
+    "name": "Detection Strategy for Hijack Execution Flow through the KernelCallbackTable on Windows.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0038",
+    "name": "Detection Strategy for Hijack Execution Flow using Executable Installer File Permissions Weakness",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0004",
+    "name": "Detection Strategy for Hijack Execution Flow using Path Interception by PATH Environment Variable.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0564",
+    "name": "Detection Strategy for Hijack Execution Flow using Path Interception by Search Order Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0479",
+    "name": "Detection Strategy for Hijack Execution Flow using the Windows COR_PROFILER.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0152",
+    "name": "Detection Strategy for Hijack Execution Flow: Dylib Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0435",
+    "name": "Detection Strategy for Hijack Execution Flow: Dynamic Linker Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0313",
+    "name": "Detection Strategy for HTML Smuggling via JavaScript Blob + Dynamic File Drop",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0422",
+    "name": "Detection Strategy for IFEO Injection on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0067",
+    "name": "Detection Strategy for Ignore Process Interrupts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0286",
+    "name": "Detection Strategy for Impersonation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0189",
+    "name": "Detection Strategy for Indicator Removal from Tools - Post-AV Evasion Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0568",
+    "name": "Detection Strategy for Input Injection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0920",
+    "name": "Detection Strategy for Invisible Unicode",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0322",
+    "name": "Detection Strategy for Junk Code Obfuscation with Suspicious Execution Patterns",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0450",
+    "name": "Detection Strategy for Kernel Modules and Extensions Autostart Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0183",
+    "name": "Detection Strategy for Lateral Tool Transfer across OS platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0401",
+    "name": "Detection Strategy for Launch Daemon Creation or Modification (macOS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0216",
+    "name": "Detection Strategy for LC_LOAD_DYLIB Modification in Mach-O Binaries on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0331",
+    "name": "Detection Strategy for ListPlanting Injection on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0405",
+    "name": "Detection Strategy for LNK Icon Smuggling",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0255",
+    "name": "Detection Strategy for Log Enumeration",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0244",
+    "name": "Detection Strategy for Login Hook Persistence on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0101",
+    "name": "Detection Strategy for Lua Scripting Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0383",
+    "name": "Detection Strategy for Masquerading via Account Name Similarity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0443",
+    "name": "Detection Strategy for Masquerading via Breaking Process Trees",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0226",
+    "name": "Detection Strategy for Masquerading via File Type Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0347",
+    "name": "Detection Strategy for Masquerading via Legitimate Resource Name or Location",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0246",
+    "name": "Detection Strategy for MFA Interception via Input Capture and Smart Card Proxying",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0308",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0449",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure: Create Cloud Instance",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0423",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure: Create Snapshot",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0084",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure: Delete Cloud Instance",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0492",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure: Modify Cloud Compute Configurations",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0337",
+    "name": "Detection Strategy for Modify Cloud Compute Infrastructure: Revert Cloud Instance",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0155",
+    "name": "Detection Strategy for Modify Cloud Resource Hierarchy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0170",
+    "name": "Detection Strategy for Modify System Image on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0160",
+    "name": "Detection Strategy for Multi-Factor Authentication Request Generation (T1621)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0575",
+    "name": "Detection Strategy for Netsh Helper DLL Persistence via Registry and Child Process Monitoring (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0163",
+    "name": "Detection Strategy for Network Address Translation Traversal",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0006",
+    "name": "Detection Strategy for Network Boundary Bridging",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0233",
+    "name": "Detection Strategy for Network Device Configuration Dump via Config Repositories",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0314",
+    "name": "Detection Strategy for Network Sniffing Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0227",
+    "name": "Detection Strategy for Non-Standard Ports",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0432",
+    "name": "Detection Strategy for NTFS File Attribute Abuse (ADS/EAs)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0553",
+    "name": "Detection Strategy for Obfuscated Files or Information: Binary Padding",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0164",
+    "name": "Detection Strategy for Overwritten Process Arguments Masquerading",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0469",
+    "name": "Detection Strategy for Patch System Image on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0070",
+    "name": "Detection Strategy for Phishing across platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0109",
+    "name": "Detection Strategy for Plist File Modification (T1647)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0533",
+    "name": "Detection Strategy for Poisoned Pipeline Execution via SaaS CI/CD Workflows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0324",
+    "name": "Detection Strategy for Polymorphic Code Mutation and Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0417",
+    "name": "Detection Strategy for Power Settings Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0451",
+    "name": "Detection Strategy for PowerShell Profile Persistence via profile.ps1 Modification",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0045",
+    "name": "Detection Strategy for Process Argument Spoofing on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0544",
+    "name": "Detection Strategy for Process Doppelgänging on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0382",
+    "name": "Detection Strategy for Process Hollowing on Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0538",
+    "name": "Detection Strategy for Protocol Tunneling accross OS platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0203",
+    "name": "Detection Strategy for Ptrace-Based Process Injection on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0408",
+    "name": "Detection Strategy for Reflection Amplification DoS (T1498.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0300",
+    "name": "Detection Strategy for Reflective Code Loading",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0574",
+    "name": "Detection Strategy for Remote System Enumeration Behavior",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0584",
+    "name": "Detection Strategy for Resource Forking on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0156",
+    "name": "Detection Strategy for Resource Hijacking: SMS Pumping via SaaS Application Logs",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0276",
+    "name": "Detection Strategy for Rogue Domain Controller (DCShadow) Registration and Replication Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0277",
+    "name": "Detection Strategy for Role Addition to Cloud Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0391",
+    "name": "Detection Strategy for Runtime Data Manipulation.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0116",
+    "name": "Detection Strategy for Safe Mode Boot Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0399",
+    "name": "Detection Strategy for Scheduled Transfer and Recurrent Exfiltration Patterns",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0374",
+    "name": "Detection Strategy for Serverless Execution (T1648)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0453",
+    "name": "Detection Strategy for SNMP (MIB Dump) on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0236",
+    "name": "Detection Strategy for Spearphishing Attachment across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0107",
+    "name": "Detection Strategy for Spearphishing Links",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0115",
+    "name": "Detection Strategy for Spearphishing via a Service across OS Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0245",
+    "name": "Detection Strategy for Spearphishing Voice across OS platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0181",
+    "name": "Detection Strategy for SQL Stored Procedures Abuse via T1505.001",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0126",
+    "name": "Detection Strategy for SSH Key Injection in Authorized Keys",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0256",
+    "name": "Detection Strategy for SSH Session Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0240",
+    "name": "Detection Strategy for Steal or Forge Authentication Certificates",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0119",
+    "name": "Detection Strategy for Steganographic Abuse in File & Script Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0193",
+    "name": "Detection Strategy for Stored Data Manipulation across OS Platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0019",
+    "name": "Detection Strategy for Stripped Payloads Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0442",
+    "name": "Detection Strategy for Subvert Trust Controls using SIP and Trust Provider Hijacking.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0056",
+    "name": "Detection Strategy for Subvert Trust Controls via Install Root Certificate.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0510",
+    "name": "Detection Strategy for SVG Smuggling with Script Execution and Delivery Behavior",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0282",
+    "name": "Detection Strategy for System Binary Proxy Execution: Regsvr32",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0565",
+    "name": "Detection Strategy for System Language Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0043",
+    "name": "Detection Strategy for System Location Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0279",
+    "name": "Detection Strategy for System Services across OS platforms.",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0421",
+    "name": "Detection Strategy for System Services Service Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0265",
+    "name": "Detection Strategy for System Services: Launchctl",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0073",
+    "name": "Detection Strategy for System Services: Systemctl",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0583",
+    "name": "Detection Strategy for T1136 - Create Account across platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0319",
+    "name": "Detection Strategy for T1136.003 - Cloud Account Creation across IaaS, IdP, SaaS, Office",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0475",
+    "name": "Detection Strategy for T1218.011 Rundll32 Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0042",
+    "name": "Detection Strategy for T1218.012 Verclsid Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0046",
+    "name": "Detection Strategy for T1497 Virtualization/Sandbox Evasion",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0547",
+    "name": "Detection Strategy for T1505 - Server Software Component",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0166",
+    "name": "Detection Strategy for T1505.002 - Transport Agent Abuse (Windows/Linux)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0068",
+    "name": "Detection Strategy for T1505.004 - Malicious IIS Components",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0212",
+    "name": "Detection Strategy for T1505.005 – Terminal Services DLL Modification (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0334",
+    "name": "Detection Strategy for T1525 – Implant Internal Image",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0515",
+    "name": "Detection Strategy for T1528 - Steal Application Access Token",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0278",
+    "name": "Detection Strategy for T1542 Pre-OS Boot",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0099",
+    "name": "Detection Strategy for T1542.001 Pre-OS Boot: System Firmware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0323",
+    "name": "Detection Strategy for T1542.002 Pre-OS Boot: Component Firmware",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0175",
+    "name": "Detection Strategy for T1542.004 Pre-OS Boot: ROMMONkit",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0582",
+    "name": "Detection Strategy for T1542.005 Pre-OS Boot: TFTP Boot",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0330",
+    "name": "Detection Strategy for T1546.016 - Event Triggered Execution via Installer Packages",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0375",
+    "name": "Detection Strategy for T1546.017 - Udev Rules (Linux)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0180",
+    "name": "Detection Strategy for T1547.009 – Shortcut Modification (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0204",
+    "name": "Detection Strategy for T1547.010 – Port Monitor DLL Persistence via spoolsv.exe (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0121",
+    "name": "Detection Strategy for T1547.015 – Login Items on macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0388",
+    "name": "Detection Strategy for T1548.002 – Bypass User Account Control (UAC)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0409",
+    "name": "Detection Strategy for T1550.002 - Pass the Hash (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0352",
+    "name": "Detection Strategy for T1550.003 - Pass the Ticket (Windows)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0393",
+    "name": "Detection Strategy for Temporary Elevated Cloud Access Abuse (T1548.005)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0467",
+    "name": "Detection Strategy for TLS Callback Injection via PE Memory Modification and Hollowing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0403",
+    "name": "Detection Strategy for Traffic Duplication via Mirroring in IaaS and Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0012",
+    "name": "Detection Strategy for VBA Stomping",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0448",
+    "name": "Detection Strategy for VDSO Hijacking on Linux",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0199",
+    "name": "Detection Strategy for Virtual Machine Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0339",
+    "name": "Detection Strategy for Weaken Encryption on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0494",
+    "name": "Detection Strategy for Weaken Encryption: Disable Crypto Hardware on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0243",
+    "name": "Detection Strategy for Weaken Encryption: Reduce Key Space on Network Devices",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0058",
+    "name": "Detection Strategy for Web Service: Dead Drop Resolver",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0536",
+    "name": "Detection Strategy for Wi-Fi Networks",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0254",
+    "name": "Detection Strategy of Transmitted Data Manipulation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0343",
+    "name": "Direct Network Flood Detection across IaaS, Linux, Windows, and macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0487",
+    "name": "Distributed Password Spraying via Authentication Failures Across Multiple Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0129",
+    "name": "Domain Account Enumeration Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0196",
+    "name": "Domain Fronting Behavior via Mismatched TLS SNI and HTTP Host Headers",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0176",
+    "name": "Drive-by Compromise — Behavior-based, Multi-platform Detection Strategy (T1189)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0476",
+    "name": "Email Collection via Local Email Access and Auto-Forwarding Behavior",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0576",
+    "name": "Email Forwarding Rule Abuse Detection Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0087",
+    "name": "Encrypted or Encoded File Payload Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0356",
+    "name": "Endpoint DoS via OS Exhaustion Flood Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0208",
+    "name": "Endpoint Resource Saturation and Crash Pattern Detection Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0229",
+    "name": "Enumeration of Global Address Lists via Email Account Discovery",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0587",
+    "name": "Enumeration of User or Account Information Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0474",
+    "name": "Environmental Keying Discovery-to-Decryption Behavioral Chain Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0080",
+    "name": "Exploit Public-Facing Application – multi-signal correlation (request → error → post-exploit process/egress)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0287",
+    "name": "Exploitation for Client Execution – cross-platform behavior chain (browser/Office/3rd-party apps)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0118",
+    "name": "Exploitation of Remote Services – multi-platform lateral movement detection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0325",
+    "name": "External Proxy Behavior via Outbound Relay to Intermediate Infrastructure",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0167",
+    "name": "Firmware Modification via Flash Tool or Corrupted Firmware Upload",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0368",
+    "name": "Hardware Supply Chain Compromise Detection via Host Status & Boot Integrity Checks",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0133",
+    "name": "IDE Tunneling Detection via Process, File, and Network Behaviors",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0200",
+    "name": "Indirect Command Execution – Windows utility abuse behavior chain",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0075",
+    "name": "Internal Proxy Behavior via Lateral Host-to-Host C2 Relay",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0054",
+    "name": "Internal Spearphishing via Trusted Accounts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0082",
+    "name": "Internal Website and System Content Defacement via UI or Messaging Modifications",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0031",
+    "name": "Invalid Code Signature Execution Detection via Metadata and Behavioral Context",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0390",
+    "name": "Linux Detection Strategy for T1547.013 - XDG Autostart Entries",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0258",
+    "name": "Linux Python Startup Hook Persistence via .pth and Customize Files (T1546.018)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0303",
+    "name": "Local Account Enumeration Across Host Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0188",
+    "name": "Local Storage Discovery via Drive Enumeration and Filesystem Probing",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0395",
+    "name": "macOS AuthorizationExecuteWithPrivileges Elevation Prompt Detection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0292",
+    "name": "Masquerading via Space After Filename - Behavioral Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0285",
+    "name": "Multi-Event Behavioral Detection for DCOM-Based Remote Code Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0530",
+    "name": "Multi-Event Detection for SMB Admin Share Lateral Movement",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0327",
+    "name": "Multi-event Detection Strategy for RDP-Based Remote Logins and Post-Access Activity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0359",
+    "name": "Multi-hop Proxy Behavior via Relay Node Chaining, Onion Routing, and Network Tunneling",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0540",
+    "name": "Multi-Platform Behavioral Detection for Compute Hijacking",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0484",
+    "name": "Multi-Platform Cloud Storage Exfiltration Behavior Chain",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0372",
+    "name": "Multi-Platform Detection Strategy for T1678 - Delay Execution",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0562",
+    "name": "Multi-Platform Execution Guardrails Environmental Validation Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0299",
+    "name": "Multi-Platform File and Directory Permissions Modification Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0559",
+    "name": "Multi-Platform Shutdown or Reboot Detection via Execution and Host Status Events",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0392",
+    "name": "Multi-Platform Software Discovery Behavior Chain",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0023",
+    "name": "Obfuscated Binary Unpacking Detection via Behavioral Patterns",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0551",
+    "name": "Password Guessing via Multi-Source Authentication Failure Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0161",
+    "name": "Password Policy Discovery – cross-platform behavior-chain analytics",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0491",
+    "name": "Peripheral Device Enumeration via System Utilities and API Calls",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0302",
+    "name": "Port-knock → rule/daemon change → first successful connect (T1205.001)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0105",
+    "name": "Post-Credential Dump Password Cracking Detection via Suspicious File Access and Hash Analysis Tools",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0358",
+    "name": "Programmatic and Excessive Access to Confluence Documentation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0370",
+    "name": "Recursive Enumeration of Files and Directories Across Privilege Contexts",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0542",
+    "name": "Registry and LSASS Monitoring for Security Support Provider Abuse",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0259",
+    "name": "Remote Desktop Software Execution and Beaconing Detection",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0301",
+    "name": "Removable Media Execution Chain Detection via File and Process Activity",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0005",
+    "name": "Renamed Legitimate Utility Execution with Metadata Mismatch and Suspicious Path",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0267",
+    "name": "Resource Hijacking Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0527",
+    "name": "Right-to-Left Override Masquerading Detection via Filename and Execution Context",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0016",
+    "name": "Security Software Discovery Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0110",
+    "name": "Setuid/Setgid Privilege Abuse Detection (Linux/macOS)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0162",
+    "name": "Socket-filter trigger → on-host raw-socket activity → reverse connection (T1205.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0009",
+    "name": "Supply-chain tamper in dependencies/dev-tools (manager→write/install→first-run→egress)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0310",
+    "name": "Suspicious Addition to Local or Domain Groups",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0242",
+    "name": "Suspicious Database Access and Dump Activity Across Environments (T1213.006)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0036",
+    "name": "Suspicious Device Registration via Entra ID or MFA Platform",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0572",
+    "name": "Suspicious RoleBinding or ClusterRoleBinding Assignment in Kubernetes",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0425",
+    "name": "Suspicious Use of Web Services for C2",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0525",
+    "name": "System Discovery via Native and Remote Utilities",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0447",
+    "name": "T1136.001 Detection Strategy - Local Account Creation Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0003",
+    "name": "T1136.002 Detection Strategy - Domain Account Creation Across Platforms",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0534",
+    "name": "TCC Database Manipulation via Launchctl and Unprotected SIP",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0566",
+    "name": "Template Injection Detection - Windows",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0524",
+    "name": "Traffic Signaling (Port-knock / magic-packet → firewall or service activation) – T1205",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0351",
+    "name": "Unix-like File Permission Manipulation Behavioral Chain Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0340",
+    "name": "User Execution – Malicious Copy & Paste (browser/email → shell with obfuscated one-liner) – T1204.004",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0294",
+    "name": "User Execution – Malicious File via download/open → spawn chain (T1204.002)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0248",
+    "name": "User Execution – Malicious Image (containers & IaaS) – pull/run → start → anomalous behavior (T1204.003)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0066",
+    "name": "User Execution – Malicious Link (click → suspicious egress → download/write → follow-on activity)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0478",
+    "name": "User Execution – multi-surface behavior chain (documents/links → helper/unpacker → LOLBIN/child → egress)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0252",
+    "name": "User-Initiated Malicious Library Installation via Package Manager (T1204.005)",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0168",
+    "name": "Virtualization/Sandbox Evasion via System Checks across Windows, Linux, macOS",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0394",
+    "name": "Web Shell Detection via Server Behavior and File Execution Chains",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0481",
+    "name": "Windows COM Hijacking Detection via Registry and DLL Load Correlation",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0418",
+    "name": "Windows DACL Manipulation Behavioral Chain Detection Strategy",
+    "domain": "Enterprise"
+  },
+  {
+    "id": "DET0026",
+    "name": "Windows Detection Strategy for T1547.012 - Print Processor DLL Persistence",
+    "domain": "Enterprise"
+  }
+]

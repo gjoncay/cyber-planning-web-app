@@ -1,0 +1,518 @@
+[
+  {
+    "id": "DC0084",
+    "name": "Active Directory Credential Request",
+    "domain": "Enterprise",
+    "description": "Requests for authentication credentials via Kerberos or other methods like NTLM and LDAP queries. Examples:"
+  },
+  {
+    "id": "DC0071",
+    "name": "Active Directory Object Access",
+    "domain": "Enterprise",
+    "description": "Object access refers to activities where AD objects (e.g., user accounts, groups, policies) are accessed or queried. Example: Windows Event ID 4661 logs object access attempts. Examples:"
+  },
+  {
+    "id": "DC0087",
+    "name": "Active Directory Object Creation",
+    "domain": "Enterprise",
+    "description": "Creating new objects in AD, such as user accounts, groups, organizational units (OUs), or trust relationships. Logged as Event ID 5137. Examples:"
+  },
+  {
+    "id": "DC0068",
+    "name": "Active Directory Object Deletion",
+    "domain": "Enterprise",
+    "description": "Object deletion in AD (e.g., user accounts, groups, OUs) is logged as Event ID 5141. Examples:"
+  },
+  {
+    "id": "DC0066",
+    "name": "Active Directory Object Modification",
+    "domain": "Enterprise",
+    "description": "Changes to AD objects (e.g., users, groups, OUs) are logged as Event ID 5136 (Object Modification) or 5163 (Attribute Changes). Examples:"
+  },
+  {
+    "id": "DC0103",
+    "name": "Active DNS",
+    "domain": "Enterprise",
+    "description": "\"Domain Name: Active DNS\" data component captures queried DNS registry data that highlights current domain-to-IP address resolutions. This data includes both direct queries to DNS servers and records that provide mappings between domain names and associated IP addresses. It serves as a critical resource for tracking active infrastructure and understanding the network footprint of an organization or adversary. Examples:"
+  },
+  {
+    "id": "DC0112",
+    "name": "API Calls",
+    "domain": "Mobile",
+    "description": "API calls utilized by an application that could indicate malicious activity"
+  },
+  {
+    "id": "DC0119",
+    "name": "Application Assets",
+    "domain": "Mobile",
+    "description": "Application Assets represent static or packaged resources bundled with an application that may contain executable logic, configuration data, or hidden payloads."
+  },
+  {
+    "id": "DC0114",
+    "name": "Application Permission",
+    "domain": "Mobile",
+    "description": "Represents the permissions, entitlements, or capability grants associated with a mobile application, including both permissions declared by the application and those granted or requested during runtime."
+  },
+  {
+    "id": "DC0123",
+    "name": "Application State",
+    "domain": "Mobile",
+    "description": "Application State represents the operational status and lifecycle context of a mobile application at a given point in time. This includes whether the application is running in the foreground or background, its activity state, recent user interaction, and transitions between lifecycle states."
+  },
+  {
+    "id": "DC0110",
+    "name": "Asset Inventory",
+    "domain": "ICS",
+    "description": "This includes sources of current and expected devices on the network, including the manufacturer, model, and necessary identifiers (e.g., IP and hardware addresses)"
+  },
+  {
+    "id": "DC0093",
+    "name": "Certificate Registration",
+    "domain": "Enterprise",
+    "description": "Certificate Registration refers to the collection and analysis of information about digital certificates, including current, revoked, and expired certificates. Sources such as Certificate Transparency logs and other public resources provide visibility into certificates issued for specific domains or organizations. Monitoring certificate registrations can help identify potential misuse, such as unauthorized certificates or signs of adversary reconnaissance. Examples:"
+  },
+  {
+    "id": "DC0090",
+    "name": "Cloud Service Disable",
+    "domain": "Enterprise",
+    "description": "This data component refers to monitoring actions that deactivate or stop a cloud service in a cloud control plane. Examples include disabling essential logging services like AWS CloudTrail ( StopLogging API call), Microsoft Azure Monitor Logs, or Google Cloud's Operations Suite (formerly Stackdriver). Disabling such services can hinder visibility into adversary activities within the cloud environment. Examples:"
+  },
+  {
+    "id": "DC0070",
+    "name": "Cloud Service Metadata",
+    "domain": "Enterprise",
+    "description": "Cloud service metadata refers to the contextual and descriptive information about cloud services, including their name, type, purpose, configuration, and activity around them. This metadata is essential for understanding the roles and functions of cloud services, their operational status, and their potential misuse. Examples:"
+  },
+  {
+    "id": "DC0069",
+    "name": "Cloud Service Modification",
+    "domain": "Enterprise",
+    "description": "Cloud service modification refers to changes made to the configuration, settings, or data of a cloud service. These modifications can include administrative changes such as enabling or disabling features, altering permissions, or deleting critical components. Monitoring these changes is critical to detect potential misconfigurations or malicious activity. Examples:"
+  },
+  {
+    "id": "DC0025",
+    "name": "Cloud Storage Access",
+    "domain": "Enterprise",
+    "description": "Cloud storage access refers to the retrieval or interaction with data stored in cloud infrastructure. This data component includes activities such as reading, downloading, or accessing files and objects within cloud storage systems. Common examples include API calls like GetObject in AWS S3, which retrieves objects from cloud buckets. Examples:"
+  },
+  {
+    "id": "DC0024",
+    "name": "Cloud Storage Creation",
+    "domain": "Enterprise",
+    "description": "Cloud Storage Creation refers to the initial creation of a new cloud storage resource, such as buckets, containers, or directories, within a cloud environment. This action is critical to track as it might indicate the legitimate provisioning of resources or unauthorized actions taken by adversaries to stage, store, or exfiltrate data. Examples:"
+  },
+  {
+    "id": "DC0022",
+    "name": "Cloud Storage Deletion",
+    "domain": "Enterprise",
+    "description": "Cloud Storage Deletion refers to the removal or destruction of cloud storage infrastructure, such as buckets, containers, or directories, within a cloud environment. Monitoring this activity is critical to detecting potential unauthorized or malicious actions, such as data destruction by adversaries or accidental deletions that may lead to data loss. Examples:"
+  },
+  {
+    "id": "DC0017",
+    "name": "Cloud Storage Enumeration",
+    "domain": "Enterprise",
+    "description": "Cloud Storage Enumeration involves retrieving a list of available cloud storage infrastructure, such as buckets, containers, or objects, within a cloud environment. This activity may be performed for legitimate administrative purposes or malicious reconnaissance by adversaries seeking to identify accessible storage resources.Examples:"
+  },
+  {
+    "id": "DC0027",
+    "name": "Cloud Storage Metadata",
+    "domain": "Enterprise",
+    "description": "Cloud Storage Metadata provides contextual information about cloud storage infrastructure and its associated activity. This data may include attributes such as storage name, size, owner, permissions, creation date, region, and activity metadata. It is essential for monitoring, auditing, and identifying anomalies in cloud storage environments. Examples:"
+  },
+  {
+    "id": "DC0023",
+    "name": "Cloud Storage Modification",
+    "domain": "Enterprise",
+    "description": "Cloud Storage Modification involves tracking changes made to cloud storage infrastructure, including updates to settings, permissions, or stored data. Examples include modifying object access control lists (ACLs), uploading new objects, or updating bucket policies. Examples:"
+  },
+  {
+    "id": "DC0072",
+    "name": "Container Creation",
+    "domain": "Enterprise",
+    "description": "\"Container Creation\" data component captures details about the initial construction of a container in a containerized environment. This includes events where a new container is instantiated, such as through Docker, Kubernetes, or other container orchestration platforms. Monitoring these events helps detect unauthorized or potentially malicious container creation. Examples:"
+  },
+  {
+    "id": "DC0091",
+    "name": "Container Enumeration",
+    "domain": "Enterprise",
+    "description": "\"Container Enumeration\" data component captures events and actions related to listing and identifying active or available containers within a containerized environment. This includes information about running, stopped, or configured containers, such as their names, IDs, statuses, or associated images. Monitoring this activity is crucial for detecting unauthorized discovery or reconnaissance efforts. Examples:"
+  },
+  {
+    "id": "DC0077",
+    "name": "Container Start",
+    "domain": "Enterprise",
+    "description": "\"Container Start\" data component captures events related to the activation or invocation of a container within a containerized environment. This includes starting a previously stopped container, restarting an existing container, or initializing a container for runtime. Monitoring these activities is critical for identifying unauthorized or unexpected container activations, which may indicate potential adversarial activity or misconfigurations. Examples:"
+  },
+  {
+    "id": "DC0108",
+    "name": "Device Alarm",
+    "domain": "ICS",
+    "description": "This includes alarms associated with unexpected device functions, such as shutdowns, restarts, failures, or configuration changes"
+  },
+  {
+    "id": "DC0101",
+    "name": "Domain Registration",
+    "domain": "Enterprise",
+    "description": "\"Domain Name: Domain Registration\" data component captures information about the assignment, ownership, and metadata of domain names. This information is often sourced from registries like WHOIS and includes details such as registrant names, contact information, registration dates, expiration dates, and registrar details. This data is invaluable for tracking domain ownership, detecting malicious domain registrations, and identifying trends in adversary behavior. Examples:"
+  },
+  {
+    "id": "DC0054",
+    "name": "Drive Access",
+    "domain": "Enterprise",
+    "description": "Refers to the act of accessing a data storage device, such as a hard drive, SSD, USB, or network-mounted drive. This data component logs the opening or mounting of drives, capturing activities such as reading, writing, or executing files within an assigned drive letter (e.g., C:\\ , /mnt/drive ) or mount point. Examples:"
+  },
+  {
+    "id": "DC0079",
+    "name": "Driver Load",
+    "domain": "Enterprise",
+    "description": "The process of attaching a driver, which is a software component that allows the operating system and applications to interact with hardware devices, to either user-mode or kernel-mode of a system. This can include benign actions (e.g., hardware drivers) or malicious behavior (e.g., rootkits or unsigned drivers). Examples:"
+  },
+  {
+    "id": "DC0074",
+    "name": "Driver Metadata",
+    "domain": "Enterprise",
+    "description": "to contextual data about a driver, including its attributes, functionality, and activity. This can involve details such as the driver's origin, integrity, cryptographic signature, issues reported during its use, and runtime behavior. Examples include metadata captured during driver integrity checks, hash validation, or error reporting. Examples:"
+  },
+  {
+    "id": "DC0043",
+    "name": "Firewall Disable",
+    "domain": "Enterprise",
+    "description": "The deactivation, misconfiguration, or complete stoppage of firewall services, either on a host or in a cloud control plane. Such activity may involve turning off firewalls, modifying rules to disable protection, or deleting firewall-related configurations and activity logs. Examples:"
+  },
+  {
+    "id": "DC0044",
+    "name": "Firewall Enumeration",
+    "domain": "Enterprise",
+    "description": "Querying and extracting a list of available firewalls or their associated configurations and rules. This activity can occur across host systems and cloud control planes, providing insight into the state and configuration of firewalls that protect the environment. Examples:"
+  },
+  {
+    "id": "DC0053",
+    "name": "Firewall Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual information about firewalls, including their configurations, policies, status, and other details such as names and associated rules. This metadata provides valuable insights into the operational state and configurations of firewalls, both in cloud control planes and host systems. Examples:"
+  },
+  {
+    "id": "DC0051",
+    "name": "Firewall Rule Modification",
+    "domain": "Enterprise",
+    "description": "The creation, deletion, or alteration of firewall rules to allow or block specific network traffic. Monitoring changes to these rules is critical for detecting misconfigurations, unauthorized access, or malicious attempts to bypass network protections. Examples:"
+  },
+  {
+    "id": "DC0099",
+    "name": "Group Enumeration",
+    "domain": "Enterprise",
+    "description": "Extracting group lists from identity systems identifies permissions, roles, or configurations. Adversaries may exploit high-privilege groups or misconfigurations. Examples:"
+  },
+  {
+    "id": "DC0105",
+    "name": "Group Metadata",
+    "domain": "Enterprise",
+    "description": "Group metadata includes attributes like name, permissions, purpose, and associated user accounts or roles, which adversaries may exploit for privilege escalation. Examples:"
+  },
+  {
+    "id": "DC0094",
+    "name": "Group Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a group, such as membership, name, or permissions (ex: Windows EID 4728 or 4732, AWS IAM UpdateGroup). Examples:"
+  },
+  {
+    "id": "DC0015",
+    "name": "Image Creation",
+    "domain": "Enterprise",
+    "description": "Initial construction of a virtual machine image within a cloud environment. Virtual machine images are templates containing an operating system and installed applications, which can be deployed to create new virtual machines. Monitoring the creation of these images is important because adversaries may create custom images to include malicious software or misconfigurations for later exploitation. Examples:"
+  },
+  {
+    "id": "DC0026",
+    "name": "Image Deletion",
+    "domain": "Enterprise",
+    "description": "Removal of a virtual machine image in a cloud infrastructure (ex: Azure Compute Service Images DELETE) Examples:"
+  },
+  {
+    "id": "DC0028",
+    "name": "Image Metadata",
+    "domain": "Enterprise",
+    "description": "contextual information associated with a virtual machine image, such as its name, resource group, status (active or inactive), type (custom or prebuilt), size, creation date, and permissions. This metadata is critical for understanding the state and configuration of virtual machine images in cloud environments. Examples:"
+  },
+  {
+    "id": "DC0036",
+    "name": "Image Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a virtual machine image, including setting and/or control data (ex: Azure Compute Service Images PATCH)"
+  },
+  {
+    "id": "DC0076",
+    "name": "Instance Creation",
+    "domain": "Enterprise",
+    "description": "The initial provisioning and construction of a virtual machine (VM) or compute instance within a cloud infrastructure environment. This activity involves defining and allocating resources such as CPU, memory, storage, and networking to spin up a new compute instance. Examples:"
+  },
+  {
+    "id": "DC0081",
+    "name": "Instance Deletion",
+    "domain": "Enterprise",
+    "description": "Removal of a virtual machine (VM) or compute instance within a cloud infrastructure. This activity results in the termination and deletion of the allocated resources (e.g., CPU, memory, storage), making the instance unavailable for future use. Examples:"
+  },
+  {
+    "id": "DC0075",
+    "name": "Instance Enumeration",
+    "domain": "Enterprise",
+    "description": "The process of retrieving or querying a list of virtual machine instances or compute instances within a cloud infrastructure. This activity provides a view of all available or running instances, typically including their associated metadata such as instance ID, name, state, and configuration details. Examples:"
+  },
+  {
+    "id": "DC0086",
+    "name": "Instance Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about an instance and activity around it such as name, type, or status"
+  },
+  {
+    "id": "DC0073",
+    "name": "Instance Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a virtual machine (VM) or compute instance, including alterations to its configuration, metadata, attached policies, or operational state. Such modifications can include updating metadata, attaching or detaching resource policies, resizing instances, or modifying network configurations. Examples:"
+  },
+  {
+    "id": "DC0080",
+    "name": "Instance Start",
+    "domain": "Enterprise",
+    "description": "The initiation or activation of a virtual machine instance within a cloud infrastructure. This action typically involves starting an existing instance that had been stopped or paused, allowing it to resume operation. Examples:"
+  },
+  {
+    "id": "DC0089",
+    "name": "Instance Stop",
+    "domain": "Enterprise",
+    "description": "The deactivation or shutdown of a virtual machine instance within a cloud infrastructure. This action typically involves stopping a running instance, which halts its operation and releases certain associated resources, such as CPU and memory. Examples:"
+  },
+  {
+    "id": "DC0031",
+    "name": "Kernel Module Load",
+    "domain": "Enterprise",
+    "description": "The process of loading a kernel module into the operating system kernel. Kernel modules are object files that extend the kernel’s functionality, such as adding support for device drivers, new filesystems, or additional system calls. This action can be legitimate (e.g., loading a driver) or malicious (e.g., adding a rootkit)."
+  },
+  {
+    "id": "DC0011",
+    "name": "Malware Content",
+    "domain": "Enterprise",
+    "description": "Code, strings, signatures, and other identifying characteristics of a malicious payload stored within a malware repository. It includes both static (file-based) and dynamic (behavioral or execution-based) components that can be analyzed for threat intelligence, detection, and prevention purposes. Examples:"
+  },
+  {
+    "id": "DC0003",
+    "name": "Malware Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about a malicious payload, such as compilation times, file hashes, as well as watermarks or other identifiable configuration information"
+  },
+  {
+    "id": "DC0048",
+    "name": "Named Pipe Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about a named pipe on a system, including pipe name and creating process (ex: Sysmon EIDs 17-18)"
+  },
+  {
+    "id": "DC0113",
+    "name": "Network Communication",
+    "domain": "Mobile",
+    "description": "Network Communication captures outbound or inbound communication initiated by an application or mobile device, including the domains contacted, protocols used, and session metadata associated with the communication."
+  },
+  {
+    "id": "DC0096",
+    "name": "Passive DNS",
+    "domain": "Enterprise",
+    "description": "\"Domain Name: Passive DNS\" captures logged historical and real-time domain name system (DNS) data. This includes records of domain-to-IP address resolutions over time, enabling analysts to track the evolution of domain infrastructure, uncover historical patterns of use, and detect malicious activities tied to domains and their associated IP addresses. Examples:"
+  },
+  {
+    "id": "DC0116",
+    "name": "Permissions Request",
+    "domain": "Mobile",
+    "description": "System prompts triggered when an application requests new or additional permissions"
+  },
+  {
+    "id": "DC0019",
+    "name": "Pod Creation",
+    "domain": "Enterprise",
+    "description": "The initial deployment or instantiation of a new pod in a containerized environment. This includes creating a pod manually, through orchestration tools (Kubernetes), or via Infrastructure-as-Code (IaC) configurations. A Pod is the smallest deployable unit in Kubernetes, typically containing one or more containers. Creation methods include: - Direct pod deployment ( kubectl run , kubectl apply ) - Automated deployment via CI/CD pipelines (e.g., ArgoCD, Jenkins, GitOps) - Infrastructure-as-Code (IaC) templates (e.g., Terraform, Helm Charts) - API-based deployments via Kubernetes control plane (create_pod API calls) - Pods can be ephemeral (short-lived) or persistent (part of a StatefulSet or Deployment)."
+  },
+  {
+    "id": "DC0037",
+    "name": "Pod Enumeration",
+    "domain": "Enterprise",
+    "description": "Extracting a list of running or existing pods within a containerized cluster environment. Pods are the smallest deployable units in a Kubernetes cluster and typically represent an application or workload. Enumeration of pods provides insight into the structure and state of applications running in the cluster, such as the names of pods, their namespaces, and their associated metadata."
+  },
+  {
+    "id": "DC0030",
+    "name": "Pod Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a pod’s configuration or control data within a containerized cluster. This can include updating settings such as resource limits, environment variables, annotations, labels, or even the containers running within the pod. Pod modifications are often executed using commands like kubectl set, kubectl patch, or kubectl edit."
+  },
+  {
+    "id": "DC0107",
+    "name": "Process History/Live Data",
+    "domain": "ICS",
+    "description": "This includes any data stores that maintain historical or real-time events and telemetry recorded from various sensors or devices"
+  },
+  {
+    "id": "DC0020",
+    "name": "Process Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a running process, such as writing data into memory, modifying execution behavior, or injecting code into an existing process. Adversaries frequently modify processes to execute malicious payloads, evade detection, or gain escalated privileges."
+  },
+  {
+    "id": "DC0109",
+    "name": "Process/Event Alarm",
+    "domain": "ICS",
+    "description": "This includes a list of any process alarms or alerts produced to indicate unusual or concerning activity within the operational process (e.g., increased temperature/pressure)"
+  },
+  {
+    "id": "DC0115",
+    "name": "Protected Configuration",
+    "domain": "Mobile",
+    "description": "Protected Configuration represents security-sensitive device settings, security policies, or operating system configurations that are normally restricted to administrators, system services, or device management platforms. Monitoring these configurations enables detection of adversaries attempting to weaken device security controls or alter trusted device relationships."
+  },
+  {
+    "id": "DC0104",
+    "name": "Response Content",
+    "domain": "Enterprise",
+    "description": "Captured network traffic that provides details about responses received during an internet scan. This data includes both protocol header values (e.g., HTTP status codes, IP headers, or DNS response codes) and response body content (e.g., HTML, JSON, or raw data). Examples:"
+  },
+  {
+    "id": "DC0106",
+    "name": "Response Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual information about an Internet-facing resource collected during a scan, including details such as open ports, running services, protocols, and versions. This metadata is typically derived from interpreting scan results and helps build a profile of the targeted system. Examples:"
+  },
+  {
+    "id": "DC0057",
+    "name": "Snapshot Creation",
+    "domain": "Enterprise",
+    "description": "The process of taking a point-in-time copy of a cloud storage volume (files, settings, configurations, etc.), virtual machine (VM), or database that can be created and deployed in cloud environments."
+  },
+  {
+    "id": "DC0049",
+    "name": "Snapshot Deletion",
+    "domain": "Enterprise",
+    "description": "The removal of a point-in-time backup of a cloud storage volume, virtual machine (VM), or database."
+  },
+  {
+    "id": "DC0047",
+    "name": "Snapshot Enumeration",
+    "domain": "Enterprise",
+    "description": "The process of listing or retrieving metadata about existing snapshots in a cloud environment."
+  },
+  {
+    "id": "DC0062",
+    "name": "Snapshot Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about a snapshot, which may include information such as ID, type, and status"
+  },
+  {
+    "id": "DC0058",
+    "name": "Snapshot Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a cloud snapshot's metadata, attributes, or control settings. These modifications may involve adjusting access permissions, changing retention policies, or altering encryption settings."
+  },
+  {
+    "id": "DC0052",
+    "name": "Social Media",
+    "domain": "Enterprise",
+    "description": "Established, compromised, or otherwise acquired by adversaries to conduct reconnaissance, influence operations, social engineering, or other cyber threats."
+  },
+  {
+    "id": "DC0111",
+    "name": "Software",
+    "domain": "ICS",
+    "description": "This includes sources of current and expected software or application programs deployed to a device, along with information on the version and patch level for vendor products, full source code for any application programs, and unique identifiers (e.g., hashes, signatures)."
+  },
+  {
+    "id": "DC0117",
+    "name": "System Notifications",
+    "domain": "Mobile",
+    "description": "System Notifications represent operating system alerts, warnings, or status messages generated in response to application actions, system state changes, or security events. These notifications may indicate potentially malicious activity or abnormal application behavior."
+  },
+  {
+    "id": "DC0118",
+    "name": "System Settings",
+    "domain": "Mobile",
+    "description": "System Settings represent user-visible or OS-level configuration settings that influence device behavior, application permissions, connectivity, or system features."
+  },
+  {
+    "id": "DC0014",
+    "name": "User Account Creation",
+    "domain": "Enterprise",
+    "description": "The initial establishment of a new user, service, or machine account within an operating system, cloud environment, or identity management system."
+  },
+  {
+    "id": "DC0009",
+    "name": "User Account Deletion",
+    "domain": "Enterprise",
+    "description": "The removal of a user, service, or machine account from an operating system, cloud identity management system, or directory service."
+  },
+  {
+    "id": "DC0013",
+    "name": "User Account Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about an account, which may include a username, user ID, environmental data, etc."
+  },
+  {
+    "id": "DC0010",
+    "name": "User Account Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to an existing user, service, or machine account, including alterations to attributes, permissions, roles, authentication methods, or group memberships."
+  },
+  {
+    "id": "DC0097",
+    "name": "Volume Creation",
+    "domain": "Enterprise",
+    "description": "The initial provisioning of block storage volumes in cloud or on-prem environments, typically used for data storage, backup, or workload scaling."
+  },
+  {
+    "id": "DC0098",
+    "name": "Volume Deletion",
+    "domain": "Enterprise",
+    "description": "The removal of a cloud-based or on-premise block storage volume. This action permanently deletes the allocated storage and may result in data loss if not backed up."
+  },
+  {
+    "id": "DC0095",
+    "name": "Volume Enumeration",
+    "domain": "Enterprise",
+    "description": "An extracted list of available volumes within a cloud environment (ex: AWS describe-volumes)"
+  },
+  {
+    "id": "DC0100",
+    "name": "Volume Metadata",
+    "domain": "Enterprise",
+    "description": "Contextual data about a cloud volume and activity around it, such as id, type, state, and size"
+  },
+  {
+    "id": "DC0092",
+    "name": "Volume Modification",
+    "domain": "Enterprise",
+    "description": "Changes made to a cloud volume, including its settings and control data (ex: AWS modify-volume)"
+  },
+  {
+    "id": "DC0006",
+    "name": "Web Credential Creation",
+    "domain": "Enterprise",
+    "description": "Initial construction of new web credential material (ex: Windows EID 1200 or 4769)"
+  },
+  {
+    "id": "DC0007",
+    "name": "Web Credential Usage",
+    "domain": "Enterprise",
+    "description": "An attempt by a user to gain access to a network or computing resource by providing web credentials (ex: Windows EID 1202)"
+  },
+  {
+    "id": "DC0050",
+    "name": "Windows Registry Key Access",
+    "domain": "Enterprise",
+    "description": "The action of opening a specific Windows Registry key, typically to read its associated value. This activity can be used for system configuration, application settings retrieval, and security policies."
+  },
+  {
+    "id": "DC0056",
+    "name": "Windows Registry Key Creation",
+    "domain": "Enterprise",
+    "description": "Initial construction of a new registry key within the Windows operating system."
+  },
+  {
+    "id": "DC0008",
+    "name": "WMI Creation",
+    "domain": "Enterprise",
+    "description": "Initial construction of a WMI object, such as a filter, consumer, subscription, binding, or providers."
+  }
+]

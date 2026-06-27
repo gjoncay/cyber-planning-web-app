@@ -15,6 +15,7 @@ interface BriefingState {
   addElement: (element: PlanElement) => void;
   updateElement: (id: string, data: Partial<PlanElement>) => void;
   deleteElement: (id: string) => void;
+  clearTier: (tier: ThreatTier) => void;
   upsertElements: (elements: PlanElement[]) => void;
   enrichElement: (id: string) => Promise<void>;
 }
@@ -95,6 +96,15 @@ export const useBriefingStore = create<BriefingState>()(
           elements: s.elements.filter((el) => el.id !== id),
           selectedId: s.selectedId === id ? null : s.selectedId,
         })),
+
+      clearTier: (tier) =>
+        set((s) => {
+          const removedIds = new Set(s.elements.filter((el) => el.tier === tier).map((el) => el.id));
+          return {
+            elements: s.elements.filter((el) => el.tier !== tier),
+            selectedId: s.selectedId && removedIds.has(s.selectedId) ? null : s.selectedId,
+          };
+        }),
 
       // Bulk add/replace by id — used by the adversary → OAKOC import.
       upsertElements: (incoming) =>

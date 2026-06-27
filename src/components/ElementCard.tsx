@@ -3,7 +3,7 @@
 import { PlanElement } from "@/types";
 import { TIER_META } from "@/lib/oakoc";
 import { BriefMode } from "@/store/useBriefingStore";
-import { ShieldAlert, Crosshair } from "lucide-react";
+import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart } from "lucide-react";
 
 const DANGER = "#ef4444";
 
@@ -27,6 +27,10 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
   const meta = TIER_META[element.tier];
   const { kev, maxEpss, cveCount } = severity(element);
   const techs = element.techniques ?? [];
+  const dets = element.detections ?? [];
+  const mits = element.mitigations ?? [];
+  const datacomponents = element.datacomponents ?? [];
+  const analytics = element.analytics ?? [];
   const isHot = kev.length > 0 || maxEpss >= 0.8;
   const isPlan = mode === "plan";
 
@@ -151,6 +155,130 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
           <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
             <Crosshair className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
             <span>{techs.map((t) => t.name || t.id).join(" · ")}</span>
+          </p>
+        )}
+
+        {/* Detections */}
+        {dets.length > 0 && isPlan && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {dets.slice(0, 3).map((d) => (
+              <span
+                key={d.id}
+                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                style={{
+                  color: "var(--accent-primary)",
+                  borderColor: "var(--border-default)",
+                  background: "var(--accent-glow)",
+                }}
+                title={d.name || d.id}
+              >
+                <Radar className="h-2.5 w-2.5" />
+                {d.id}
+              </span>
+            ))}
+            {dets.length > 3 && (
+              <span className="text-[10px] text-[var(--text-muted)]">+{dets.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {dets.length > 0 && !isPlan && (
+          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <Radar className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+            <span>{dets.map((d) => d.name || d.id).join(" · ")}</span>
+          </p>
+        )}
+
+        {/* Mitigations */}
+        {mits.length > 0 && isPlan && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {mits.slice(0, 3).map((m) => (
+              <span
+                key={m.id}
+                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                style={{
+                  color: "var(--accent-primary)",
+                  borderColor: "var(--border-default)",
+                  background: "var(--accent-glow)",
+                }}
+                title={m.name || m.id}
+              >
+                <ShieldCheck className="h-2.5 w-2.5" />
+                {m.id}
+              </span>
+            ))}
+            {mits.length > 3 && (
+              <span className="text-[10px] text-[var(--text-muted)]">+{mits.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {mits.length > 0 && !isPlan && (
+          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+            <span>{mits.map((m) => m.name || m.id).join(" · ")}</span>
+          </p>
+        )}
+
+        {/* Data Components */}
+        {datacomponents.length > 0 && isPlan && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {datacomponents.slice(0, 3).map((dc) => (
+              <span
+                key={dc.id}
+                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                style={{
+                  color: "var(--accent-primary)",
+                  borderColor: "var(--border-default)",
+                  background: "var(--accent-glow)",
+                }}
+                title={dc.name || dc.id}
+              >
+                <Database className="h-2.5 w-2.5" />
+                {dc.id}
+              </span>
+            ))}
+            {datacomponents.length > 3 && (
+              <span className="text-[10px] text-[var(--text-muted)]">+{datacomponents.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {datacomponents.length > 0 && !isPlan && (
+          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <Database className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+            <span>{datacomponents.map((dc) => dc.name || dc.id).join(" · ")}</span>
+          </p>
+        )}
+
+        {/* Analytics */}
+        {analytics.length > 0 && isPlan && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {analytics.slice(0, 3).map((an) => (
+              <span
+                key={an.id}
+                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                style={{
+                  color: "var(--accent-primary)",
+                  borderColor: "var(--border-default)",
+                  background: "var(--accent-glow)",
+                }}
+                title={an.name || an.id}
+              >
+                <LineChart className="h-2.5 w-2.5" />
+                {an.id}
+              </span>
+            ))}
+            {analytics.length > 3 && (
+              <span className="text-[10px] text-[var(--text-muted)]">+{analytics.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {analytics.length > 0 && !isPlan && (
+          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <LineChart className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+            <span>{analytics.map((an) => an.name || an.id).join(" · ")}</span>
           </p>
         )}
       </div>

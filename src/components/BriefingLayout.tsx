@@ -7,6 +7,10 @@ import { ThreatTier } from "@/types";
 import { ElementCard } from "./ElementCard";
 import NodeForm from "./NodeForm";
 import ImportAdversary from "./ImportAdversary";
+import ImportDetections from "./ImportDetections";
+import ImportMitigations from "./ImportMitigations";
+import ImportDataComponents from "./ImportDataComponents";
+import ImportAnalytics from "./ImportAnalytics";
 import {
   DoorOpen,
   Radar,
@@ -16,6 +20,9 @@ import {
   Plus,
   ChevronDown,
   Users,
+  Trash2,
+  Database,
+  LineChart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -49,10 +56,14 @@ function joinClauses(clauses: ReactNode[]): ReactNode {
 }
 
 export default function BriefingLayout() {
-  const { elements, mode, setSelectedId } = useBriefingStore();
+  const { elements, mode, setSelectedId, clearTier } = useBriefingStore();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [addTier, setAddTier] = useState<ThreatTier | undefined>(undefined);
   const [showImport, setShowImport] = useState(false);
+  const [showImportDetections, setShowImportDetections] = useState(false);
+  const [showImportMitigations, setShowImportMitigations] = useState(false);
+  const [showImportDataComponents, setShowImportDataComponents] = useState(false);
+  const [showImportAnalytics, setShowImportAnalytics] = useState(false);
 
   const isPlan = mode === "plan";
 
@@ -120,17 +131,50 @@ export default function BriefingLayout() {
         {isPlan && (
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <p className="text-[12px] text-[var(--text-secondary)]">
-              Build the story for how a threat operates — add elements per layer, or import an
-              adversary&apos;s TTPs from ATT&amp;CK.
+              Build the story for how a threat operates. Add elements per layer, or import threat actor TTPs.
             </p>
-            <button
-              onClick={() => setShowImport(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-              style={{ borderColor: "var(--accent-primary)" }}
-            >
-              <Users className="h-3.5 w-3.5" />
-              Import from ATT&amp;CK
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowImportMitigations(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Import Mitigations
+              </button>
+              <button
+                onClick={() => setShowImportDetections(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <Radar className="h-3.5 w-3.5" />
+                Import Detections
+              </button>
+              <button
+                onClick={() => setShowImportDataComponents(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <Database className="h-3.5 w-3.5" />
+                Import Data Components
+              </button>
+              <button
+                onClick={() => setShowImportAnalytics(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <LineChart className="h-3.5 w-3.5" />
+                Import Analytics
+              </button>
+              <button
+                onClick={() => setShowImport(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <Users className="h-3.5 w-3.5" />
+                Import Threat Actor TTPs
+              </button>
+            </div>
           </div>
         )}
 
@@ -217,15 +261,27 @@ export default function BriefingLayout() {
                           {items.length} {items.length === 1 ? "element" : "elements"}
                         </span>
                         {isPlan && (
-                          <button
-                            onClick={() => openAdd(tier)}
-                            className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-opacity text-[var(--text-inverse)] hover:opacity-90"
-                            style={{ background: meta.color }}
-                            title={`Add to ${meta.name}`}
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                            Add
-                          </button>
+                          <div className="flex items-center gap-2">
+                            {items.length > 0 && (
+                              <button
+                                onClick={() => clearTier(tier)}
+                                className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors text-[var(--text-secondary)] hover:text-[var(--accent-negative)] hover:bg-[var(--bg-sunken)]"
+                                title={`Clear all in ${meta.name}`}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Clear
+                              </button>
+                            )}
+                            <button
+                              onClick={() => openAdd(tier)}
+                              className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-opacity text-[var(--text-inverse)] hover:opacity-90"
+                              style={{ background: meta.color }}
+                              title={`Add to ${meta.name}`}
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                              Add
+                            </button>
+                          </div>
                         )}
                       </div>
                     </header>
@@ -280,6 +336,10 @@ export default function BriefingLayout() {
       )}
 
       {showImport && <ImportAdversary onClose={() => setShowImport(false)} />}
+      {showImportDetections && <ImportDetections onClose={() => setShowImportDetections(false)} />}
+      {showImportMitigations && <ImportMitigations onClose={() => setShowImportMitigations(false)} />}
+      {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
+      {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
     </div>
   );
 }
