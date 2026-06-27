@@ -28,9 +28,9 @@ export default function Header() {
   };
 
   return (
-    <header className="h-14 shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 flex items-center justify-between">
+    <header className="h-auto min-h-14 shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-4 py-3 sm:py-0 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-2">
       {/* Brand Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
         <img
           src={logoImg.src}
           alt="Chinook Cyber Logo"
@@ -51,7 +51,7 @@ export default function Header() {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto">
         {/* Mode Toggle */}
         <div className="inline-flex items-center gap-0.5 p-0.5 rounded-md bg-[var(--bg-raised)] border border-[var(--border-default)]">
           <button

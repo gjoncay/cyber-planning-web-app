@@ -113,51 +113,52 @@ export default function ChainBuilderView() {
   };
 
   return (
-    <div 
-      className="relative w-full h-[75vh] min-h-[600px] border border-[var(--border-default)] rounded-xl bg-[var(--bg-surface)] overflow-hidden shadow-card flex"
-      ref={containerRef}
-    >
-      {/* SVG Overlay for Lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-        <defs>
-          {chains.map(c => (
-            <marker
-              key={`arrow-${c.id}`}
-              id={`arrow-${c.id}`}
-              viewBox="0 0 10 10"
-              refX="18"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={c.color} />
-            </marker>
-          ))}
-        </defs>
-        {lines.map(line => {
-          // Calculate Bezier curve control points for a smooth flow (left to right)
-          // Actually, since columns can be adjacent or far away, an S-curve is nice.
-          const dx = Math.abs(line.end.x - line.start.x);
-          const cpX = dx * 0.4;
-          
-          return (
-            <path
-              key={line.id}
-              d={`M ${line.start.x} ${line.start.y} C ${line.start.x + cpX} ${line.start.y}, ${line.end.x - cpX} ${line.end.y}, ${line.end.x} ${line.end.y}`}
-              fill="none"
-              stroke={line.color}
-              strokeWidth="2.5"
-              strokeOpacity="0.7"
-              markerEnd={`url(#arrow-${line.id.split('-')[0]})`}
-              className="drop-shadow-sm transition-all duration-300"
-            />
-          );
-        })}
-      </svg>
+    <div className="relative w-full h-[75vh] min-h-[600px] border border-[var(--border-default)] rounded-xl bg-[var(--bg-surface)] overflow-x-auto shadow-card">
+      <div 
+        className="relative min-w-[800px] w-full h-full flex"
+        ref={containerRef}
+      >
+        {/* SVG Overlay for Lines */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+          <defs>
+            {chains.map(c => (
+              <marker
+                key={`arrow-${c.id}`}
+                id={`arrow-${c.id}`}
+                viewBox="0 0 10 10"
+                refX="18"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill={c.color} />
+              </marker>
+            ))}
+          </defs>
+          {lines.map(line => {
+            // Calculate Bezier curve control points for a smooth flow (left to right)
+            // Actually, since columns can be adjacent or far away, an S-curve is nice.
+            const dx = Math.abs(line.end.x - line.start.x);
+            const cpX = dx * 0.4;
+            
+            return (
+              <path
+                key={line.id}
+                d={`M ${line.start.x} ${line.start.y} C ${line.start.x + cpX} ${line.start.y}, ${line.end.x - cpX} ${line.end.y}, ${line.end.x} ${line.end.y}`}
+                fill="none"
+                stroke={line.color}
+                strokeWidth="2.5"
+                strokeOpacity="0.7"
+                markerEnd={`url(#arrow-${line.id.split('-')[0]})`}
+                className="drop-shadow-sm transition-all duration-300"
+              />
+            );
+          })}
+        </svg>
 
-      {/* Columns */}
-      <div className="flex w-full h-full divide-x divide-[var(--border-subtle)]">
+        {/* Columns */}
+        <div className="flex w-full h-full divide-x divide-[var(--border-subtle)]">
         {TIER_ORDER.map(tier => {
           const tierElements = elements.filter(e => e.tier === tier);
           const meta = TIER_META[tier];
@@ -212,6 +213,7 @@ export default function ChainBuilderView() {
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
