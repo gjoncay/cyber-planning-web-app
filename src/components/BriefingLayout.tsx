@@ -77,7 +77,8 @@ export default function BriefingLayout() {
   const [showImportSoftware, setShowImportSoftware] = useState(false);
   const [showRecommendDefenses, setShowRecommendDefenses] = useState(false);
   const [showPathfinder, setShowPathfinder] = useState(false);
-  const [briefView, setBriefView] = useState<"swimlanes" | "dashboard" | "builder">("swimlanes");
+  const [briefView, setBriefView] = useState<"swimlanes" | "dashboard">("swimlanes");
+  const [planView, setPlanView] = useState<"grid" | "builder">("grid");
 
   const isPlan = mode === "plan";
 
@@ -234,6 +235,37 @@ export default function BriefingLayout() {
           </div>
         )}
 
+        {isPlan && (
+          <div className="flex justify-start mb-4">
+            <div className="inline-flex items-center p-1 bg-[var(--bg-raised)] rounded-lg border border-[var(--border-default)] shadow-sm">
+              <button
+                onClick={() => setPlanView("grid")}
+                className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
+                  planView === "grid"
+                    ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                }`}
+              >
+                Grid View
+              </button>
+              <button
+                onClick={() => setPlanView("builder")}
+                className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
+                  planView === "builder"
+                    ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                }`}
+              >
+                Visual Chain Builder
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isPlan && planView === "builder" && (
+          <ChainBuilderView />
+        )}
+
         {/* Brief mode opens with the story framing for the room. */}
         {!isPlan && (
           <div className="mb-7">
@@ -268,27 +300,16 @@ export default function BriefingLayout() {
                 >
                   Executive Dashboard
                 </button>
-                <button
-                  onClick={() => setBriefView("builder")}
-                  className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
-                    briefView === "builder"
-                      ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
-                  }`}
-                >
-                  Visual Chain Builder
-                </button>
               </div>
             </div>
 
             {briefView === "swimlanes" && <SwimlanesView />}
             {briefView === "dashboard" && <DashboardView />}
-            {briefView === "builder" && <ChainBuilderView />}
           </div>
         )}
 
         {/* Plan Mode Grid */}
-        {isPlan && TIER_GROUPS.map((group) => (
+        {isPlan && planView === "grid" && TIER_GROUPS.map((group) => (
           <div key={group.role}>
             {/* Story act divider — adversary maneuver / objective / defensive response */}
             <div className="flex items-center gap-3 mb-3 mt-2 first:mt-0">
