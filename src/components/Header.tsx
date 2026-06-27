@@ -45,7 +45,7 @@ export default function Header() {
             <span className="text-[var(--text-primary)]">Chinook</span>{" "}
             <span className="text-[var(--accent-primary)]">Cyber</span>
           </span>
-          <div className="flex items-center gap-1.5 mt-1">
+          <div className="flex items-center gap-2 mt-1">
             <span
               className="data-label text-[10px]"
               style={{ color: "var(--accent-secondary)" }}
@@ -54,11 +54,10 @@ export default function Header() {
             </span>
             <button
               onClick={() => setInfoOpen(true)}
-              title="What is OAKOC?"
-              aria-label="What is OAKOC?"
-              className="text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
+              className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border border-[var(--border-default)] bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
-              <Info className="h-3 w-3" />
+              <Info className="h-2.5 w-2.5" />
+              What is OAKOC?
             </button>
           </div>
         </div>
