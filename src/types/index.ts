@@ -31,6 +31,7 @@ export interface TechniqueRef {
 export interface PlanElement {
   id: string;
   name: string;
+  nature?: "framework" | "tangible";
   tier: ThreatTier;
   cves: string[];
   techniques?: TechniqueRef[];
@@ -39,6 +40,7 @@ export interface PlanElement {
   datacomponents?: { id: string; name?: string }[];
   analytics?: { id: string; name?: string }[];
   software?: { id: string; name?: string }[];
+  d3fend?: { id: string; name?: string }[];
   description: string;
   metrics?: Record<string, VulnerabilityMetrics>;
   lastEnriched?: string;

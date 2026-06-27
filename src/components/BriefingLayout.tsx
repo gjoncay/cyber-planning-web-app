@@ -12,9 +12,12 @@ import ImportMitigations from "./ImportMitigations";
 import ImportDataComponents from "./ImportDataComponents";
 import ImportAnalytics from "./ImportAnalytics";
 import ImportSoftware from "./ImportSoftware";
+import RecommendDefenses from "./RecommendDefenses";
 import SubwayMap from "./SubwayMap";
 import SwimlanesView from "./SwimlanesView";
 import DashboardView from "./DashboardView";
+import PathfinderWizard from "./PathfinderWizard";
+import ChainBuilderView from "./ChainBuilderView";
 import {
   DoorOpen,
   Radar,
@@ -28,6 +31,8 @@ import {
   Database,
   LineChart,
   Bug,
+  Shield,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -70,12 +75,14 @@ export default function BriefingLayout() {
   const [showImportDataComponents, setShowImportDataComponents] = useState(false);
   const [showImportAnalytics, setShowImportAnalytics] = useState(false);
   const [showImportSoftware, setShowImportSoftware] = useState(false);
-  const [briefView, setBriefView] = useState<"swimlanes" | "dashboard">("swimlanes");
+  const [showRecommendDefenses, setShowRecommendDefenses] = useState(false);
+  const [showPathfinder, setShowPathfinder] = useState(false);
+  const [briefView, setBriefView] = useState<"swimlanes" | "dashboard" | "builder">("swimlanes");
 
   const isPlan = mode === "plan";
 
   const byTier = (tier: ThreatTier) => elements.filter((el) => el.tier === tier);
-  const namesIn = (tier: ThreatTier) => byTier(tier).map((el) => el.name);
+  const namesIn = (tier: ThreatTier) => byTier(tier).filter(el => el.nature !== "framework").map((el) => el.name);
 
   const openAdd = (tier: ThreatTier) => {
     setSelectedId(null);
@@ -161,6 +168,13 @@ export default function BriefingLayout() {
             </div>
             <div className="flex items-center gap-2">
               <button
+                onClick={() => setShowRecommendDefenses(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:border-emerald-500"
+              >
+                <Shield className="h-3.5 w-3.5" />
+                Recommend Defenses
+              </button>
+              <button
                 onClick={() => setShowImportMitigations(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
                 style={{ borderColor: "var(--accent-primary)" }}
@@ -208,6 +222,14 @@ export default function BriefingLayout() {
                 <Users className="h-3.5 w-3.5" />
                 Import Threat Actor TTPs
               </button>
+              <button
+                onClick={() => setShowPathfinder(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
+                style={{ borderColor: "var(--accent-primary)" }}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Auto-Generate Chains
+              </button>
             </div>
           </div>
         )}
@@ -244,12 +266,24 @@ export default function BriefingLayout() {
                       : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
                   }`}
                 >
-                  Risk Dashboard
+                  Executive Dashboard
+                </button>
+                <button
+                  onClick={() => setBriefView("builder")}
+                  className={`px-4 py-1.5 rounded-md text-[13px] font-bold transition-all ${
+                    briefView === "builder"
+                      ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                  }`}
+                >
+                  Visual Chain Builder
                 </button>
               </div>
             </div>
 
-            {briefView === "swimlanes" ? <SwimlanesView /> : <DashboardView />}
+            {briefView === "swimlanes" && <SwimlanesView />}
+            {briefView === "dashboard" && <DashboardView />}
+            {briefView === "builder" && <ChainBuilderView />}
           </div>
         )}
 
@@ -340,10 +374,35 @@ export default function BriefingLayout() {
                           Add the first {meta.short.toLowerCase()} element
                         </button>
                       ) : (
-                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                          {items.map((el) => (
-                            <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
-                          ))}
+                        <div className="flex flex-col gap-6">
+                          {(() => {
+                            const tangibles = items.filter(el => el.nature !== "framework");
+                            const frameworks = items.filter(el => el.nature === "framework");
+                            return (
+                              <>
+                                {tangibles.length > 0 && (
+                                  <div>
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-3">Real-World Assets & Actions</h4>
+                                    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                                      {tangibles.map((el) => (
+                                        <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {frameworks.length > 0 && (
+                                  <div>
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mb-3">Frameworks & Best Practices</h4>
+                                    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                                      {frameworks.map((el) => (
+                                        <ElementCard key={el.id} element={el} mode={mode} onEdit={openEdit} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>
@@ -375,6 +434,8 @@ export default function BriefingLayout() {
       {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
       {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
       {showImportSoftware && <ImportSoftware onClose={() => setShowImportSoftware(false)} />}
+      {showRecommendDefenses && <RecommendDefenses onClose={() => setShowRecommendDefenses(false)} />}
+      {showPathfinder && <PathfinderWizard onClose={() => setShowPathfinder(false)} />}
     </div>
     </div>
   );

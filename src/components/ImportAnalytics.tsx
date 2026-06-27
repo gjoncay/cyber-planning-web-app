@@ -55,10 +55,11 @@ export default function ImportAnalytics({ onClose }: ImportAnalyticsProps) {
 
     const elements: PlanElement[] = elementsToImport.map((an) => ({
       id: `an-${an.id.toLowerCase()}`,
-      name: `Analytic: ${an.id}`,
+      name: an.name,
+      nature: "framework",
       tier: "observation",
       cves: [],
-      analytics: [{ id: an.id }],
+      analytics: [{ id: an.id, name: an.name }],
       description: `${an.description}\n\nPlatform: ${an.platform}\nDomain: ${an.domain}${an.relatedDetection ? `\nRelated Detection: ${an.relatedDetection}` : ""}`,
     }));
     

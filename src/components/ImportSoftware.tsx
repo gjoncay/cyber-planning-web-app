@@ -54,13 +54,14 @@ export default function ImportSoftware({ onClose }: ImportSoftwareProps) {
       return results.find(r => r.id === id);
     }).filter((s): s is AttackSoftware => s !== undefined);
 
-    const elements: PlanElement[] = elementsToImport.map((s) => ({
-      id: `soft-${s.id.toLowerCase()}`,
-      name: s.name,
-      tier: tierForSoftware(s),
+    const elements: PlanElement[] = elementsToImport.map((sw) => ({
+      id: `sw-${sw.id.toLowerCase()}`,
+      name: sw.name,
+      nature: "tangible",
+      tier: tierForSoftware(sw),
       cves: [],
-      software: [{ id: s.id, name: s.name }],
-      description: `${s.description}\n\nType: ${s.type}\nPlatforms: ${s.platforms.join(", ")}`,
+      software: [{ id: sw.id, name: sw.name }],
+      description: `${sw.description}\n\nType: ${sw.type}\nPlatforms: ${sw.platforms.join(", ")}`,
     }));
     
     upsertElements(elements);

@@ -58,6 +58,7 @@ export default function ImportDetections({ onClose }: ImportDetectionsProps) {
     const elements: PlanElement[] = elementsToImport.map((det) => ({
       id: `det-${det.id.toLowerCase()}`,
       name: det.name,
+      nature: "framework",
       tier: "observation",
       cves: [],
       detections: [{ id: det.id, name: det.name }],

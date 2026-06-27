@@ -7,7 +7,7 @@ export default function GuideView() {
     <div className="max-w-4xl mx-auto py-8">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-3">
-          How to use Chinook Cyber
+          How to use the OAKOC Planner
         </h2>
         <p className="text-[15px] text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
           Follow this 4-step workflow to translate raw threat intelligence or vulnerability assessments into actionable, defensive attack scenarios using the OAKOC framework.

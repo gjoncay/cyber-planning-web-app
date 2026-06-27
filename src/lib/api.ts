@@ -28,6 +28,14 @@ export interface Analytic {
   description: string;
 }
 
+export interface D3fendTechnique {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  mitigates: string[];
+}
+
 /**
  * Enrich a list of CVE IDs with CISA KEV exploitation status and FIRST EPSS
  * likelihood scores via the server-side proxy routes.
@@ -180,6 +188,31 @@ export async function searchAnalytics(query: string): Promise<Analytic[]> {
     const res = await fetch(`/api/analytics?q=${encodeURIComponent(q)}`);
     if (!res.ok) return [];
     return (await res.json()) as Analytic[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fluid D3FEND typeahead. */
+export async function searchD3fend(query: string): Promise<D3fendTechnique[]> {
+  const q = query.trim();
+  try {
+    const res = await fetch(`/api/d3fend?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as D3fendTechnique[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fetch recommended D3FEND defenses based on ATT&CK technique IDs. */
+export async function getRecommendedDefenses(techniqueIds: string[]): Promise<D3fendTechnique[]> {
+  if (techniqueIds.length === 0) return [];
+  try {
+    const query = techniqueIds.join(",");
+    const res = await fetch(`/api/d3fend?mitigates=${encodeURIComponent(query)}`);
+    if (!res.ok) return [];
+    return (await res.json()) as D3fendTechnique[];
   } catch {
     return [];
   }

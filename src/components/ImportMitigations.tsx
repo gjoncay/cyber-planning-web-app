@@ -57,6 +57,7 @@ export default function ImportMitigations({ onClose }: ImportMitigationsProps) {
     const elements: PlanElement[] = elementsToImport.map((mit) => ({
       id: `mit-${mit.id.toLowerCase()}`,
       name: mit.name,
+      nature: "framework",
       tier: "obstacle",
       cves: [],
       mitigations: [{ id: mit.id, name: mit.name }],

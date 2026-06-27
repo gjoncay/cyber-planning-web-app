@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { searchCves, searchTechniques, searchDetections, searchMitigations, searchDataComponents, searchAnalytics, searchSoftware } from "@/lib/api";
+import { searchCves, searchTechniques, searchDetections, searchMitigations, searchDataComponents, searchAnalytics, searchSoftware, searchD3fend } from "@/lib/api";
 import { searchTargets } from "@/lib/targets";
 import { AttackTechnique, tierForSoftware } from "@/lib/attack";
 import { TIER_LABELS, TIER_META, TIER_ORDER } from "@/lib/oakoc";
@@ -50,6 +50,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   // Local form state
   const [elementId, setElementId] = useState("");
   const [name, setName] = useState("");
+  const [nature, setNature] = useState<"framework" | "tangible">("tangible");
   const [tier, setTier] = useState<ThreatTier>(TIER_ORDER[0]);
   const [cves, setCves] = useState<string[]>([]);
   const [techniques, setTechniques] = useState<TechniqueRef[]>([]);
@@ -63,9 +64,10 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [datacomponents, setDatacomponents] = useState<{ id: string; name?: string }[]>([]);
   const [analytics, setAnalytics] = useState<{ id: string; name?: string }[]>([]);
   const [software, setSoftware] = useState<{ id: string; name?: string }[]>([]);
+  const [d3fend, setD3fend] = useState<{ id: string; name?: string }[]>([]);
 
   // Template state
-  const [templateType, setTemplateType] = useState<"none"|"detection"|"mitigation"|"datacomponent"|"analytic"|"software"|"target">("none");
+  const [templateType, setTemplateType] = useState<"none"|"detection"|"mitigation"|"datacomponent"|"analytic"|"software"|"target"|"d3fend">("none");
   const [templateSearch, setTemplateSearch] = useState("");
   const [templateSuggestions, setTemplateSuggestions] = useState<any[]>([]);
   const [templateOpen, setTemplateOpen] = useState(false);
@@ -101,13 +103,21 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     if (selectedElement) {
       setElementId(selectedElement.id);
       setName(selectedElement.name);
+      setNature(selectedElement.nature ?? "tangible");
       setTier(selectedElement.tier);
       setCves([...selectedElement.cves]);
       setTechniques([...(selectedElement.techniques ?? [])]);
+      setDetections([...(selectedElement.detections ?? [])]);
+      setMitigations([...(selectedElement.mitigations ?? [])]);
+      setDatacomponents([...(selectedElement.datacomponents ?? [])]);
+      setAnalytics([...(selectedElement.analytics ?? [])]);
+      setSoftware([...(selectedElement.software ?? [])]);
+      setD3fend([...(selectedElement.d3fend ?? [])]);
       setDescription(selectedElement.description ?? "");
     } else {
       setElementId("");
       setName("");
+      setNature("tangible");
       setTier(defaultTier ?? TIER_ORDER[0]);
       setCves([]);
       setTechniques([]);
@@ -116,6 +126,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       setDatacomponents([]);
       setAnalytics([]);
       setSoftware([]);
+      setD3fend([]);
       setDescription("");
     }
     setTechInput("");
@@ -215,6 +226,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       else if (templateType === "analytic") results = await searchAnalytics(q);
       else if (templateType === "software") results = await searchSoftware(q);
       else if (templateType === "target") results = await searchTargets(q);
+      else if (templateType === "d3fend") results = await searchD3fend(q);
       
       if (templateQueryRef.current !== q) return;
       setTemplateSuggestions(results.slice(0, 100));
@@ -352,6 +364,24 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     } else if (templateType === "target") {
       setTier("key-terrain");
       setDescription(s.description || "");
+    } else if (templateType === "d3fend") {
+      // D3FEND techniques are defensive. Categorize them based on their top-level tactic/category if available.
+      // E.g., "Detect" -> observations, "Isolate" -> obstacles, "Deceive" -> obstacles
+      const cat = (s.category || "").toLowerCase();
+      if (cat.includes("detect") || cat.includes("monitor") || cat.includes("analy")) {
+        setTier("observation");
+      } else {
+        setTier("obstacle");
+      }
+      setName(s.name);
+      setD3fend([{ id: s.id, name: s.name }]);
+      setDescription(s.description || "");
+    }
+    
+    if (templateType === "software" || templateType === "target") {
+      setNature("tangible");
+    } else if (templateType !== "none") {
+      setNature("framework");
     }
 
     setTemplateSearch("");
@@ -394,6 +424,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
     if (isEditMode) {
       updateElement(targetId, {
         name: cleanName,
+        nature,
         tier,
         cves,
         techniques,
@@ -402,6 +433,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         datacomponents,
         analytics,
         software,
+        d3fend,
         description: description.trim(),
         // Preserve previously fetched metrics on edit.
         metrics: selectedElement?.metrics,
@@ -410,6 +442,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       const newElement: PlanElement = {
         id: cleanId,
         name: cleanName,
+        nature,
         tier,
         cves,
         techniques,
@@ -418,6 +451,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
         datacomponents,
         analytics,
         software,
+        d3fend,
         description: description.trim(),
       };
       addElement(newElement);
@@ -503,6 +537,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                 <option value="analytic">Analytic</option>
                 <option value="software">Software</option>
                 <option value="target">Common Target</option>
+                <option value="d3fend">D3FEND Technique</option>
               </select>
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
@@ -560,6 +595,35 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
             )}
           </div>
         )}
+
+        {/* Element Nature */}
+        <div>
+          <label className="block data-label mb-2">Element Nature</label>
+          <div className="flex bg-[var(--bg-raised)] p-1 rounded-md border border-[var(--border-default)]">
+            <button
+              type="button"
+              onClick={() => setNature("tangible")}
+              className={`flex-1 px-3 py-1.5 text-[12px] font-semibold rounded transition-colors ${
+                nature === "tangible"
+                  ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+              }`}
+            >
+              Real-World Asset / Artifact
+            </button>
+            <button
+              type="button"
+              onClick={() => setNature("framework")}
+              className={`flex-1 px-3 py-1.5 text-[12px] font-semibold rounded transition-colors ${
+                nature === "framework"
+                  ? "bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+              }`}
+            >
+              Theory / Framework
+            </button>
+          </div>
+        </div>
 
         {/* Element ID */}
         <div>

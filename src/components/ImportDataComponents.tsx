@@ -56,6 +56,7 @@ export default function ImportDataComponents({ onClose }: ImportDataComponentsPr
     const elements: PlanElement[] = elementsToImport.map((dc) => ({
       id: `dc-${dc.id.toLowerCase()}`,
       name: dc.name,
+      nature: "framework",
       tier: "observation",
       cves: [],
       datacomponents: [{ id: dc.id, name: dc.name }],

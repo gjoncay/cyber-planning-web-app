@@ -59,6 +59,8 @@ function bucketByTactic(group: AttackAdversary, techniques: AttackTechnique[], s
 export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
   const upsertElements = useBriefingStore((s) => s.upsertElements);
   const setMode = useBriefingStore((s) => s.setMode);
+  const addChain = useBriefingStore((s) => s.addChain);
+  const chains = useBriefingStore((s) => s.chains);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<AttackAdversary[]>([]);
@@ -121,16 +123,46 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
 
   const doImport = () => {
     if (!group) return;
-    const elements: PlanElement[] = included.map((b) => ({
-      id: `atk-${group.id.toLowerCase()}-${b.id}`,
-      name: b.name,
-      tier: b.tier,
-      cves: [],
-      techniques: b.techniques.map((t) => ({ id: t.id, name: t.name })),
-      software: b.software.map((s) => ({ id: s.id, name: s.name })),
-      description: `${group.name} (${group.id}) — ${b.name}${b.id.startsWith('software-') ? ' (Software)' : ' techniques'}.`,
-    }));
+    const elements: PlanElement[] = [];
+    for (const b of included) {
+      if (b.id.startsWith('software-')) {
+        for (const s of b.software) {
+          elements.push({
+            id: `atk-${group.id.toLowerCase()}-sw-${s.id.toLowerCase()}`,
+            name: s.name,
+            nature: "tangible",
+            tier: b.tier,
+            cves: [],
+            software: [{ id: s.id, name: s.name }],
+            description: `${group.name} (${group.id}) leverages ${s.name}.`,
+          });
+        }
+      } else {
+        elements.push({
+          id: `atk-${group.id.toLowerCase()}-${b.id}`,
+          name: b.name,
+          nature: "framework",
+          tier: b.tier,
+          cves: [],
+          techniques: b.techniques.map((t) => ({ id: t.id, name: t.name })),
+          description: `${group.name} (${group.id}) — ${b.name} techniques.`,
+        });
+      }
+    }
     upsertElements(elements);
+    
+    const softwareElements = elements.filter(e => e.id.includes('-sw-'));
+    if (softwareElements.length > 0) {
+      const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
+      const color = colors[chains.length % colors.length];
+      addChain({
+        id: `chain-${Date.now()}`,
+        name: `${group.name} Playbook`,
+        color,
+        elements: softwareElements.map(e => e.id)
+      });
+    }
+
     setMode("plan");
     onClose();
   };

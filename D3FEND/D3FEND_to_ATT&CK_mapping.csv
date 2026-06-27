@@ -1,0 +1,43 @@
+ATT&CK ID,ATT&CK Enterprise Mitigation,Related D3FEND Techniques,Comment
+M1013,Application Developer Guidance,,A future release of D3FEND will define a taxonomy of Source Code Hardening Techniques.
+M1015,Active Directory Configuration,D3-DTP Domain Trust PolicyD3-ANCI Authentication Cache InvalidationD3-UAP User Account Permissions,"M1015 scope is broad, touches on an wide variety of techniques in D3FEND."
+M1016,Vulnerability Scanning,,Future D3FEND releases will model the scanning and inventory domains.
+M1017,User Training,,Modeling user training is outside the scope of D3FEND.
+M1018,User Account Management,D3-LFP Local File PermissionsD3-SCF System Call FilteringD3-SCP System Configuration Permissions,
+M1019,Threat Intelligence Program,,Establishing and running a Threat Intelligence Program is outside the scope of D3FEND.
+M1020,SSL/TLS Inspection,D3-NTA Network Traffic Analysis,D3FEND models this as an infrastructure dependency to support D3-NTA.
+M1021,Restrict Web-Based Content,D3-ITF Inbound Traffic FilteringD3-DNSDL DNS DenylistingD3-DNSAL DNS AllowlistingD3-NTA Network Traffic AnalysisD3-FA File AnalysisD3-OTF Outbound Traffic FilteringD3-UA URL Analysis,"M1021 scope is broad, touches on an wide variety of techniques in d3fend."
+M1022,Restrict File and Directory Permissions,D3-LFP Local File Permissions,
+M1024,Restrict Registry Permission,D3-SCP System Configuration Permissions,
+M1025,Privileged Process Integrity,D3-BA Bootloader AuthenticationD3-PSEP Process Segment Execution PreventionD3-SCF System Call FilteringD3-DLIC Driver Load Integrity Checking,
+M1026,Privileged Account Management,D3-LAM Local Account MonitoringD3-DAM Domain Account MonitoringD3-SPP Strong Password Policy,
+M1027,Password Policies,D3-OTP One-time PasswordD3-SPP Strong Password Policy,
+M1028,Operating System Configuration,D3-PH Platform Hardening,
+M1029,Remote Data Storage,,IT disaster recovery plans are outside the current scope of D3FEND.
+M1030,Network Segmentation,D3-ET Encrypted TunnelsD3-ITF Inbound Traffic FilteringD3-BDI Broadcast Domain IsolationD3-ISVA Inbound Session Volume Analysis,
+M1031,Network Intrusion Prevention,D3-ITF Inbound Traffic FilteringD3-NTA Network Traffic AnalysisD3-OTF Outbound Traffic Filtering,
+M1032,Multi-factor Authentication,D3-MFA Multi-factor Authentication,
+M1033,Limit Software Installation,D3-EAL Executable AllowlistingD3-EDL Executable Denylisting,
+M1034,Limit Hardware Installation,D3-IOPR IO Port Restriction,
+M1035,Limit Access to Resource Over Network,D3-NI Network Isolation,
+M1036,Account Use Policies,D3-AL Account LockingD3-ANCI Authentication Cache InvalidationD3-ANET Authentication Event Thresholding,D3-AZET may be related (is potentially related though not called out in ATT&CK definition.)
+M1037,Filter Network Traffic,D3-NI Network Isolation,
+M1038,Execution Prevention,D3-EAL Executable AllowlistingD3-PSEP Process Segment Execution PreventionD3-DLIC Driver Load Integrity CheckingD3-EDL Executable Denylisting,
+M1039,Environment Variable Permissions,D3-ACH Application Configuration HardeningD3-SFA System File Analysis,
+M1040,Behavior Prevention on Endpoint,D3-UDTA User Data Transfer AnalysisD3-WSAA Web Session Activity AnalysisD3-RAPA Resource Access Pattern AnalysisD3-JFAPA Job Function Access Pattern AnalysisD3-UGLPA User Geolocation Logon Pattern AnalysisD3-AZET Authorization Event ThresholdingD3-ANET Authentication Event ThresholdingD3-SDA Session Duration Analysis,
+M1041,Encrypt Sensitive Information,D3-ET Encrypted TunnelsD3-DENCR Disk EncryptionD3-FE File EncryptionD3-MENCR Message Encryption,
+M1042,Disable or Remove Feature or Program,D3-ACH Application Configuration HardeningD3-SCF System Call FilteringD3-EDL Executable Denylisting,
+M1043,Credential Access Protection,D3-HBPI Hardware-based Process Isolation,
+M1044,Restrict Library Loading,D3-SCF System Call Filtering,D3-SCF is one possible way to filter library loading.
+M1045,Code Signing,D3-EAL Executable AllowlistingD3-SBV Service Binary VerificationD3-DLIC Driver Load Integrity Checking,
+M1046,Boot Integrity,D3-BA Bootloader AuthenticationD3-TBI TPM Boot Integrity,
+M1047,Audit,D3-LAM Local Account MonitoringD3-DAM Domain Account MonitoringD3-SFA System File Analysis,"M1047 scope is broad, touches on an wide variety of techniques in d3fend."
+M1048,Application Isolation and Sandboxing,D3-DA Dynamic AnalysisD3-SCF System Call FilteringD3-HBPI Hardware-based Process Isolation,"""Sandboxing"" is often used to describe a detection environment which includes some forms of analysis (see D3-DA.)"" Many forms of isolation (e.g., quarantining) are more static in nature and simply limit software's access to system resources."
+M1049,Antivirus/Antimalware,D3-PA Process AnalysisD3-FH File HashingD3-FCR File Content Rules,Process Analysis and subclasses.
+M1050,Exploit Protection,D3-ITF Inbound Traffic FilteringD3-EHPV Exception Handler Pointer ValidationD3-SSC Shadow Stack ComparisonsD3-AH Application Hardening,
+M1051,Update Software,D3-SU Software Update,
+M1052,User Account Control,D3-SCF System Call Filtering,
+M1053,Data Backup,,Comprehensive IT disaster recovery plans are outside the current scope of D3FEND.
+M1054,Software Configuration,D3-CP Certificate PinningD3-ACH Application Configuration Hardening,
+M1055,Do Not Mitigate,,
+M1056,Pre-compromise,D3-DE Decoy EnvironmentD3-DO Decoy Object,
