@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chinook Cyber — CyberSandBox",
+  title: "Chinook Cyber — Cyber OAKOC Planning",
   description: "OAKOC-based Cyber Threat Intelligence and Modeling Engine.",
 };
 
