@@ -3,17 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8096",
     "build": "next build",
+    "dev": "next dev -p 8096",
     "start": "next start -p 8096",
     "lint": "next lint",
     "sync:attack": "node scripts/sync-excel-data.mjs",
     "sync:detections": "node scripts/sync-detections.mjs",
     "sync:mitigations": "node scripts/sync-mitigations.mjs",
     "sync:datacomponents": "node scripts/sync-data-components.mjs",
-    "sync:analytics": "node scripts/sync-analytics.mjs"
+    "sync:analytics": "node scripts/sync-analytics.mjs",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.1",
     "lucide-react": "^0.468.0",
     "next": "^15.5.19",
     "react": "^19.0.0",
@@ -29,6 +34,7 @@
     "eslint-config-next": "15.1.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "^4.105.0"
   }
 }
