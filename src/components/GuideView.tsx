@@ -65,11 +65,11 @@ export default function GuideView() {
           {/* Step 3 */}
           <div className="flex gap-6 relative">
             <div className="w-16 h-16 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-strong)] flex items-center justify-center shrink-0 shadow-sm z-10 mx-auto md:mx-0">
-              <Link2 className="w-7 h-7 text-[#f59e0b]" />
+              <Link2 className="w-7 h-7 text-[var(--accent-warning)]" />
             </div>
             <div className="pt-2 flex-1">
               <h3 className="text-[18px] font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
-                <span className="text-[#f59e0b]">3.</span> Link Attack Chains
+                <span className="text-[var(--accent-warning)]">3.</span> Link Attack Chains
               </h3>
               <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-4">
                 Connect the dots to find the gaps. Group the adversary's actions and your defenses into sequential <strong>Attack Chains</strong>.
@@ -83,7 +83,7 @@ export default function GuideView() {
                   <ArrowRight className="w-3 h-3 text-[var(--text-muted)]" />
                   <span>Key Terrain</span>
                   <ArrowRight className="w-3 h-3 text-[var(--text-muted)]" />
-                  <span className="text-[#ef4444] flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> Missing Defenses!</span>
+                  <span className="text-[var(--accent-negative)] flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> Missing Defenses!</span>
                 </div>
               </div>
             </div>
@@ -92,11 +92,11 @@ export default function GuideView() {
           {/* Step 4 */}
           <div className="flex gap-6 relative">
             <div className="w-16 h-16 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-strong)] flex items-center justify-center shrink-0 shadow-sm z-10 mx-auto md:mx-0">
-              <Presentation className="w-7 h-7 text-[#10b981]" />
+              <Presentation className="w-7 h-7 text-[var(--accent-positive)]" />
             </div>
             <div className="pt-2 flex-1">
               <h3 className="text-[18px] font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
-                <span className="text-[#10b981]">4.</span> Brief Leadership
+                <span className="text-[var(--accent-positive)]">4.</span> Brief Leadership
               </h3>
               <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-4">
                 Once the planning is complete and the gaps are identified, switch over to the <strong>Brief</strong> tab.

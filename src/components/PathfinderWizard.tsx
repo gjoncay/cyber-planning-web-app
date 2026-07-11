@@ -1,7 +1,9 @@
 "use client";
 
 import { useBriefingStore } from "@/store/useBriefingStore";
+import { chainColor } from "@/lib/oakoc";
 import { PlanElement } from "@/types";
+import ModalShell from "./ModalShell";
 import { Sparkles, X, Plus, Check } from "lucide-react";
 import { useState, useMemo } from "react";
 
@@ -55,26 +57,31 @@ export default function PathfinderWizard({ onClose }: PathfinderWizardProps) {
   };
 
   const doImport = () => {
-    const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
-    
+    // Running index so every chain created in this batch gets its own color
+    // (chains.length alone is stale inside the loop).
+    let created = 0;
     suggestedPaths.forEach(path => {
       if (selectedPaths.has(path.id)) {
         addChain({
           id: `chain-${Date.now()}-${Math.random().toString(36).substring(7)}`,
           name: path.name,
-          color: colors[chains.length % colors.length], // color will just pick the next based on current length (not dynamically updating length mid-loop, but close enough)
+          color: chainColor(chains.length + created),
           elements: path.elements.map(e => e.id)
         });
+        created += 1;
       }
     });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-[var(--bg-base)]/60 backdrop-blur-[2px]">
-      <button className="absolute inset-0 cursor-default" aria-label="Close" onClick={onClose} />
-      <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden">
-        
+    <ModalShell
+      onClose={onClose}
+      label="Pathfinder Wizard"
+      zIndexClassName="z-[70]"
+      panelClassName="w-full max-w-xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden"
+    >
+
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-default)] shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" style={{ color: "var(--accent-primary)" }} />
@@ -102,7 +109,7 @@ export default function PathfinderWizard({ onClose }: PathfinderWizardProps) {
                     key={path.id}
                     onClick={() => togglePath(path.id)}
                     className={`flex items-center justify-between p-3 rounded-lg border text-left transition-colors ${
-                      isSelected ? "border-[var(--accent-primary)] bg-[var(--accent-primary)]/10" : "border-[var(--border-default)] bg-[var(--bg-raised)] hover:border-[var(--text-muted)]"
+                      isSelected ? "border-[var(--accent-primary)] bg-[var(--accent-glow)]" : "border-[var(--border-default)] bg-[var(--bg-raised)] hover:border-[var(--text-muted)]"
                     }`}
                   >
                     <div className="flex flex-col">
@@ -143,8 +150,6 @@ export default function PathfinderWizard({ onClose }: PathfinderWizardProps) {
             Create {selectedPaths.size} {selectedPaths.size === 1 ? 'Chain' : 'Chains'}
           </button>
         </div>
-
-      </div>
-    </div>
+    </ModalShell>
   );
 }

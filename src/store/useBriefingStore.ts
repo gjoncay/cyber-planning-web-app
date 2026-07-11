@@ -2,14 +2,26 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { PlanElement, ThreatTier, TechniqueRef, AttackChain } from "@/types";
 import { fetchThreatIntelligence } from "@/lib/api";
+import { metricsKnown } from "@/lib/severity";
 
 export type BriefMode = "guide" | "plan" | "brief";
+
+/** Pre-destruction snapshot backing the 10-second "Undo" toast. */
+export interface PlanSnapshot {
+  elements: PlanElement[];
+  chains: AttackChain[];
+  /** What was destroyed, for the toast copy — e.g. "Cleared all elements". */
+  label: string;
+  /** When the destructive action happened (ms epoch) — drives toast expiry. */
+  at: number;
+}
 
 interface BriefingState {
   elements: PlanElement[];
   chains: AttackChain[];
   mode: BriefMode;
   selectedId: string | null;
+  lastSnapshot: PlanSnapshot | null;
 
   setMode: (mode: BriefMode) => void;
   setSelectedId: (id: string | null) => void;
@@ -19,7 +31,17 @@ interface BriefingState {
   clearTier: (tier: ThreatTier) => void;
   clearAll: () => void;
   upsertElements: (elements: PlanElement[]) => void;
-  
+  /** Restore elements + chains from the last destructive action's snapshot. */
+  undoLast: () => void;
+  dismissSnapshot: () => void;
+  /** Merge an imported plan file (elements merged, chains deduped by id). */
+  importPlanData: (elements: PlanElement[], chains: AttackChain[]) => void;
+  /**
+   * Replace the whole working plan (scenario switch). Callers are responsible
+   * for snapshotting the outgoing plan into the scenario registry first.
+   */
+  replacePlan: (elements: PlanElement[], chains: AttackChain[]) => void;
+
   // Chain management
   addChain: (chain: AttackChain) => void;
   updateChain: (id: string, data: Partial<AttackChain>) => void;
@@ -27,6 +49,56 @@ interface BriefingState {
   toggleElementInChain: (chainId: string, elementId: string) => void;
 
   enrichElement: (id: string) => Promise<void>;
+}
+
+/** True for "empty" incoming values that must not clobber user edits. */
+const isEmptyValue = (v: unknown): boolean =>
+  v === undefined ||
+  v === null ||
+  (typeof v === "string" && v.trim() === "") ||
+  (Array.isArray(v) && v.length === 0);
+
+/** Union two ref lists by id, keeping the existing entries' names. */
+function mergeRefs<T extends { id: string }>(existing: T[] | undefined, incoming: T[] | undefined): T[] | undefined {
+  if (!existing?.length) return incoming;
+  if (!incoming?.length) return existing;
+  const map = new Map(existing.map((r) => [r.id, r]));
+  for (const r of incoming) if (!map.has(r.id)) map.set(r.id, r);
+  return [...map.values()];
+}
+
+/**
+ * Merge an incoming element into an existing one without destroying user
+ * edits: existing scalar fields win unless empty; list fields are unioned;
+ * metrics are combined (fresh intel fills gaps, never wipes).
+ */
+function mergeElement(existing: PlanElement, incoming: PlanElement): PlanElement {
+  return {
+    ...existing,
+    name: isEmptyValue(existing.name) ? incoming.name : existing.name,
+    nature: existing.nature ?? incoming.nature,
+    tier: existing.tier ?? incoming.tier,
+    description: isEmptyValue(existing.description) ? incoming.description : existing.description,
+    cves: [...new Set([...(existing.cves ?? []), ...(incoming.cves ?? [])])],
+    techniques: mergeRefs(existing.techniques, incoming.techniques),
+    detections: mergeRefs(existing.detections, incoming.detections),
+    mitigations: mergeRefs(existing.mitigations, incoming.mitigations),
+    datacomponents: mergeRefs(existing.datacomponents, incoming.datacomponents),
+    analytics: mergeRefs(existing.analytics, incoming.analytics),
+    software: mergeRefs(existing.software, incoming.software),
+    d3fend: mergeRefs(existing.d3fend, incoming.d3fend),
+    metrics: existing.metrics || incoming.metrics ? { ...incoming.metrics, ...existing.metrics } : undefined,
+  };
+}
+
+/** Merge incoming elements into the current list — never silently overwrite. */
+function mergeElements(current: PlanElement[], incoming: PlanElement[]): PlanElement[] {
+  const map = new Map(current.map((el) => [el.id, el]));
+  for (const el of incoming) {
+    const existing = map.get(el.id);
+    map.set(el.id, existing ? mergeElement(existing, el) : el);
+  }
+  return [...map.values()];
 }
 
 const seed = (
@@ -90,6 +162,7 @@ export const useBriefingStore = create<BriefingState>()(
       chains: [],
       mode: "plan",
       selectedId: null,
+      lastSnapshot: null,
 
       setMode: (mode) => set({ mode }),
       setSelectedId: (id) => set({ selectedId: id }),
@@ -102,16 +175,21 @@ export const useBriefingStore = create<BriefingState>()(
         })),
 
       deleteElement: (id) =>
-        set((s) => ({
-          elements: s.elements.filter((el) => el.id !== id),
-          chains: s.chains.map(c => ({ ...c, elements: c.elements.filter(eid => eid !== id) })),
-          selectedId: s.selectedId === id ? null : s.selectedId,
-        })),
+        set((s) => {
+          const target = s.elements.find((el) => el.id === id);
+          return {
+            lastSnapshot: snapshot(s, target ? `Deleted "${target.name}"` : "Deleted element"),
+            elements: s.elements.filter((el) => el.id !== id),
+            chains: s.chains.map(c => ({ ...c, elements: c.elements.filter(eid => eid !== id) })),
+            selectedId: s.selectedId === id ? null : s.selectedId,
+          };
+        }),
 
       clearTier: (tier) =>
         set((s) => {
           const removedIds = new Set(s.elements.filter((el) => el.tier === tier).map((el) => el.id));
           return {
+            lastSnapshot: snapshot(s, `Cleared ${removedIds.size} element${removedIds.size === 1 ? "" : "s"}`),
             elements: s.elements.filter((el) => el.tier !== tier),
             chains: s.chains.map(c => ({ ...c, elements: c.elements.filter(eid => !removedIds.has(eid)) })),
             selectedId: s.selectedId && removedIds.has(s.selectedId) ? null : s.selectedId,
@@ -119,18 +197,40 @@ export const useBriefingStore = create<BriefingState>()(
         }),
 
       clearAll: () =>
-        set(() => ({
+        set((s) => ({
+          lastSnapshot: snapshot(s, "Cleared all elements"),
           elements: [],
           chains: [],
           selectedId: null,
         })),
 
-      // Bulk add/replace by id — used by the adversary → OAKOC import.
+      // Bulk add — used by the library/adversary imports. Merges by id so a
+      // re-import never silently overwrites user-edited elements.
       upsertElements: (incoming) =>
+        set((s) => ({ elements: mergeElements(s.elements, incoming) })),
+
+      undoLast: () =>
         set((s) => {
-          const map = new Map(s.elements.map((el) => [el.id, el]));
-          for (const el of incoming) map.set(el.id, { ...map.get(el.id), ...el });
-          return { elements: [...map.values()] };
+          if (!s.lastSnapshot) return s;
+          return {
+            elements: s.lastSnapshot.elements,
+            chains: s.lastSnapshot.chains,
+            lastSnapshot: null,
+          };
+        }),
+
+      dismissSnapshot: () => set({ lastSnapshot: null }),
+
+      replacePlan: (elements, chains) =>
+        set({ elements, chains, selectedId: null, lastSnapshot: null }),
+
+      importPlanData: (elements, chains) =>
+        set((s) => {
+          const known = new Set(s.chains.map((c) => c.id));
+          return {
+            elements: mergeElements(s.elements, elements),
+            chains: [...s.chains, ...chains.filter((c) => !known.has(c.id))],
+          };
         }),
 
       addChain: (chain) => set((s) => ({ chains: [...s.chains, chain] })),
@@ -138,7 +238,14 @@ export const useBriefingStore = create<BriefingState>()(
         set((s) => ({
           chains: s.chains.map((c) => (c.id === id ? { ...c, ...data } : c)),
         })),
-      deleteChain: (id) => set((s) => ({ chains: s.chains.filter((c) => c.id !== id) })),
+      deleteChain: (id) =>
+        set((s) => {
+          const target = s.chains.find((c) => c.id === id);
+          return {
+            lastSnapshot: snapshot(s, target ? `Deleted chain "${target.name}"` : "Deleted chain"),
+            chains: s.chains.filter((c) => c.id !== id),
+          };
+        }),
       toggleElementInChain: (chainId, elementId) =>
         set((s) => ({
           chains: s.chains.map((c) => {
@@ -155,12 +262,32 @@ export const useBriefingStore = create<BriefingState>()(
         const el = get().elements.find((e) => e.id === id);
         if (!el || el.cves.length === 0) return;
         const metrics = await fetchThreatIntelligence(el.cves);
-        get().updateElement(id, { metrics, lastEnriched: new Date().toISOString() });
+        const succeeded = Object.values(metrics).every((m) => metricsKnown(m));
+        // Keep the (possibly "unknown") metrics so the UI can show an honest
+        // "enrichment unavailable" state, but only stamp lastEnriched on
+        // success so the next save retries the lookup.
+        get().updateElement(
+          id,
+          succeeded ? { metrics, lastEnriched: new Date().toISOString() } : { metrics },
+        );
       },
     }),
     {
       name: "cyber-sandbox-oakoc-v3",
+      version: 4,
+      // v0–3 states carry the same shape this app already reads (new fields
+      // are optional), so migration is a pass-through today — but having
+      // version + migrate in place means future schema changes can transform
+      // old data instead of orphaning the "…-v3" storage key.
+      migrate: (persisted) => persisted as BriefingState,
+      partialize: (s) =>
+        ({ elements: s.elements, chains: s.chains, mode: s.mode }) as BriefingState,
       skipHydration: true,
     },
   ),
 );
+
+/** Capture the pre-destruction state for undo. */
+function snapshot(s: Pick<BriefingState, "elements" | "chains">, label: string): PlanSnapshot {
+  return { elements: s.elements, chains: s.chains, label, at: Date.now() };
+}

@@ -97,10 +97,31 @@ export interface OakocGroup {
 /* The three acts of the story. Adversary actions are framed in threat-red,
    the contested objective in brand tan, the defensive response in brand pine. */
 export const TIER_GROUPS: OakocGroup[] = [
-  { role: "adversary", label: "Adversary maneuver", color: "#ef4444", tiers: ["avenue-of-approach", "cover-concealment"] },
+  { role: "adversary", label: "Adversary maneuver", color: "var(--accent-negative)", tiers: ["avenue-of-approach", "cover-concealment"] },
   { role: "objective", label: "Objective", color: "var(--accent-secondary)", tiers: ["key-terrain"] },
   { role: "defender", label: "Defensive response", color: "var(--accent-primary)", tiers: ["observation", "obstacle"] },
 ];
+
+/* Attack-chain line colors — one shared array so every chain-creation site
+   assigns the same sequence. Eight colorblind-friendlier hues (Okabe–Ito
+   inspired, warmed to sit inside the sand/pine palette), distinct from each
+   other in both themes. Color encodes chain identity only. */
+export const CHAIN_COLORS = [
+  "#c73e3e", // brick red
+  "#0072b2", // deep blue
+  "#2e8b74", // teal green
+  "#d55e00", // vermillion
+  "#7b5cd6", // violet
+  "#b8860b", // dark goldenrod
+  "#c2589c", // magenta
+  "#557085", // slate blue-grey
+] as const;
+
+/** Deterministic chain color: pass how many chains already exist (plus any
+    created earlier in the same batch — keep a running index for bulk adds). */
+export function chainColor(index: number): string {
+  return CHAIN_COLORS[index % CHAIN_COLORS.length];
+}
 
 /** Friendly labels for the tier <select> in the form. */
 export const TIER_LABELS: Record<ThreatTier, string> = {

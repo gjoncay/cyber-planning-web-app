@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // The app's theme is driven by the data-theme attribute (see Header.tsx),
+  // so `dark:` variants must key off it — not prefers-color-scheme.
+  darkMode: ["selector", '[data-theme="dark"]'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -28,6 +31,9 @@ const config: Config = {
         accent: {
           DEFAULT: "var(--accent-primary)",
           secondary: "var(--accent-secondary)",
+          negative: "var(--accent-negative)",
+          warning: "var(--accent-warning)",
+          positive: "var(--accent-positive)",
         },
         // OAKOC tier vocabulary — meaning-bearing, theme-aware.
         oakoc: {

@@ -58,10 +58,13 @@ export default function SwimlanesView() {
                         <div className="flex items-center gap-2 mb-2">
                           <span 
                             className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
-                            style={{ 
-                              color: meta.color, 
-                              backgroundColor: `${meta.color}15`,
-                              border: `1px solid ${meta.color}40`
+                            style={{
+                              // meta.color is a var() reference — appending hex
+                              // alpha digits produces invalid CSS, so use the
+                              // matching tint token for the fill.
+                              color: meta.color,
+                              backgroundColor: meta.tint,
+                              border: `1px solid ${meta.color}`
                             }}
                           >
                             Step {i + 1}

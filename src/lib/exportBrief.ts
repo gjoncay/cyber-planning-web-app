@@ -1,5 +1,6 @@
-import { PlanElement, ThreatTier } from "@/types";
+import { AttackChain, PlanElement, ThreatTier } from "@/types";
 import { TIER_ORDER, TIER_META, TIER_GROUPS } from "@/lib/oakoc";
+import { metricsKnown } from "@/lib/severity";
 import logoImg from "../../chinook-logo.png";
 
 /** Fetch the (transparent) logo and inline it as a data URI so the exported
@@ -38,9 +39,10 @@ const TIER_COLOR: Record<ThreatTier, string> = {
   obstacle: "#14b8a6",
 };
 
-/* Group divider colors — mirror TIER_GROUPS but with literal hex. */
+/* Group divider colors — mirror TIER_GROUPS but with literal hex
+   (adversary red = the app's light-theme --accent-negative). */
 const GROUP_COLOR: Record<string, string> = {
-  adversary: "#ef4444",
+  adversary: "#c73e3e",
   objective: TAN,
   defender: PINE,
 };
@@ -125,10 +127,37 @@ function cveStats(elements: PlanElement[]): { unique: number; exploited: number 
 function vulnRead(el: PlanElement): string {
   const n = el.cves.length;
   if (n === 0) return "";
-  const k = el.cves.filter((c) => el.metrics?.[c]?.isExploited).length;
+  const k = el.cves.filter((c) => metricsKnown(el.metrics?.[c]) && el.metrics?.[c]?.isExploited).length;
   const v = `${n} ${n === 1 ? "vulnerability" : "vulnerabilities"}`;
   const e = `${k} actively exploited`;
   return `${v} · ${e}`;
+}
+
+/** One labeled reference row (D3FEND countermeasures, detections, …). */
+function refLine(label: string, refs?: { id: string; name?: string }[]): string {
+  if (!refs || refs.length === 0) return "";
+  const items = refs
+    .map((r) => (r.name && r.name !== r.id ? `${esc(r.id)} ${esc(r.name)}` : esc(r.id)))
+    .join("  ·  ");
+  return `<div class="refline"><span class="reflabel">${esc(label)}</span> ${items}</div>`;
+}
+
+/** Real per-CVE KEV/EPSS metrics; honest about unknown enrichment. */
+function metricsRead(el: PlanElement): string {
+  if (el.cves.length === 0) return "";
+  const rows = el.cves
+    .map((cve) => {
+      const m = el.metrics?.[cve];
+      if (!m) return `<span class="cve">${esc(cve)}</span>`;
+      if (!metricsKnown(m)) {
+        return `<span class="cve">${esc(cve)} <em>(intel unavailable)</em></span>`;
+      }
+      const kev = m.isExploited ? ` · <strong class="kev">KEV — actively exploited</strong>` : "";
+      const epss = `EPSS ${(m.epssScore * 100).toFixed(1)}% (p${Math.round(m.epssPercentile * 100)})`;
+      return `<span class="cve">${esc(cve)} · ${epss}${kev}</span>`;
+    })
+    .join("<br/>");
+  return `<div class="metrics">${rows}</div>`;
 }
 
 function renderElement(el: PlanElement, color: string): string {
@@ -141,8 +170,46 @@ function renderElement(el: PlanElement, color: string): string {
     <div class="el-name">${esc(el.name)}</div>
     <p class="el-desc">${esc(el.description)}</p>
     ${techniques ? `<div class="techniques">${techniques}</div>` : ""}
+    ${refLine("D3FEND", el.d3fend)}
+    ${refLine("Detections", el.detections)}
+    ${refLine("Mitigations", el.mitigations)}
+    ${refLine("Data components", el.datacomponents)}
+    ${refLine("Analytics", el.analytics)}
+    ${refLine("Software", el.software)}
     ${vuln ? `<div class="vuln">${vuln}</div>` : ""}
+    ${metricsRead(el)}
   </article>`;
+}
+
+/** Attack scenarios (chains) — the sequences the plan is built around. */
+function renderChains(chains: AttackChain[], elements: PlanElement[]): string {
+  const byId = new Map(elements.map((el) => [el.id, el]));
+  const rows = chains
+    .map((chain) => {
+      const steps = chain.elements
+        .map((id) => byId.get(id))
+        .filter((el): el is PlanElement => !!el);
+      if (steps.length === 0) return "";
+      const path = steps.map((el) => `<strong>${esc(el.name)}</strong>`).join(" → ");
+      return `<div class="chain">
+        <span class="chain-dot" style="background:${esc(chain.color)}"></span>
+        <span class="chain-name">${esc(chain.name)}</span>
+        <span class="chain-steps">${path}</span>
+      </div>`;
+    })
+    .filter(Boolean)
+    .join("");
+  if (!rows) return "";
+  return `<div class="group">
+    <div class="group-divider">
+      <span class="group-bar" style="background:${PINE}"></span>
+      <span class="group-label" style="color:${PINE}">Attack scenarios</span>
+      <span class="group-rule"></span>
+    </div>
+    <section class="layer" style="border-left-color:${PINE}">
+      ${rows}
+    </section>
+  </div>`;
 }
 
 function renderLayer(tier: ThreatTier, elements: PlanElement[]): string {
@@ -254,6 +321,22 @@ const STYLES = `
     font-size: 11px; color: ${MUTED}; line-height: 1.5;
   }
   .vuln { margin-top: 6px; font-size: 11.5px; font-weight: 600; color: ${SECONDARY}; }
+  .refline { margin-top: 6px; font-size: 11px; color: ${SECONDARY}; line-height: 1.5; }
+  .reflabel {
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 9.5px; color: ${MUTED}; margin-right: 4px;
+  }
+  .metrics {
+    margin-top: 6px; font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; color: ${SECONDARY}; line-height: 1.6;
+  }
+  .metrics .kev { color: #c73e3e; }
+  .metrics em { color: ${MUTED}; font-style: italic; }
+  .chain { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; font-size: 12.5px; color: ${SECONDARY}; }
+  .chain + .chain { border-top: 1px solid ${BORDER}; }
+  .chain-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; align-self: center; }
+  .chain-name { font-weight: 700; color: ${INK}; flex: none; }
+  .chain-steps strong { color: ${INK}; font-weight: 600; }
   .empty { font-size: 12px; color: ${MUTED}; font-style: italic; padding: 6px 0; }
   .footer {
     margin-top: 40px; padding-top: 16px; border-top: 1px solid ${BORDER};
@@ -267,12 +350,16 @@ const STYLES = `
   }
 `;
 
-export async function exportBriefing(elements: PlanElement[]): Promise<void> {
+export async function exportBriefing(
+  elements: PlanElement[],
+  chains: AttackChain[] = [],
+): Promise<void> {
   const generated = new Date().toLocaleDateString();
   const { unique, exploited } = cveStats(elements);
   const logo = await logoDataUri();
 
   const story = renderStory(elements);
+  const scenarios = renderChains(chains, elements);
   const groups = renderGroups(elements);
 
   const glance = `<div class="glance">
@@ -302,6 +389,7 @@ export async function exportBriefing(elements: PlanElement[]): Promise<void> {
   </header>
   ${story}
   ${glance}
+  ${scenarios}
   ${groups}
   <footer class="footer">
     Generated by Chinook Cyber · Sourced from CISA KEV / FIRST EPSS · ${esc(generated)}

@@ -53,13 +53,20 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const currentTheme = localStorage.getItem("chinook-theme");
+                // Resolution order: ecosystem cookie (cc-theme, shared across
+                // *.chinookcyber.com) -> localStorage -> OS preference.
+                var cookieMatch = document.cookie.match(/(?:^|;\\s*)cc-theme=(dark|light)(?:;|$)/);
+                var cookieTheme = cookieMatch ? cookieMatch[1] : null;
+                var currentTheme = cookieTheme || localStorage.getItem("chinook-theme");
                 if (currentTheme === "dark") {
                   document.documentElement.setAttribute("data-theme", "dark");
                 } else if (!currentTheme && window.matchMedia("(prefers-color-scheme: dark)").matches) {
                   document.documentElement.setAttribute("data-theme", "dark");
                   localStorage.setItem("chinook-theme", "dark");
                 }
+                // Keep localStorage in step with the cookie so the in-app
+                // toggle starts from the ecosystem-wide choice.
+                if (cookieTheme) localStorage.setItem("chinook-theme", cookieTheme);
               } catch (e) {}
             `,
           }}

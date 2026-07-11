@@ -5,6 +5,7 @@
 :root {
   /* Light theme - Chinook Cyber design system */
   --bg-base: #f5efe6;
+  --bg-sunken: #ece4d6; /* one step below --bg-base (wells, pressed areas) */
   --bg-surface: #fffdf9;
   --bg-raised: #efe7da;
   --bg-overlay: #fffdf9;
@@ -13,11 +14,20 @@
   --border-strong: #d6cbb8;
   --text-primary: #1d1f1d;
   --text-secondary: #55605a;
-  --text-muted: #8c9088;
+  --text-muted: #6c7169; /* 4.9:1 on --bg-surface (WCAG AA for small text) */
   --text-inverse: #fffdf9;
   --accent-primary: #58855f;
+  --accent-primary-rgb: 88, 133, 95;
   --accent-secondary: #e0882f;
   --accent-glow: rgba(88, 133, 95, 0.1);
+  /* Semantic status accents — text-safe on light surfaces (≥4.5:1). */
+  --accent-negative: #c73e3e; /* destructive / actively exploited */
+  --accent-negative-glow: rgba(199, 62, 62, 0.1);
+  --accent-warning: #9c620d; /* elevated risk */
+  --accent-warning-glow: rgba(156, 98, 13, 0.1);
+  --accent-positive: #3d7a52; /* covered / healthy */
+  --accent-positive-glow: rgba(61, 122, 82, 0.1);
+  --bg-scrim: rgba(245, 239, 230, 0.6); /* modal backdrop (--bg-base @ 60%) */
   --shadow-card: 0 1px 2px rgba(29, 31, 29, 0.05), 0 1px 3px rgba(29, 31, 29, 0.08);
 
   /* OAKOC tier palette — a shared color *vocabulary* with the MITRE Diamond
@@ -45,6 +55,7 @@
 :root[data-theme="dark"] {
   /* Dark theme - Chinook Cyber design system */
   --bg-base: #1d1f1d;
+  --bg-sunken: #161816; /* one step below --bg-base */
   --bg-surface: #2c2e2c;
   --bg-raised: #343734;
   --bg-overlay: #3a3d39;
@@ -53,11 +64,20 @@
   --border-strong: #565a51;
   --text-primary: #eef1ea;
   --text-secondary: #9aa39a;
-  --text-muted: #6f756c;
+  --text-muted: #9ba297; /* 5.2:1 on --bg-surface (WCAG AA for small text) */
   --text-inverse: #1d1f1d;
   --accent-primary: #6fa777;
+  --accent-primary-rgb: 111, 167, 119;
   --accent-secondary: #eaa15a;
   --accent-glow: rgba(111, 167, 119, 0.12);
+  /* Status accents lifted for dark surfaces (per the lift-in-dark rule). */
+  --accent-negative: #f87171;
+  --accent-negative-glow: rgba(248, 113, 113, 0.1);
+  --accent-warning: #f0b04f;
+  --accent-warning-glow: rgba(240, 176, 79, 0.12);
+  --accent-positive: #6fbf87;
+  --accent-positive-glow: rgba(111, 191, 135, 0.12);
+  --bg-scrim: rgba(29, 31, 29, 0.6); /* modal backdrop (--bg-base @ 60%) */
   --shadow-card: none;
 
   /* OAKOC palette lifted for contrast on dark surfaces (per the design system:
@@ -157,6 +177,27 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* Thin themed scrollbar for dense scroll regions (swimlanes, chain builder). */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border: none;
+  border-radius: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
 }
 
 /* Clamp long card descriptions to two lines in Plan mode. */

@@ -1,11 +1,13 @@
 "use client";
 
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart, Bug, AlertTriangle, TrendingUp, Activity } from "lucide-react";
+import { elementSeverity, HIGH_EPSS_THRESHOLD } from "@/lib/severity";
+import { ShieldAlert, AlertTriangle, TrendingUp, Activity } from "lucide-react";
 import { useMemo } from "react";
 
 export default function DashboardView() {
-  const { chains, elements } = useBriefingStore();
+  const chains = useBriefingStore((s) => s.chains);
+  const elements = useBriefingStore((s) => s.elements);
 
   const metrics = useMemo(() => {
     let activeKev = 0;
@@ -15,18 +17,11 @@ export default function DashboardView() {
     let undetectedChains = 0;
 
     elements.forEach(el => {
-      totalCves += el.cves.length;
-      const kev = el.cves.filter((c) => el.metrics?.[c]?.isExploited);
-      if (kev.length > 0) activeKev += kev.length;
-      
-      const maxEpss = el.cves.reduce((max, cve) => {
-        // mock epss calculation matching ElementCard
-        const num = parseInt(cve.replace(/\D/g, "").slice(-4) || "0", 10);
-        const rand = (num % 100) / 100;
-        return Math.max(max, rand);
-      }, 0);
-      
-      if (maxEpss >= 0.8) highEpss++;
+      // Real severity from fetched KEV/EPSS metrics (shared with ElementCard).
+      const sev = elementSeverity(el);
+      totalCves += sev.cveCount;
+      activeKev += sev.kev.length;
+      if (sev.maxEpss >= HIGH_EPSS_THRESHOLD) highEpss++;
     });
 
     chains.forEach(chain => {
@@ -55,20 +50,20 @@ export default function DashboardView() {
         
         <div className="p-5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card flex flex-col gap-2">
           <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
-            <ShieldAlert className="w-4 h-4 text-[#ef4444]" />
+            <ShieldAlert className="w-4 h-4 text-[var(--accent-negative)]" />
             <h4 className="text-[13px] font-semibold uppercase tracking-wider">Active KEVs</h4>
           </div>
-          <span className="text-3xl font-bold text-[#ef4444]">{metrics.activeKev}</span>
+          <span className="text-3xl font-bold text-[var(--accent-negative)]">{metrics.activeKev}</span>
           <p className="text-[11px] text-[var(--text-muted)]">Known exploited vulnerabilities</p>
         </div>
 
         <div className="p-5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card flex flex-col gap-2">
           <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
-            <TrendingUp className="w-4 h-4 text-[#f59e0b]" />
+            <TrendingUp className="w-4 h-4 text-[var(--accent-warning)]" />
             <h4 className="text-[13px] font-semibold uppercase tracking-wider">High Risk EPSS</h4>
           </div>
-          <span className="text-3xl font-bold text-[#f59e0b]">{metrics.highEpss}</span>
-          <p className="text-[11px] text-[var(--text-muted)]">EPSS probability &gt; 80%</p>
+          <span className="text-3xl font-bold text-[var(--accent-warning)]">{metrics.highEpss}</span>
+          <p className="text-[11px] text-[var(--text-muted)]">Elements with EPSS percentile ≥ 80%</p>
         </div>
         
         <div className="p-5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card flex flex-col gap-2">
@@ -91,7 +86,7 @@ export default function DashboardView() {
                 <h4 className="font-semibold text-[var(--text-primary)]">Unmitigated Scenarios</h4>
                 <p className="text-[12px] text-[var(--text-secondary)] mt-1">Attack chains missing Obstacle elements.</p>
               </div>
-              <span className={`text-2xl font-bold ${metrics.unmitigatedChains > 0 ? "text-[#ef4444]" : "text-[var(--accent-secondary)]"}`}>
+              <span className={`text-2xl font-bold ${metrics.unmitigatedChains > 0 ? "text-[var(--accent-negative)]" : "text-[var(--accent-positive)]"}`}>
                 {metrics.unmitigatedChains}
               </span>
             </div>
@@ -101,7 +96,7 @@ export default function DashboardView() {
                 <h4 className="font-semibold text-[var(--text-primary)]">Undetected Scenarios</h4>
                 <p className="text-[12px] text-[var(--text-secondary)] mt-1">Attack chains missing Observation elements.</p>
               </div>
-              <span className={`text-2xl font-bold ${metrics.undetectedChains > 0 ? "text-[#f59e0b]" : "text-[var(--accent-secondary)]"}`}>
+              <span className={`text-2xl font-bold ${metrics.undetectedChains > 0 ? "text-[var(--accent-warning)]" : "text-[var(--accent-positive)]"}`}>
                 {metrics.undetectedChains}
               </span>
             </div>
@@ -140,12 +135,13 @@ export default function DashboardView() {
                       >
                         {hasDetection ? "Detected" : "Blind"}
                       </span>
-                      <span 
+                      <span
                         className="text-[10px] font-bold px-2 py-1 rounded border uppercase"
-                        style={{ 
-                          color: hasMitigation ? "var(--text-inverse)" : "var(--text-primary)",
-                          backgroundColor: hasMitigation ? "var(--accent-secondary)" : "transparent",
-                          borderColor: hasMitigation ? "transparent" : "var(--border-strong)"
+                        style={{
+                          // Tan-tinted background + primary ink (tan is a highlight, not a text color).
+                          color: "var(--text-primary)",
+                          backgroundColor: hasMitigation ? "var(--tint-avenue)" : "transparent",
+                          borderColor: hasMitigation ? "var(--color-avenue)" : "var(--border-strong)"
                         }}
                       >
                         {hasMitigation ? "Mitigated" : "Exposed"}

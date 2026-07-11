@@ -1,9 +1,8 @@
 "use client";
 
 import { useBriefingStore } from "@/store/useBriefingStore";
-import { TIER_ORDER, TIER_META } from "@/lib/oakoc";
-import { ThreatTier } from "@/types";
-import { useEffect, useRef, useState } from "react";
+import { TIER_ORDER, TIER_META, chainColor } from "@/lib/oakoc";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Plus } from "lucide-react";
 
 interface Point {
@@ -19,14 +18,17 @@ interface Line {
 }
 
 export default function ChainBuilderView() {
-  const { elements, chains, addChain } = useBriefingStore();
+  const elements = useBriefingStore((s) => s.elements);
+  const chains = useBriefingStore((s) => s.chains);
+  const addChain = useBriefingStore((s) => s.addChain);
   const [lines, setLines] = useState<Line[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const rafRef = useRef<number | null>(null);
 
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
-  const calculateLines = () => {
+  const calculateLines = useCallback(() => {
     if (!containerRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
     const newLines: Line[] = [];
@@ -60,21 +62,33 @@ export default function ChainBuilderView() {
     });
 
     setLines(newLines);
-  };
+  }, [chains]);
+
+  // rAF-throttled measure: scroll/resize can fire dozens of times a frame,
+  // but the getBoundingClientRect sweep only needs to run once per paint.
+  const scheduleCalculate = useCallback(() => {
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      calculateLines();
+    });
+  }, [calculateLines]);
 
   useEffect(() => {
     calculateLines();
-    window.addEventListener("resize", calculateLines);
-    return () => window.removeEventListener("resize", calculateLines);
-  }, [chains, elements]);
+    window.addEventListener("resize", scheduleCalculate);
+    return () => {
+      window.removeEventListener("resize", scheduleCalculate);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [chains, elements, calculateLines, scheduleCalculate]);
 
   // Re-calculate lines when scroll happens inside the columns
   useEffect(() => {
-    const handleScroll = () => calculateLines();
     const columns = document.querySelectorAll('.builder-column');
-    columns.forEach(col => col.addEventListener('scroll', handleScroll));
-    return () => columns.forEach(col => col.removeEventListener('scroll', handleScroll));
-  }, [elements]);
+    columns.forEach(col => col.addEventListener('scroll', scheduleCalculate));
+    return () => columns.forEach(col => col.removeEventListener('scroll', scheduleCalculate));
+  }, [elements, scheduleCalculate]);
 
 
   const handleDragStart = (e: React.DragEvent, elementId: string) => {
@@ -97,14 +111,10 @@ export default function ChainBuilderView() {
       const targetEl = elements.find(el => el.id === targetId);
       
       if (sourceEl && targetEl) {
-        const id = `chain-${Date.now()}`;
-        const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
-        const color = colors[chains.length % colors.length];
-        
         addChain({
-          id,
+          id: `chain-${Date.now()}`,
           name: `${sourceEl.name} -> ${targetEl.name}`,
-          color,
+          color: chainColor(chains.length),
           elements: [sourceId, targetId]
         });
       }
@@ -165,7 +175,7 @@ export default function ChainBuilderView() {
 
           return (
             <div key={tier} className="flex-1 flex flex-col min-w-0 builder-column overflow-y-auto custom-scrollbar relative z-20">
-              <div className="sticky top-0 p-3 bg-[var(--bg-surface)]/95 backdrop-blur-sm border-b border-[var(--border-subtle)] shadow-sm z-30">
+              <div className="sticky top-0 p-3 bg-[var(--bg-surface)] backdrop-blur-sm border-b border-[var(--border-subtle)] shadow-sm z-30">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: meta.color }} />
                   <h3 className="text-[12px] font-bold text-[var(--text-primary)] uppercase tracking-wider truncate">{meta.short}</h3>

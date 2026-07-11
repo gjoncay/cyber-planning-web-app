@@ -2,12 +2,57 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
+import { useScenarioStore } from "@/store/useScenarioStore";
 import { TIER_ORDER, TIER_META } from "@/lib/oakoc";
 import Header from "@/components/Header";
 import BriefingLayout from "@/components/BriefingLayout";
 import GuideView from "@/components/GuideView";
-import { RefreshCw, ShieldAlert } from "lucide-react";
+import UndoToast from "@/components/UndoToast";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ShieldAlert } from "lucide-react";
 import { AboutDialog } from "@/components/AboutDialog";
+
+/** Pre-hydration stand-in mirroring the header + summary strip geometry so
+    the persisted state can load without a full-screen spinner layout shift. */
+function HydrationSkeleton() {
+  return (
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--bg-base)]" aria-busy>
+      {/* Header bar */}
+      <div className="h-14 shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-md bg-[var(--bg-raised)] animate-pulse" />
+          <div className="flex flex-col gap-1.5">
+            <div className="h-3.5 w-32 rounded bg-[var(--bg-raised)] animate-pulse" />
+            <div className="h-2.5 w-24 rounded bg-[var(--bg-raised)] animate-pulse" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-44 rounded-md bg-[var(--bg-raised)] animate-pulse" />
+          <div className="h-7 w-20 rounded-md bg-[var(--bg-raised)] animate-pulse" />
+          <div className="h-7 w-7 rounded-md bg-[var(--bg-raised)] animate-pulse" />
+        </div>
+      </div>
+      {/* Summary strip */}
+      <div className="shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] px-6 py-2.5 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          {TIER_ORDER.map((tier) => (
+            <div key={tier} className="h-4 w-20 rounded bg-[var(--bg-raised)] animate-pulse" />
+          ))}
+        </div>
+        <div className="flex items-center gap-5">
+          <div className="h-4 w-20 rounded bg-[var(--bg-raised)] animate-pulse" />
+          <div className="h-4 w-28 rounded bg-[var(--bg-raised)] animate-pulse" />
+        </div>
+      </div>
+      {/* Content placeholder */}
+      <div className="flex-1 px-6 py-6 flex flex-col gap-4">
+        <div className="h-24 rounded-xl bg-[var(--bg-raised)] animate-pulse" />
+        <div className="h-24 rounded-xl bg-[var(--bg-raised)] animate-pulse opacity-70" />
+        <div className="h-24 rounded-xl bg-[var(--bg-raised)] animate-pulse opacity-40" />
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [hydrated, setHydrated] = useState(false);
@@ -15,8 +60,15 @@ export default function Home() {
   const { elements, mode } = useBriefingStore();
 
   useEffect(() => {
-    useBriefingStore.persist.rehydrate();
-    setHydrated(true);
+    let cancelled = false;
+    (async () => {
+      // Wait for the persisted state to actually load before rendering.
+      await Promise.all([useBriefingStore.persist.rehydrate(), useScenarioStore.persist.rehydrate()]);
+      if (!cancelled) setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const stats = useMemo(() => {
@@ -34,11 +86,7 @@ export default function Home() {
   }, [elements]);
 
   if (!hydrated) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[var(--bg-base)]">
-        <RefreshCw className="h-5 w-5 animate-spin text-[var(--text-muted)]" />
-      </div>
-    );
+    return <HydrationSkeleton />;
   }
 
   return (
@@ -64,7 +112,7 @@ export default function Home() {
 
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
-            <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
+            <span className="data-label">
               Elements
             </span>
             <span className="text-[13px] font-bold tabular-nums text-[var(--accent-primary)]">
@@ -74,13 +122,13 @@ export default function Home() {
           <div className="flex items-center gap-1.5" title="Assigned CVEs that are actively exploited (CISA KEV)">
             <ShieldAlert
               className="h-3.5 w-3.5"
-              style={{ color: stats.kevCount > 0 ? "#ef4444" : "var(--text-muted)" }}
+              style={{ color: stats.kevCount > 0 ? "var(--accent-negative)" : "var(--text-muted)" }}
             />
             <span className="data-label">Exploited</span>
             <span className="flex items-baseline gap-1">
               <span
                 className="text-[13px] font-bold tabular-nums"
-                style={{ color: stats.kevCount > 0 ? "#ef4444" : "var(--text-primary)" }}
+                style={{ color: stats.kevCount > 0 ? "var(--accent-negative)" : "var(--text-primary)" }}
               >
                 {stats.kevCount}
               </span>
@@ -92,7 +140,9 @@ export default function Home() {
 
       <main className="flex-1 flex flex-col overflow-y-auto min-h-0 min-w-0">
         <div className="px-4 md:px-6 py-6 flex-1">
-          {mode === "guide" ? <GuideView /> : <BriefingLayout />}
+          <ErrorBoundary>
+            {mode === "guide" ? <GuideView /> : <BriefingLayout />}
+          </ErrorBoundary>
         </div>
         {/* Footer */}
         <div className="shrink-0 px-6 py-3 border-t border-[var(--border-default)] flex items-center justify-between mt-auto">
@@ -101,6 +151,7 @@ export default function Home() {
         </div>
       </main>
       <AboutDialog open={aboutOpen} onClose={() => setAboutOpen(false)} />
+      <UndoToast />
     </div>
   );
 }

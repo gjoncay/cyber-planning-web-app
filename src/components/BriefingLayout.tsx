@@ -7,11 +7,8 @@ import { ThreatTier } from "@/types";
 import { ElementCard } from "./ElementCard";
 import NodeForm from "./NodeForm";
 import ImportAdversary from "./ImportAdversary";
-import ImportDetections from "./ImportDetections";
-import ImportMitigations from "./ImportMitigations";
-import ImportDataComponents from "./ImportDataComponents";
-import ImportAnalytics from "./ImportAnalytics";
-import ImportSoftware from "./ImportSoftware";
+import ImportPicker from "./ImportPicker";
+import ModalShell from "./ModalShell";
 import RecommendDefenses from "./RecommendDefenses";
 import SubwayMap from "./SubwayMap";
 import SwimlanesView from "./SwimlanesView";
@@ -28,9 +25,7 @@ import {
   ChevronDown,
   Users,
   Trash2,
-  Database,
-  LineChart,
-  Bug,
+  Library,
   Shield,
   Sparkles,
   type LucideIcon,
@@ -43,6 +38,28 @@ const TIER_ICON: Record<ThreatTier, LucideIcon> = {
   "key-terrain": Server,
   "cover-concealment": EyeOff,
 };
+
+/** Shared outline style for the Plan-mode toolbar buttons. */
+const TOOLBAR_BTN_CLASS =
+  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]";
+const TOOLBAR_BTN_STYLE = { borderColor: "var(--accent-primary)" } as const;
+
+function ToolbarButton({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button onClick={onClick} className={TOOLBAR_BTN_CLASS} style={TOOLBAR_BTN_STYLE}>
+      <Icon className="h-3.5 w-3.5" />
+      {label}
+    </button>
+  );
+}
 
 /** Comma + "and" joined list of element names, in primary ink. */
 function nameList(names: string[]): ReactNode {
@@ -70,11 +87,7 @@ export default function BriefingLayout() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [addTier, setAddTier] = useState<ThreatTier | undefined>(undefined);
   const [showImport, setShowImport] = useState(false);
-  const [showImportDetections, setShowImportDetections] = useState(false);
-  const [showImportMitigations, setShowImportMitigations] = useState(false);
-  const [showImportDataComponents, setShowImportDataComponents] = useState(false);
-  const [showImportAnalytics, setShowImportAnalytics] = useState(false);
-  const [showImportSoftware, setShowImportSoftware] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [showRecommendDefenses, setShowRecommendDefenses] = useState(false);
   const [showPathfinder, setShowPathfinder] = useState(false);
   const [briefView, setBriefView] = useState<"swimlanes" | "dashboard">("swimlanes");
@@ -168,69 +181,10 @@ export default function BriefingLayout() {
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setShowRecommendDefenses(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:border-emerald-500"
-              >
-                <Shield className="h-3.5 w-3.5" />
-                Recommend Defenses
-              </button>
-              <button
-                onClick={() => setShowImportMitigations(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Import Mitigations
-              </button>
-              <button
-                onClick={() => setShowImportDetections(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <Radar className="h-3.5 w-3.5" />
-                Import Detections
-              </button>
-              <button
-                onClick={() => setShowImportDataComponents(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <Database className="h-3.5 w-3.5" />
-                Import Data Components
-              </button>
-              <button
-                onClick={() => setShowImportAnalytics(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <LineChart className="h-3.5 w-3.5" />
-                Import Analytics
-              </button>
-              <button
-                onClick={() => setShowImportSoftware(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <Bug className="h-3.5 w-3.5" />
-                Import Software
-              </button>
-              <button
-                onClick={() => setShowImport(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <Users className="h-3.5 w-3.5" />
-                Import Threat Actor TTPs
-              </button>
-              <button
-                onClick={() => setShowPathfinder(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold border transition-colors text-[var(--accent-primary)] hover:text-[var(--text-inverse)] hover:bg-[var(--accent-primary)]"
-                style={{ borderColor: "var(--accent-primary)" }}
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                Auto-Generate Chains
-              </button>
+              <ToolbarButton icon={Shield} label="Recommend Defenses" onClick={() => setShowRecommendDefenses(true)} />
+              <ToolbarButton icon={Library} label="Add from library" onClick={() => setShowLibrary(true)} />
+              <ToolbarButton icon={Users} label="Import Threat Actor TTPs" onClick={() => setShowImport(true)} />
+              <ToolbarButton icon={Sparkles} label="Auto-Generate Chains" onClick={() => setShowPathfinder(true)} />
             </div>
           </div>
         )}
@@ -270,7 +224,7 @@ export default function BriefingLayout() {
         {!isPlan && (
           <div className="mb-7">
             <div className="text-center mb-6">
-              <span className="data-label" style={{ color: "var(--accent-secondary)" }}>
+              <span className="data-label">
                 Threat Briefing
               </span>
               <h2 className="mt-1 text-2xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -443,18 +397,19 @@ export default function BriefingLayout() {
 
       {/* Add / edit drawer */}
       {isDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-[var(--bg-base)]/50 backdrop-blur-[2px]">
-          <button className="flex-1 cursor-default" aria-label="Close" onClick={closeDrawer} />
+        <ModalShell
+          onClose={closeDrawer}
+          label={addTier ? "Add element" : "Edit element"}
+          variant="drawer"
+          zIndexClassName="z-50"
+          panelClassName="h-full w-full md:max-w-md flex"
+        >
           <NodeForm onClose={closeDrawer} defaultTier={addTier} />
-        </div>
+        </ModalShell>
       )}
 
       {showImport && <ImportAdversary onClose={() => setShowImport(false)} />}
-      {showImportDetections && <ImportDetections onClose={() => setShowImportDetections(false)} />}
-      {showImportMitigations && <ImportMitigations onClose={() => setShowImportMitigations(false)} />}
-      {showImportDataComponents && <ImportDataComponents onClose={() => setShowImportDataComponents(false)} />}
-      {showImportAnalytics && <ImportAnalytics onClose={() => setShowImportAnalytics(false)} />}
-      {showImportSoftware && <ImportSoftware onClose={() => setShowImportSoftware(false)} />}
+      {showLibrary && <ImportPicker onClose={() => setShowLibrary(false)} />}
       {showRecommendDefenses && <RecommendDefenses onClose={() => setShowRecommendDefenses(false)} />}
       {showPathfinder && <PathfinderWizard onClose={() => setShowPathfinder(false)} />}
     </div>

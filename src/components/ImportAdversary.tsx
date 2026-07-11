@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
 import { searchGroups, fetchGroupTechniques } from "@/lib/api";
 import { AttackAdversary, AttackTechnique, AttackSoftware, TACTIC_NAMES, tacticForTechnique, TACTIC_TO_TIER, tierForSoftware } from "@/lib/attack";
-import { TIER_META, TIER_GROUPS } from "@/lib/oakoc";
+import { TIER_META, TIER_GROUPS, chainColor } from "@/lib/oakoc";
 import { PlanElement, ThreatTier } from "@/types";
+import ModalShell from "./ModalShell";
 import { X, Search, RefreshCw, Users, ArrowLeft, DownloadCloud } from "lucide-react";
 
 interface ImportAdversaryProps {
@@ -153,12 +154,10 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
     
     const softwareElements = elements.filter(e => e.id.includes('-sw-'));
     if (softwareElements.length > 0) {
-      const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
-      const color = colors[chains.length % colors.length];
       addChain({
         id: `chain-${Date.now()}`,
         name: `${group.name} Playbook`,
-        color,
+        color: chainColor(chains.length),
         elements: softwareElements.map(e => e.id)
       });
     }
@@ -171,9 +170,11 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
   const bucketsForTier = (tier: ThreatTier) => buckets.filter((b) => b.tier === tier);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[var(--bg-base)]/60 backdrop-blur-[2px]">
-      <button className="absolute inset-0 cursor-default" aria-label="Close" onClick={onClose} />
-      <div className="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden">
+    <ModalShell
+      onClose={onClose}
+      label="Import adversary from ATT&CK"
+      panelClassName="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden"
+    >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-default)] shrink-0">
           <div className="flex items-center gap-2">
@@ -343,7 +344,6 @@ export default function ImportAdversary({ onClose }: ImportAdversaryProps) {
             </div>
           </>
         )}
-      </div>
-    </div>
+    </ModalShell>
   );
 }

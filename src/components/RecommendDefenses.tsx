@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useBriefingStore } from "@/store/useBriefingStore";
 import { getRecommendedDefenses, D3fendTechnique } from "@/lib/api";
 import { PlanElement, ThreatTier } from "@/types";
+import ModalShell from "./ModalShell";
 import { X, Shield, RefreshCw, DownloadCloud, Info } from "lucide-react";
 
 interface RecommendDefensesProps {
@@ -92,13 +93,15 @@ export default function RecommendDefenses({ onClose }: RecommendDefensesProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[var(--bg-base)]/60 backdrop-blur-[2px]">
-      <button className="absolute inset-0 cursor-default" aria-label="Close" onClick={onClose} />
-      <div className="relative w-full max-w-3xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden">
+    <ModalShell
+      onClose={onClose}
+      label="Recommend Defenses"
+      panelClassName="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-card overflow-hidden"
+    >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-default)] shrink-0 bg-[var(--bg-raised)]">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[var(--accent-primary)]/10 rounded-lg">
+            <div className="p-2 bg-[var(--accent-glow)] rounded-lg">
               <Shield className="h-5 w-5 text-[var(--accent-primary)]" />
             </div>
             <div>
@@ -165,7 +168,7 @@ export default function RecommendDefenses({ onClose }: RecommendDefensesProps) {
                     className="flex items-start gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors"
                     style={{
                       borderColor: on ? "var(--accent-primary)" : "var(--border-default)",
-                      background: on ? "var(--accent-primary)]/5" : "var(--bg-base)",
+                      background: on ? "var(--accent-glow)" : "var(--bg-base)",
                     }}
                   >
                     <input
@@ -178,10 +181,16 @@ export default function RecommendDefenses({ onClose }: RecommendDefensesProps) {
                       <div className="flex flex-wrap items-baseline gap-2 mb-1">
                         <span className="text-[14px] font-semibold text-[var(--text-primary)]">{def.name}</span>
                         <span className="mono text-[11px] text-[var(--text-muted)] bg-[var(--bg-raised)] px-1.5 py-0.5 rounded">{def.id}</span>
-                        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-sm" style={{
-                          background: isObs ? "rgba(59, 130, 246, 0.1)" : "rgba(234, 179, 8, 0.1)",
-                          color: isObs ? "#3b82f6" : "#eab308"
-                        }}>
+                        <span
+                          className="text-[11px] font-medium px-1.5 py-0.5 rounded-sm border"
+                          style={{
+                            // Tier-tinted badge: hue comes from the tint/border,
+                            // text stays readable ink in both themes.
+                            background: isObs ? "var(--tint-observation)" : "var(--tint-obstacle)",
+                            borderColor: isObs ? "var(--color-observation)" : "var(--color-obstacle)",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           {isObs ? "Observation" : "Obstacle"}
                         </span>
                       </div>
@@ -212,7 +221,6 @@ export default function RecommendDefenses({ onClose }: RecommendDefensesProps) {
             Import Selected
           </button>
         </div>
-      </div>
-    </div>
+    </ModalShell>
   );
 }

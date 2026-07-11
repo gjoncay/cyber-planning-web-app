@@ -12,6 +12,7 @@ import {
   Trash2
 } from "lucide-react";
 import { ThreatTier } from "@/types";
+import { useEffect, useRef, useState } from "react";
 
 const TIER_ICON: Record<ThreatTier, LucideIcon> = {
   "avenue-of-approach": DoorOpen,
@@ -21,8 +22,70 @@ const TIER_ICON: Record<ThreatTier, LucideIcon> = {
   "cover-concealment": EyeOff,
 };
 
+/** Chain-name editor with local state: commits to the store debounced (300ms)
+    and on blur, so typing doesn't re-render the whole element grid. */
+function ChainNameInput({
+  chainId,
+  name,
+  onCommit,
+}: {
+  chainId: string;
+  name: string;
+  onCommit: (id: string, name: string) => void;
+}) {
+  const [value, setValue] = useState(name);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const editingRef = useRef(false);
+
+  // Follow external renames (e.g. undo) while not actively editing.
+  useEffect(() => {
+    if (!editingRef.current) setValue(name);
+  }, [name]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
+  const handleChange = (next: string) => {
+    editingRef.current = true;
+    setValue(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onCommit(chainId, next);
+      editingRef.current = false;
+    }, 300);
+  };
+
+  const handleBlur = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    editingRef.current = false;
+    if (value !== name) onCommit(chainId, value);
+  };
+
+  return (
+    <div className="grid flex-1 relative -ml-1">
+      <span className="invisible whitespace-pre-wrap text-[13px] font-bold px-1 border border-transparent break-words col-start-1 row-start-1 leading-normal">
+        {value || ' '}
+      </span>
+      <textarea
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onBlur={handleBlur}
+        rows={1}
+        aria-label="Chain name"
+        className="resize-none overflow-hidden text-[13px] font-bold text-[var(--text-primary)] bg-transparent border border-transparent hover:border-[var(--border-subtle)] focus:border-[var(--accent-primary)] focus:bg-[var(--bg-raised)] rounded px-1 w-full outline-none transition-colors break-words col-start-1 row-start-1 leading-normal"
+      />
+    </div>
+  );
+}
+
 export default function SubwayMap() {
-  const { chains, elements, deleteChain, updateChain } = useBriefingStore();
+  const chains = useBriefingStore((s) => s.chains);
+  const elements = useBriefingStore((s) => s.elements);
+  const deleteChain = useBriefingStore((s) => s.deleteChain);
+  const updateChain = useBriefingStore((s) => s.updateChain);
 
   const scrollToElement = (id: string) => {
     const el = document.getElementById(id);
@@ -62,13 +125,12 @@ export default function SubwayMap() {
         return (
           <div key={chain.id} className="relative group/map">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2 flex-1 min-w-0 mr-2">
-                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: chain.color }} />
-                <input
-                  type="text"
-                  value={chain.name}
-                  onChange={(e) => updateChain(chain.id, { name: e.target.value })}
-                  className="text-[13px] font-bold text-[var(--text-primary)] bg-transparent border border-transparent hover:border-[var(--border-subtle)] focus:border-[var(--accent-primary)] focus:bg-[var(--bg-raised)] rounded px-1 -ml-1 w-full outline-none transition-colors"
+              <div className="flex items-start gap-2 flex-1 min-w-0 mr-2">
+                <div className="w-2.5 h-2.5 rounded-full shrink-0 mt-[7px]" style={{ backgroundColor: chain.color }} />
+                <ChainNameInput
+                  chainId={chain.id}
+                  name={chain.name}
+                  onCommit={(id, name) => updateChain(id, { name })}
                 />
               </div>
               <button
@@ -97,20 +159,20 @@ export default function SubwayMap() {
                     <button
                       key={el.id}
                       onClick={() => scrollToElement(el.id)}
-                      className="relative flex items-center gap-3 text-left group/node w-full py-1 hover:bg-[var(--bg-raised)] rounded-md transition-colors pr-2 -ml-1 pl-1"
+                      className="relative flex items-start gap-3 text-left group/node w-full py-1.5 hover:bg-[var(--bg-raised)] rounded-md transition-colors pr-2 -ml-1 pl-1"
                     >
                       {/* Colored Node */}
                       <div 
-                        className="w-3 h-3 rounded-full border-[2px] z-10 shrink-0" 
+                        className="w-3 h-3 rounded-full border-[2px] z-10 shrink-0 mt-[3px]" 
                         style={{ 
                           borderColor: chain.color, 
                           backgroundColor: "var(--bg-base)" 
                         }} 
                       />
                       
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: meta.color }} />
-                        <span className="text-[12px] text-[var(--text-secondary)] group-hover/node:text-[var(--text-primary)] transition-colors truncate">
+                      <div className="flex items-start gap-2 min-w-0">
+                        <Icon className="w-3.5 h-3.5 shrink-0 mt-[2px]" style={{ color: meta.color }} />
+                        <span className="text-[12px] text-[var(--text-secondary)] group-hover/node:text-[var(--text-primary)] transition-colors break-words leading-snug pt-[1px]">
                           {el.name}
                         </span>
                       </div>

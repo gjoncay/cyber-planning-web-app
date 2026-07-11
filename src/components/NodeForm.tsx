@@ -11,12 +11,10 @@ import { X, Save, Plus, Trash2, Search, RefreshCw, AlertTriangle, Crosshair } fr
 
 const TECH_RE = /T\d{4}(?:\.\d{3})?/i;
 
-const DANGER = "#ef4444";
-
 const dangerStyle = {
-  color: DANGER,
-  backgroundColor: `${DANGER}1a`,
-  borderColor: `${DANGER}40`,
+  color: "var(--accent-negative)",
+  backgroundColor: "var(--accent-negative-glow)",
+  borderColor: "var(--accent-negative)",
 };
 
 const INPUT_CLASS =
@@ -82,6 +80,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cveHint, setCveHint] = useState<string | null>(null);
+  const [cveActive, setCveActive] = useState(-1);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -91,6 +90,8 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   const [techSuggestions, setTechSuggestions] = useState<AttackTechnique[]>([]);
   const [techOpen, setTechOpen] = useState(false);
   const [techLoading, setTechLoading] = useState(false);
+  const [techActive, setTechActive] = useState(-1);
+  const [templateActive, setTemplateActive] = useState(-1);
 
   const techDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const techBlurRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -163,6 +164,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       // Ignore stale responses if the query changed mid-flight.
       if (queryRef.current !== q) return;
       setSuggestions(results.slice(0, 8));
+      setCveActive(-1);
       setLoading(false);
     }, 200);
 
@@ -192,6 +194,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       // Ignore stale responses if the query changed mid-flight.
       if (techQueryRef.current !== q) return;
       setTechSuggestions(results.slice(0, 8));
+      setTechActive(-1);
       setTechLoading(false);
     }, 200);
 
@@ -230,6 +233,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       
       if (templateQueryRef.current !== q) return;
       setTemplateSuggestions(results.slice(0, 100));
+      setTemplateActive(-1);
       setTemplateLoading(false);
     }, 200);
 
@@ -273,11 +277,24 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   };
 
   const handleCveKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "ArrowDown" && open && suggestions.length > 0) {
       e.preventDefault();
-      handleManualAdd();
+      setCveActive((i) => (i + 1) % suggestions.length);
+    } else if (e.key === "ArrowUp" && open && suggestions.length > 0) {
+      e.preventDefault();
+      setCveActive((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (open && cveActive >= 0 && cveActive < suggestions.length) {
+        handleSelectSuggestion(suggestions[cveActive]);
+      } else {
+        handleManualAdd();
+      }
     } else if (e.key === "Escape") {
+      // Close only the dropdown; don't let Escape bubble up to the drawer.
+      if (open) e.stopPropagation();
       setOpen(false);
+      setCveActive(-1);
     }
   };
 
@@ -320,11 +337,42 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
   };
 
   const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "ArrowDown" && techOpen && techSuggestions.length > 0) {
       e.preventDefault();
-      addTechnique();
+      setTechActive((i) => (i + 1) % techSuggestions.length);
+    } else if (e.key === "ArrowUp" && techOpen && techSuggestions.length > 0) {
+      e.preventDefault();
+      setTechActive((i) => (i <= 0 ? techSuggestions.length - 1 : i - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (techOpen && techActive >= 0 && techActive < techSuggestions.length) {
+        handleSelectTechnique(techSuggestions[techActive]);
+      } else {
+        addTechnique();
+      }
     } else if (e.key === "Escape") {
+      if (techOpen) e.stopPropagation();
       setTechOpen(false);
+      setTechActive(-1);
+    }
+  };
+
+  const handleTemplateKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown" && templateOpen && templateSuggestions.length > 0) {
+      e.preventDefault();
+      setTemplateActive((i) => (i + 1) % templateSuggestions.length);
+    } else if (e.key === "ArrowUp" && templateOpen && templateSuggestions.length > 0) {
+      e.preventDefault();
+      setTemplateActive((i) => (i <= 0 ? templateSuggestions.length - 1 : i - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (templateOpen && templateActive >= 0 && templateActive < templateSuggestions.length) {
+        handleSelectTemplate(templateSuggestions[templateActive]);
+      }
+    } else if (e.key === "Escape") {
+      if (templateOpen) e.stopPropagation();
+      setTemplateOpen(false);
+      setTemplateActive(-1);
     }
   };
 
@@ -507,7 +555,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
       </div>
 
       {/* Body */}
-      <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-5">
+      <form id="node-form" onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-5">
         {error && (
           <div className="flex gap-2 p-3 border rounded-md text-xs" style={dangerStyle}>
             <AlertTriangle className="h-4 w-4 shrink-0" />
@@ -545,7 +593,13 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   type="text"
                   value={templateSearch}
                   disabled={templateType === "none"}
+                  role="combobox"
+                  aria-expanded={templateOpen}
+                  aria-controls="template-listbox"
+                  aria-autocomplete="list"
+                  aria-activedescendant={templateActive >= 0 ? `template-opt-${templateActive}` : undefined}
                   onChange={(e) => setTemplateSearch(e.target.value)}
+                  onKeyDown={handleTemplateKeyDown}
                   onFocus={() => {
                     if (templateType !== "none") setTemplateOpen(true);
                   }}
@@ -554,24 +608,34 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   autoComplete="off"
                   className={`${INPUT_CLASS} pl-8 disabled:opacity-60`}
                 />
-                
+
                 {templateOpen && (templateSuggestions.length > 0 || templateLoading) && (
-                  <div className="absolute z-30 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+                  <div
+                    id="template-listbox"
+                    role="listbox"
+                    aria-label="Template suggestions"
+                    className="absolute z-30 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card"
+                  >
                     {templateLoading ? (
                       <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         Searching…
                       </div>
                     ) : (
-                      templateSuggestions.map((s) => (
+                      templateSuggestions.map((s, idx) => (
                         <button
                           key={s.id}
                           type="button"
+                          role="option"
+                          id={`template-opt-${idx}`}
+                          aria-selected={idx === templateActive}
                           onMouseDown={(e) => {
                             e.preventDefault();
                             handleSelectTemplate(s);
                           }}
-                          className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                          className={`w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0 ${
+                            idx === templateActive ? "bg-[var(--bg-raised)]" : ""
+                          }`}
                         >
                           <div className="flex items-baseline gap-2">
                             <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
@@ -705,9 +769,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                     type="button"
                     onClick={() => removeCve(c)}
                     aria-label={`Remove ${c}`}
-                    className="text-[var(--text-muted)] transition-colors"
-                    onMouseEnter={(e) => (e.currentTarget.style.color = DANGER)}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "")}
+                    className="text-[var(--text-muted)] hover:text-[var(--accent-negative)] transition-colors"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -724,6 +786,11 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   type="text"
                   id="cveInput"
                   value={cveInput}
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-controls="cve-listbox"
+                  aria-autocomplete="list"
+                  aria-activedescendant={cveActive >= 0 ? `cve-opt-${cveActive}` : undefined}
                   onChange={(e) => {
                     setCveInput(e.target.value);
                     setCveHint(null);
@@ -751,7 +818,12 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
 
             {/* Suggestions dropdown */}
             {open && cveInput.trim().length >= 2 && (
-              <div className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+              <div
+                id="cve-listbox"
+                role="listbox"
+                aria-label="CVE suggestions"
+                className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card"
+              >
                 {loading ? (
                   <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
                     <RefreshCw className="w-3 h-3 animate-spin" />
@@ -762,16 +834,21 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                     No matches
                   </div>
                 ) : (
-                  suggestions.map((s) => (
+                  suggestions.map((s, idx) => (
                     <button
                       key={s.cveID}
                       type="button"
+                      role="option"
+                      id={`cve-opt-${idx}`}
+                      aria-selected={idx === cveActive}
                       // onMouseDown fires before input blur, so the click registers.
                       onMouseDown={(e) => {
                         e.preventDefault();
                         handleSelectSuggestion(s);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                      className={`w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0 ${
+                        idx === cveActive ? "bg-[var(--bg-raised)]" : ""
+                      }`}
                     >
                       <div className="flex items-baseline gap-2">
                         <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
@@ -794,7 +871,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
           </div>
 
           {cveHint && (
-            <p className="text-[11px] mt-1.5" style={{ color: DANGER }}>
+            <p className="text-[11px] mt-1.5" style={{ color: "var(--accent-negative)" }}>
               {cveHint}
             </p>
           )}
@@ -843,6 +920,11 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                   type="text"
                   id="techInput"
                   value={techInput}
+                  role="combobox"
+                  aria-expanded={techOpen}
+                  aria-controls="tech-listbox"
+                  aria-autocomplete="list"
+                  aria-activedescendant={techActive >= 0 ? `tech-opt-${techActive}` : undefined}
                   onChange={(e) => {
                     setTechInput(e.target.value);
                     setTechHint(null);
@@ -870,7 +952,12 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
 
             {/* Suggestions dropdown */}
             {techOpen && techInput.trim().length >= 2 && (
-              <div className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card">
+              <div
+                id="tech-listbox"
+                role="listbox"
+                aria-label="ATT&CK technique suggestions"
+                className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto bg-[var(--bg-overlay)] border border-[var(--border-default)] rounded-md shadow-card"
+              >
                 {techLoading ? (
                   <div className="px-3 py-2.5 text-[11px] text-[var(--text-muted)] flex items-center gap-1.5">
                     <RefreshCw className="w-3 h-3 animate-spin" />
@@ -881,16 +968,21 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
                     No matches
                   </div>
                 ) : (
-                  techSuggestions.map((s) => (
+                  techSuggestions.map((s, idx) => (
                     <button
                       key={s.id}
                       type="button"
+                      role="option"
+                      id={`tech-opt-${idx}`}
+                      aria-selected={idx === techActive}
                       // onMouseDown fires before input blur, so the click registers.
                       onMouseDown={(e) => {
                         e.preventDefault();
                         handleSelectTechnique(s);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0"
+                      className={`w-full text-left px-3 py-2 hover:bg-[var(--bg-raised)] transition-colors border-b border-[var(--border-subtle)] last:border-b-0 ${
+                        idx === techActive ? "bg-[var(--bg-raised)]" : ""
+                      }`}
                     >
                       <div className="flex items-baseline gap-2">
                         <span className="mono text-[12px] text-[var(--text-primary)] shrink-0">
@@ -912,7 +1004,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
             )}
           </div>
           {techHint && (
-            <p className="text-[11px] mt-1.5" style={{ color: DANGER }}>
+            <p className="text-[11px] mt-1.5" style={{ color: "var(--accent-negative)" }}>
               {techHint}
             </p>
           )}
@@ -963,7 +1055,7 @@ export default function NodeForm({ onClose, defaultTier }: NodeFormProps) {
           </button>
           <button
             type="submit"
-            onClick={handleSave}
+            form="node-form"
             disabled={isPending}
             className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent-primary)] text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-55 rounded-md text-xs font-semibold transition-opacity"
           >

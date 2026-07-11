@@ -67,14 +67,23 @@ export async function fetchThreatIntelligence(
         epssPercentile: epssData[cve]?.epssPercentile || 0,
         vulnerabilityName: kevData[cve]?.details?.vulnerabilityName,
         description: kevData[cve]?.details?.shortDescription,
+        status: "ok",
       };
     }
     return merged;
   } catch (error) {
     console.error("Error fetching threat intelligence:", error);
+    // Honest failure: mark every CVE "unknown" instead of fabricating
+    // "not exploited / 0% EPSS". Callers must not stamp lastEnriched.
     const fallback: Record<string, VulnerabilityMetrics> = {};
     for (const cve of cleanCves) {
-      fallback[cve] = { cveId: cve, isExploited: false, epssScore: 0, epssPercentile: 0 };
+      fallback[cve] = {
+        cveId: cve,
+        isExploited: false,
+        epssScore: 0,
+        epssPercentile: 0,
+        status: "unknown",
+      };
     }
     return fallback;
   }

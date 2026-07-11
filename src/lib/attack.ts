@@ -27,6 +27,13 @@ export interface AttackTechnique {
   parentName?: string;
 }
 
+/** Normalize a tactic to its kill-chain slug. The synced ATT&CK v19 dataset
+   stores Title Case names ("Initial Access", "Stealth", "Defense Impairment");
+   the maps below are keyed by slug, so normalize before lookup. */
+export function tacticSlug(tactic: string): string {
+  return tactic.trim().toLowerCase().replace(/\s*&\s*|\s+/g, "-");
+}
+
 /** ATT&CK tactic → OAKOC layer. ATT&CK techniques are all adversary actions,
    so they map to the adversary maneuver layers and the objective; the
    defensive layers (Observation, Obstacles) stay the analyst's own to fill. */
@@ -74,7 +81,8 @@ export const TACTIC_NAMES: Record<string, string> = {
 /** Pick the OAKOC tier for a technique from its first mapped tactic. */
 export function tierForTechnique(t: AttackTechnique): ThreatTier {
   for (const phase of t.tactics) {
-    if (TACTIC_TO_TIER[phase]) return TACTIC_TO_TIER[phase];
+    const tier = TACTIC_TO_TIER[tacticSlug(phase)];
+    if (tier) return tier;
   }
   return "avenue-of-approach";
 }
@@ -83,7 +91,8 @@ export function tierForTechnique(t: AttackTechnique): ThreatTier {
 export function tierForSoftware(s: AttackSoftware): ThreatTier {
   if (s.tactics && s.tactics.length > 0) {
     for (const phase of s.tactics) {
-      if (TACTIC_TO_TIER[phase]) return TACTIC_TO_TIER[phase];
+      const tier = TACTIC_TO_TIER[tacticSlug(phase)];
+      if (tier) return tier;
     }
   }
   return "cover-concealment"; // Default for software if no tactic mapping
@@ -92,7 +101,8 @@ export function tierForSoftware(s: AttackSoftware): ThreatTier {
 /** Pick the representative tactic slug used to group a technique into an element. */
 export function tacticForTechnique(t: AttackTechnique): string {
   for (const phase of t.tactics) {
-    if (TACTIC_TO_TIER[phase]) return phase;
+    const slug = tacticSlug(phase);
+    if (TACTIC_TO_TIER[slug]) return slug;
   }
-  return t.tactics[0] ?? "execution";
+  return t.tactics[0] ? tacticSlug(t.tactics[0]) : "execution";
 }

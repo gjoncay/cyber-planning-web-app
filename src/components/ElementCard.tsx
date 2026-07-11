@@ -1,12 +1,11 @@
 "use client";
 
 import { PlanElement } from "@/types";
-import { TIER_META } from "@/lib/oakoc";
+import { TIER_META, chainColor } from "@/lib/oakoc";
+import { elementSeverity, HIGH_EPSS_THRESHOLD } from "@/lib/severity";
 import { BriefMode, useBriefingStore } from "@/store/useBriefingStore";
-import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart, Bug, Link2, Plus, Trash2, Sparkles } from "lucide-react";
-import { useState, useMemo } from "react";
-
-const DANGER = "#ef4444";
+import { ShieldAlert, Crosshair, Radar, ShieldCheck, Database, LineChart, Bug, Link2, Plus, Trash2, Sparkles, CloudOff } from "lucide-react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 interface ElementCardProps {
   element: PlanElement;
@@ -14,31 +13,57 @@ interface ElementCardProps {
   onEdit: (id: string) => void;
 }
 
-function severity(element: PlanElement) {
-  const kev = element.cves.filter((c) => element.metrics?.[c]?.isExploited);
-  let maxEpss = 0;
-  for (const c of element.cves) {
-    const p = element.metrics?.[c]?.epssPercentile ?? 0;
-    if (p > maxEpss) maxEpss = p;
-  }
-  return { kev, maxEpss, cveCount: element.cves.length };
+/** One chip row config so the seven reference lists render identically. */
+const REF_SECTIONS = [
+  { key: "techniques", icon: Crosshair },
+  { key: "detections", icon: Radar },
+  { key: "mitigations", icon: ShieldCheck },
+  { key: "datacomponents", icon: Database },
+  { key: "analytics", icon: LineChart },
+  { key: "software", icon: Bug },
+  { key: "d3fend", icon: ShieldCheck },
+] as const;
+
+type RefKey = (typeof REF_SECTIONS)[number]["key"];
+
+function refsOf(element: PlanElement, key: RefKey): { id: string; name?: string }[] {
+  return element[key] ?? [];
 }
 
-export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
+export const ElementCard = memo(function ElementCard({ element, mode, onEdit }: ElementCardProps) {
   const meta = TIER_META[element.tier];
-  const { kev, maxEpss, cveCount } = severity(element);
-  const techs = element.techniques ?? [];
-  const dets = element.detections ?? [];
-  const mits = element.mitigations ?? [];
-  const datacomponents = element.datacomponents ?? [];
-  const analytics = element.analytics ?? [];
-  const software = element.software ?? [];
-  const d3fend = element.d3fend ?? [];
-  const isHot = kev.length > 0 || maxEpss >= 0.8;
+  const sev = elementSeverity(element);
+  const { kev, maxEpss, cveCount, unknown } = sev;
   const isPlan = mode === "plan";
-  const { chains, toggleElementInChain, addChain, deleteChain, elements } = useBriefingStore();
+
+  // Narrow selectors so unrelated store updates don't re-render every card.
+  const chains = useBriefingStore((s) => s.chains);
+  const elements = useBriefingStore((s) => s.elements);
+  const toggleElementInChain = useBriefingStore((s) => s.toggleElementInChain);
+  const addChain = useBriefingStore((s) => s.addChain);
+  const deleteChain = useBriefingStore((s) => s.deleteChain);
 
   const [isChainMenuOpen, setIsChainMenuOpen] = useState(false);
+  const chainMenuRef = useRef<HTMLDivElement>(null);
+
+  // Chain popover: Escape and outside-click close.
+  useEffect(() => {
+    if (!isChainMenuOpen) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (chainMenuRef.current && !chainMenuRef.current.contains(e.target as Node)) {
+        setIsChainMenuOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsChainMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isChainMenuOpen]);
 
   const smartSuggestions = useMemo(() => {
     if (!isChainMenuOpen) return [];
@@ -46,11 +71,11 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
     if (element.tier === "avenue-of-approach") targetTier = "key-terrain";
     else if (element.tier === "key-terrain") targetTier = "avenue-of-approach";
     else if (element.tier === "cover-concealment") targetTier = "key-terrain";
-    
+
     if (!targetTier) return [];
 
-    return elements.filter(e => 
-      e.tier === targetTier && 
+    return elements.filter(e =>
+      e.tier === targetTier &&
       e.id !== element.id &&
       !chains.some(c => c.elements.includes(e.id) && c.elements.includes(element.id))
     ).slice(0, 2);
@@ -61,39 +86,63 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
 
   const isFramework = element.nature === "framework";
 
-  const Wrapper: any = isPlan ? "div" : "div";
-
   const handleCreateChain = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const id = `chain-${Date.now()}`;
-    const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
-    const color = colors[chains.length % colors.length];
     addChain({
-      id,
+      id: `chain-${Date.now()}`,
       name: `Chain ${chains.length + 1}`,
-      color,
+      color: chainColor(chains.length),
       elements: [element.id]
     });
     setIsChainMenuOpen(false);
   };
 
+  const activate = () => {
+    if (isPlan) onEdit(element.id);
+  };
+
   return (
-    <Wrapper
+    <div
       id={element.id}
       {...(isPlan
-        ? { onClick: () => onEdit(element.id), type: "button", title: "Edit element" }
+        ? {
+            role: "button",
+            tabIndex: 0,
+            title: "Edit element",
+            "aria-label": `Edit ${element.name}`,
+            onClick: activate,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.target !== e.currentTarget) return;
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                activate();
+              }
+            },
+          }
         : {})}
       className={`group relative text-left w-full rounded-lg border bg-[var(--bg-surface)] shadow-card transition-colors ${
         isPlan ? "hover:border-[var(--accent-primary)] cursor-pointer" : "cursor-default"
       } ${isFramework ? "border-dashed" : "border-solid"} border-[var(--border-default)]`}
-      style={isHot ? { borderColor: `${DANGER}55` } : isFramework ? { opacity: 0.85 } : undefined}
+      style={sev.isHot ? { borderColor: "var(--accent-negative)" } : isFramework ? { opacity: 0.85 } : undefined}
     >
-      {/* active chain borders / background indicators */}
+      {/* active chain membership dots — numbered and labeled */}
       {activeChains.length > 0 && (
         <div className="absolute top-0 right-0 flex p-1 gap-1">
-          {activeChains.map(c => (
-            <div key={c.id} className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.color }} title={`Part of ${c.name}`} />
-          ))}
+          {activeChains.map(c => {
+            const n = chains.indexOf(c) + 1;
+            return (
+              <span
+                key={c.id}
+                role="img"
+                aria-label={`Part of chain ${n}: ${c.name}`}
+                title={`Chain ${n}: ${c.name}`}
+                className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold leading-none text-white select-none"
+                style={{ backgroundColor: c.color }}
+              >
+                {n}
+              </span>
+            );
+          })}
         </div>
       )}
 
@@ -104,10 +153,7 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
         aria-hidden
       />
 
-      <div 
-        className={isPlan ? "pl-4 pr-3 py-3 cursor-pointer" : "pl-5 pr-4 py-4"} 
-        onClick={isPlan ? () => onEdit(element.id) : undefined}
-      >
+      <div className={isPlan ? "pl-4 pr-3 py-3" : "pl-5 pr-4 py-4"}>
         <div className="flex items-start justify-between gap-2 pr-4">
           <h4
             className={`font-semibold leading-snug transition-colors flex items-start gap-2 ${
@@ -122,16 +168,36 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
               </span>
             )}
           </h4>
-          {kev.length > 0 && (
-            <span
-              className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide"
-              style={{ color: DANGER, backgroundColor: `${DANGER}1a`, border: `1px solid ${DANGER}40` }}
-              title={`${kev.length} actively exploited (CISA KEV)`}
-            >
-              <ShieldAlert className="h-3 w-3" />
-              KEV
-            </span>
-          )}
+          <span className="shrink-0 inline-flex items-center gap-1.5">
+            {kev.length > 0 && (
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--accent-negative)",
+                  backgroundColor: "var(--accent-negative-glow)",
+                  border: "1px solid var(--accent-negative)",
+                }}
+                title={`${kev.length} actively exploited (CISA KEV)`}
+              >
+                <ShieldAlert className="h-3 w-3" />
+                KEV
+              </span>
+            )}
+            {unknown.length > 0 && (
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--text-muted)",
+                  backgroundColor: "var(--bg-raised)",
+                  border: "1px solid var(--border-default)",
+                }}
+                title={`KEV/EPSS enrichment unavailable for ${unknown.join(", ")} — exploitation status unknown. Will retry on next save.`}
+              >
+                <CloudOff className="h-3 w-3" />
+                Intel unavailable
+              </span>
+            )}
+          </span>
         </div>
 
         {element.description && (
@@ -162,7 +228,12 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
               <span
                 className="ml-auto mono text-[10px] font-bold tabular-nums"
                 style={{
-                  color: maxEpss >= 0.8 ? DANGER : maxEpss >= 0.4 ? "var(--accent-secondary)" : "var(--text-muted)",
+                  color:
+                    maxEpss >= HIGH_EPSS_THRESHOLD
+                      ? "var(--accent-negative)"
+                      : maxEpss >= 0.4
+                        ? "var(--accent-warning)"
+                        : "var(--text-muted)",
                 }}
                 title="Highest EPSS likelihood among assigned CVEs"
               >
@@ -179,243 +250,70 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
             {kev.length > 0 && (
               <>
                 {" · "}
-                <span className="font-semibold" style={{ color: DANGER }}>
+                <span className="font-semibold" style={{ color: "var(--accent-negative)" }}>
                   {kev.length} actively exploited
+                </span>
+              </>
+            )}
+            {unknown.length > 0 && (
+              <>
+                {" · "}
+                <span className="font-semibold" style={{ color: "var(--text-muted)" }}>
+                  {unknown.length} intel unavailable
                 </span>
               </>
             )}
           </p>
         )}
 
-        {/* ATT&CK techniques — the TTPs this element represents */}
-        {techs.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {techs.slice(0, 3).map((t) => (
-              <span
-                key={t.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={t.name || t.id}
-              >
-                <Crosshair className="h-2.5 w-2.5" />
-                {t.id}
-              </span>
-            ))}
-            {techs.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{techs.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {techs.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <Crosshair className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{techs.map((t) => t.name || t.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* Detections */}
-        {dets.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {dets.slice(0, 3).map((d) => (
-              <span
-                key={d.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={d.name || d.id}
-              >
-                <Radar className="h-2.5 w-2.5" />
-                {d.id}
-              </span>
-            ))}
-            {dets.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{dets.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {dets.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <Radar className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{dets.map((d) => d.name || d.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* Mitigations */}
-        {mits.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {mits.slice(0, 3).map((m) => (
-              <span
-                key={m.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={m.name || m.id}
-              >
-                <ShieldCheck className="h-2.5 w-2.5" />
-                {m.id}
-              </span>
-            ))}
-            {mits.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{mits.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {mits.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{mits.map((m) => m.name || m.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* Data Components */}
-        {datacomponents.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {datacomponents.slice(0, 3).map((dc) => (
-              <span
-                key={dc.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={dc.name || dc.id}
-              >
-                <Database className="h-2.5 w-2.5" />
-                {dc.id}
-              </span>
-            ))}
-            {datacomponents.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{datacomponents.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {datacomponents.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <Database className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{datacomponents.map((dc) => dc.name || dc.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* Analytics */}
-        {analytics.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {analytics.slice(0, 3).map((an) => (
-              <span
-                key={an.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={an.name || an.id}
-              >
-                <LineChart className="h-2.5 w-2.5" />
-                {an.id}
-              </span>
-            ))}
-            {analytics.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{analytics.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {analytics.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <LineChart className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{analytics.map((an) => an.name || an.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* Software */}
-        {software.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {software.slice(0, 3).map((s) => (
-              <span
-                key={s.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={s.name || s.id}
-              >
-                <Bug className="h-2.5 w-2.5" />
-                {s.id}
-              </span>
-            ))}
-            {software.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{software.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {software.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <Bug className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{software.map((s) => s.name || s.id).join(" · ")}</span>
-          </p>
-        )}
-
-        {/* D3FEND Techniques */}
-        {d3fend.length > 0 && isPlan && (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-            {d3fend.slice(0, 3).map((d3) => (
-              <span
-                key={d3.id}
-                className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
-                style={{
-                  color: "var(--accent-primary)",
-                  borderColor: "var(--border-default)",
-                  background: "var(--accent-glow)",
-                }}
-                title={d3.name || d3.id}
-              >
-                <ShieldCheck className="h-2.5 w-2.5" />
-                {d3.id}
-              </span>
-            ))}
-            {d3fend.length > 3 && (
-              <span className="text-[10px] text-[var(--text-muted)]">+{d3fend.length - 3}</span>
-            )}
-          </div>
-        )}
-
-        {d3fend.length > 0 && !isPlan && (
-          <p className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
-            <span>{d3fend.map((d3) => d3.name || d3.id).join(" · ")}</span>
-          </p>
-        )}
+        {/* Reference chips (techniques, detections, mitigations, …) */}
+        {REF_SECTIONS.map(({ key, icon: SectionIcon }) => {
+          const refs = refsOf(element, key);
+          if (refs.length === 0) return null;
+          return isPlan ? (
+            <div key={key} className="mt-2 flex flex-wrap items-center gap-1.5">
+              {refs.slice(0, 3).map((r) => (
+                <span
+                  key={r.id}
+                  className="inline-flex items-center gap-1 mono text-[10px] px-1.5 py-0.5 rounded border"
+                  style={{
+                    color: "var(--accent-primary)",
+                    borderColor: "var(--border-default)",
+                    background: "var(--accent-glow)",
+                  }}
+                  title={r.name || r.id}
+                >
+                  <SectionIcon className="h-2.5 w-2.5" />
+                  {r.id}
+                </span>
+              ))}
+              {refs.length > 3 && (
+                <span className="text-[10px] text-[var(--text-muted)]">+{refs.length - 3}</span>
+              )}
+            </div>
+          ) : (
+            <p key={key} className="mt-1.5 flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+              <SectionIcon className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "var(--accent-primary)" }} />
+              <span>{refs.map((r) => r.name || r.id).join(" · ")}</span>
+            </p>
+          );
+        })}
       </div>
 
       {isPlan && (
         <div className="absolute bottom-2 right-2">
-          <div className="relative">
+          <div className="relative" ref={chainMenuRef}>
             <button
               type="button"
+              aria-haspopup="menu"
+              aria-expanded={isChainMenuOpen}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsChainMenuOpen(!isChainMenuOpen);
               }}
               className="p-1.5 rounded-md hover:bg-[var(--bg-raised)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors border border-transparent hover:border-[var(--border-default)]"
               title="Add to Attack Chain"
+              aria-label={`Manage attack chains for ${element.name}`}
             >
               <Link2 className="w-3.5 h-3.5" />
             </button>
@@ -445,7 +343,7 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
                         )}
                       </button>
                       <button
-                        className="opacity-0 group-hover/chain:opacity-100 p-2 text-[var(--text-muted)] hover:text-[#ef4444] transition-all"
+                        className="opacity-0 group-hover/chain:opacity-100 p-2 text-[var(--text-muted)] hover:text-[var(--accent-negative)] transition-all"
                         title="Delete chain"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -461,7 +359,7 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
                 {smartSuggestions.length > 0 && (
                   <>
                     <div className="p-2 border-y border-[var(--border-subtle)] bg-[var(--bg-base)]">
-                      <span className="text-[10px] font-bold uppercase text-[var(--accent-secondary)] flex items-center gap-1">
+                      <span className="text-[10px] font-bold uppercase text-[var(--accent-primary)] flex items-center gap-1">
                         <Sparkles className="w-3 h-3" /> Smart Links
                       </span>
                     </div>
@@ -472,13 +370,10 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
                           className="w-full text-left px-3 py-2 text-[12px] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] flex items-center justify-between group/smart"
                           onClick={(e) => {
                             e.stopPropagation();
-                            const id = `chain-${Date.now()}`;
-                            const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
-                            const color = colors[chains.length % colors.length];
                             addChain({
-                              id,
+                              id: `chain-${Date.now()}`,
                               name: `${element.name} -> ${s.name}`,
-                              color,
+                              color: chainColor(chains.length),
                               elements: [element.id, s.id]
                             });
                             setIsChainMenuOpen(false);
@@ -506,6 +401,6 @@ export function ElementCard({ element, mode, onEdit }: ElementCardProps) {
           </div>
         </div>
       )}
-    </Wrapper>
+    </div>
   );
-}
+});

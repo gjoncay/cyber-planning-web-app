@@ -19,6 +19,13 @@ export interface VulnerabilityMetrics {
   epssPercentile: number;
   vulnerabilityName?: string;
   description?: string;
+  /**
+   * Enrichment status. "ok" (or absent, for data persisted before this field
+   * existed) means the KEV/EPSS lookup succeeded; "unknown" means the lookup
+   * failed and the numeric fields are placeholders — the UI must not present
+   * them as "not exploited" / "0% likelihood".
+   */
+  status?: "ok" | "unknown";
 }
 
 /** A MITRE ATT&CK technique reference — the language of how a threat operates. */
