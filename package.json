@@ -11,7 +11,9 @@
     "sync:detections": "node scripts/sync-detections.mjs",
     "sync:mitigations": "node scripts/sync-mitigations.mjs",
     "sync:datacomponents": "node scripts/sync-data-components.mjs",
-    "sync:analytics": "node scripts/sync-analytics.mjs"
+    "sync:analytics": "node scripts/sync-analytics.mjs",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -21,6 +23,7 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.1",
     "@types/node": "^20.17.9",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",
@@ -29,6 +32,7 @@
     "eslint-config-next": "15.1.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "^4.86.0"
   }
 }
